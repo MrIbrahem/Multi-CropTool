@@ -1,5 +1,5 @@
 <?php
-
+//------------------
 function make_col11($head,$body,$foot,$number = '1') {
     $html = '
             <div class="col-sm-3">
@@ -19,7 +19,7 @@ function make_col11($head,$body,$foot,$number = '1') {
             </div>';
     return $html;
 };
-
+//------------------
 // function make_col($head,$body,$foot,$number = '1') {
 function make_col($head,$number) {
     $id_image = 'image' . $number;
@@ -62,7 +62,7 @@ function make_col($head,$number) {
             ';
     return $html;
 };
-
+//------------------
 function make_test_col($type,$file_name,$number = '1') {
     $head = $type;
     $body = '<strong>file name:</strong> '.$file_name;
@@ -70,5 +70,5 @@ function make_test_col($type,$file_name,$number = '1') {
     $html = make_col($head,$body,$foot,$number = '1');
     return $html;
 };
-
+//------------------j
 ?>

@@ -1,7 +1,7 @@
 <?php
-
+//------------------
 require('header.php');
-
+//------------------
 $files = '
 (DermNet NZ pachydermodactyly-1).jpg
 (DermNet NZ pachydermodactyly-2).jpg
@@ -9,21 +9,21 @@ $files = '
 (DermNet NZ pachydermodactyly-4).jpg
 (DermNet NZ pachydermodactyly-5).jpg
 ';
-
+//------------------
 $test = $_REQUEST['test'];
 $text = $_REQUEST['text'];
 $x = $_REQUEST['x'] != '' ? $_REQUEST['x'] : 168;
 $y = $_REQUEST['y'] != '' ? $_REQUEST['y'] : 368;
 $height = $_REQUEST['height'] != '' ? $_REQUEST['height'] : 105;
 $width = $_REQUEST['width'] != '' ? $_REQUEST['width'] : 208;
-
+//------------------&x=64&y=64&width=450&height=368
 if ($text == '') {
-    
+    //---------------------
     $test_input = '';
     if ($test != '' ) {
         $test_input = '<label> text: </label> <input type="checkbox" name="test" id="test" checked>';
     };
-    
+    //---------------------
     echo'
     <div class="panel panel-default">
         
@@ -59,17 +59,17 @@ if ($text == '') {
     </div>
     ';
 };
-
+//======================
 function make_td($imgtitle,$numb) {
-    
+    //------------------
     global $test;
-    
+    //------------------
     $id_t = "d" . $numb;
     $id_td = "td" . $numb;
     $id_n = "nametd" . $numb;
-    
+    //-------------------
     $script = '';
-    
+    //-------------------
     $row1 = '
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#' . $id_td . '">Cropped</a></li>
@@ -87,7 +87,7 @@ function make_td($imgtitle,$numb) {
                             </div>
                         </div>
     ';
-    
+    //-------------------
     if ($test != '') {
         $row1 = '
                         <div class="tab-content">
@@ -107,9 +107,9 @@ function make_td($imgtitle,$numb) {
                         </div>
     ';
     }
-    
+    //-------------------
     $fileurl = 'https://nccommons.org/wiki/File:' . $imgtitle;
-    
+    //-------------------
     // $td = '<td>';
     $td = '
             <div class="col-sm-3" div id="main' . $id_td . '" style="display:inline;">
@@ -131,70 +131,70 @@ function make_td($imgtitle,$numb) {
             
     ';
     // $td .= '</td>';
-    
+    //------------------
     $js = "javascript:updateURLParameter('$line')";
-    
+    //------------------
     return $td;
 };
-
+//======================
 function make_table($text){ 
-    
+    //------------------
     $numb = 0;
     $tabnumb = 0;
-    
+    //-------------------
     $tab = '
 <div id="loadinfo_panel" class="panel panel-default">
 	<!-- <div class="panel-heading"></div> -->
 	<div id="loadinfo" class="panel-body">
 		<div class="col-md-14">
     ';
-    
+    //-------------------
     foreach($text as $line) {
         $line = trim($line);
         if ($line == '') {
             continue;
         }
-        
+        //-------------------
         $tabnumb = $tabnumb + 1;
         $numb = $numb + 1;
-        
+        //-------------------
         $tab .= make_td($line,$numb);
-        
+        //-------------------
         if ($tabnumb == 4 ) {
             $tab .= '
 		</div>
 		<div class="col-md-14">';
 				$tabnumb = 0;
         }
-        
+        //-------------------
         //-------------------        
     };
-    
+    //-------------------
     $tab .= '
 		</div>
 	</div>
 </div>
     ';
-    
+    //------------------
     return $tab;
 };
-
+//======================
 if ($text != '') {
-    
+    //-------------------
     $text = str_replace("File:", "", $text);
     $text = str_replace("|", "", $text);
-    
+    //-------------------
     $text = explode("\n", $text);
-    
+    //-------------------
     // $urlsuffix = "&y=" . $y . "&x=" . $x . "&width=" . $width . "&height=" . $height;
-    
+    //-------------------
     $lal = "<span id='y' hidden='hidden'>$y</span>";
     $lal .= "<span id='x' hidden='hidden'>$x</span>";
     $lal .= "<span id='width' hidden='hidden'>$width</span>";
     $lal .= "<span id='height' hidden='hidden'>$height</span>";
-    
+    //-------------------
     echo $lal;
-    
+    //-------------------
     echo '
     <div class="panel panel-default">
         <h2>
@@ -238,14 +238,14 @@ if ($text != '') {
 			</div>    
 		</div>
 	</div>';
-    
+    //-------------------
     // $table = '<form>';
     $table = make_table($text);
-    
+    //-------------------
     echo $table;
-    
+    //-------------------
     echo '<!-- end of loadinfo -->';
-    
+    //-------------------
     echo '
 <div id="to_upload_panel" class="panel panel-default" hidden="hidden">
 	<div class="panel-heading">Files ready to upload:</div>
@@ -253,7 +253,7 @@ if ($text != '') {
 	</div>
 </div>
 ';
-    
+    //-------------------
     echo '
 <div id="img_error_panel" class="panel panel-default" hidden="hidden">
 	<div class="panel-heading">Files error:</div>
@@ -262,7 +262,7 @@ if ($text != '') {
 	</div>
 </div>
 	';
-    
+    //-------------------
     echo '
     
     <script>
@@ -270,13 +270,13 @@ if ($text != '') {
     log_all();
     </script>';
     // $table .= '</form>';
-    
+    //-------------------
     
 
-    
+    //-------------------
 };
-
-
+//------------------
+//------------------
 
 ?>
 

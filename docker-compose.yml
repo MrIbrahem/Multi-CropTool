@@ -1,0 +1,22 @@
+version: "3"
+services:
+
+  caddy:
+    image: caddy
+    volumes:
+      - .:/nccroptool
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    ports:
+      - "7878:7878"
+    depends_on:
+      - phpfpm
+
+  phpfpm:
+    build:
+      context: .
+    volumes:
+      - .:/nccroptool
+
+volumes:
+  caddy_data:

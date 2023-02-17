@@ -1,0 +1,17 @@
+*.log
+*.zip
+*.rar
+multilog/**
+ta2.js
+cnccommons_all_files/**
+bb/**
+test4/**
+vendor/**
+node_modules/**
+floder/**
+floder.all/**
+croptool/**
+nccroptool2/**
+public_html/multi2/**
+public_html/test4/**
+public_html/multi/multilog/**

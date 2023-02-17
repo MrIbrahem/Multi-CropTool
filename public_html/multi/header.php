@@ -8,13 +8,18 @@
     <script src="ta.js"></script>
     
 <?php
-    
+    $old = '
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    ';
+    //---------------- 
     $new = '
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     ';
-    
+    //---------------- 
     if ( $_SERVER['SERVER_NAME'] == 'localhost' ) { 
         echo $new;
     } else {
@@ -26,6 +31,10 @@
     };
 ?>
     <link rel="stylesheet" type="text/css" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
+    <!-- <link rel="stylesheet" href="css/vendor-071b981dc9.css"> -->
+    <!-- <link rel="stylesheet" href="css/app-6b96dd5a43.css"> -->
+    <!-- <link rel="stylesheet" href="ta.css"> -->
 
 <style>
     body {
@@ -47,7 +56,6 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#">Home1</a></li>
 				<li class=""><a href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank"><span style="font-size:16px">Github</span></a></li>
-				<!-- <li><a href="#">Page 1</a></li> -->
 				<!-- <li><a href="#">Page 2</a></li> -->
 			</ul>
 			
