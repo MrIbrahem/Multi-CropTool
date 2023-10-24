@@ -1,4 +1,6 @@
-
+function getApiToken() {
+    return localStorage.getItem('token');
+}
 
 function uploadImage(file, callback) {
     var formData = {
