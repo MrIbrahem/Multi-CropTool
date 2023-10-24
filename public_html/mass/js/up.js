@@ -1,14 +1,7 @@
 
 
 function uploadImage(file, callback) {
-    var formData = {
-        file: file,
-        action: 'upload',
-        comment: 'Uploaded via API',
-        token: 'token',
-        filename: file.name,
-        format: 'json',
-        text: '== Summary ==\n{{Information\n|description=Uploaded via API\n|source={{own}}\n|date={{subst:today}}\n}}'
+        token: getApiToken(),
     }
     var api_url = 'https://nccommons.org/w/api.php';
     jQuery.ajax({
