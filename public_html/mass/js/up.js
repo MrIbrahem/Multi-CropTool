@@ -1,15 +1,28 @@
-
+function getApiToken() {
+    return localStorage.getItem('token');
+}
 
 function uploadImage(file, callback) {
+    var formData = {
+        file: file,
+        action: 'upload',
+        comment: 'Uploaded via API',
         token: getApiToken(),
+        filename: file.name,
+        format: 'json',
+        text: '== Summary ==\n{{Information\n|description=Uploaded via API\n|source={{own}}\n|date={{subst:today}}\n}}'
     }
+    //---
     var api_url = 'https://nccommons.org/w/api.php';
+    //---
+    var res = false;
+    //---
     jQuery.ajax({
-        url : api_url,
-        data : formData,
+        url: api_url,
+        data: formData,
         type: 'POST',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             var filename = data.upload.filename;
             if (filename) {
                 callback(null, filename);
@@ -17,23 +30,30 @@ function uploadImage(file, callback) {
                 callback('No filename returned');
             }
         },
-        error: function(data) {
+        error: function (data) {
             callback('Error occurred');
+        }
+    });
+    return res;
+}
+
+function upload_f(file, id) {
+
+    $("#" + id).text('Uploading...');
+
+    uploadImage(file, function (err, filename) {
+        if (err) {
+            $('#' + id).text('false');
+            $("#" + id).css({ "color": "black", "font-weight": "normal" });
+        } else {
+            $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '">' + filename + '</a>');
+            $('#' + id).text('true');
+            $("#" + id).css({ "color": "green", "font-weight": "bold" });
         }
     });
 }
 
-uploadImage(file, function(err, filename) {
-    if (err) {
-        $('#' + id).text('false');
-    } else {
-        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '">' + filename + '</a>');
-        $('#' + id).text('true');
-        $("#"+ id).css({"color": "black", "font-weight": "normal"});
-    }
-});
-
-$(document).ready(function() {
+$(document).ready(function () {
     document.getElementById("uploadForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -48,7 +68,7 @@ $(document).ready(function() {
 
         $("#uploadForm").hide();
         $("#result").show();
-        
+
         for (let i = 0; i < files.length; i++) {
             var id = 'file' + i;
 
@@ -56,7 +76,7 @@ $(document).ready(function() {
             var row = $("<tr></tr>");
             row.append("<td>" + (i + 1) + "</td><td id='name_" + id + "'>" + files[i].name + "</td><td id='" + id + "'></td>");
             $("#result tbody").append(row);
-            
+
             // sleep(1000);
 
         }
