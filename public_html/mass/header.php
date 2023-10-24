@@ -161,6 +161,7 @@ HTML;
 		});
 		//------
 	};
+	user_login();
 </script>
 <main id="body">
 	<!-- <div id="maindiv" class="container-fluid"> -->
