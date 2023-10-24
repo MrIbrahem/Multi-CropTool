@@ -1,6 +1,6 @@
 
 
-function uploadImage(file) {
+function uploadImage(file, callback) {
     var formData = {
         file: file,
         action: 'upload',
@@ -9,13 +9,8 @@ function uploadImage(file) {
         filename: file.name,
         format: 'json',
         text: '== Summary ==\n{{Information\n|description=Uploaded via API\n|source={{own}}\n|date={{subst:today}}\n}}'
-
     }
-    //---
     var api_url = 'https://nccommons.org/w/api.php';
-    //---
-    var res = false;
-    //---
     jQuery.ajax({
         url : api_url,
         data : formData,
@@ -24,13 +19,15 @@ function uploadImage(file) {
         success: function(data) {
             var filename = data.upload.filename;
             if (filename) {
-                res = filename;
-            };
+                callback(null, filename);
+            } else {
+                callback('No filename returned');
+            }
         },
         error: function(data) {
+            callback('Error occurred');
         }
     });
-    return res;    
 }
 
 function upload_f(file, id) {
