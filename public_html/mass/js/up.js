@@ -23,20 +23,15 @@ function uploadImage(file, callback) {
     });
 }
 
-function upload_f(file, id) {
-    $("#"+ id).text('Uploading...');
-    // make cell bold green
-    $("#"+ id).css({"color": "green", "font-weight": "bold"});
-    var ll = uploadImage(file, id);
-    if (ll != false) {
-        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + ll + '">' + ll + '</a>');
+uploadImage(file, function(err, filename) {
+    if (err) {
+        $('#' + id).text('false');
+    } else {
+        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '">' + filename + '</a>');
         $('#' + id).text('true');
         $("#"+ id).css({"color": "black", "font-weight": "normal"});
-
-    } else {
-        $('#' + id).text('false');
     }
-}
+});
 
 $(document).ready(function() {
     document.getElementById("uploadForm").addEventListener("submit", function (e) {
