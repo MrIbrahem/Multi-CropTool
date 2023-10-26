@@ -68,28 +68,29 @@ function check_image_exist(name, callback) {
 function upload_f(file, id) {
 
     var na = file.name;
-    $("#" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+    var idElement = $("#" + id);
+    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
     check_image_exist(file.name, function (exists, notexists, title) {
         if (exists) {
             $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + title + '" target="_blank">' + title + '</a>');
-            $("#" + id).text('File exists in NCC');
-            $("#" + id).css({ "color": "#f53333", "font-weight": "bold" });
+            idElement.text('File exists in NCC');
+            idElement.css({ "color": "#f53333", "font-weight": "bold" });
         } else {
             if (notexists) {
-                $("#" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
+                idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
                 uploadImage(file, function (err, filename) {
                     if (err) {
-                        $('#' + id).text('false');
-                        $("#" + id).css({ "font-weight": "bold", "color": "#f53333" });
+                        idElement.text('false');
+                        idElement.css({ "font-weight": "bold", "color": "#f53333" });
                     } else {
                         $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '" target="_blank">' + filename + '</a>');
-                        $('#' + id).text('true');
-                        $("#" + id).css({ "color": "#45f533", "font-weight": "bold" });
+                        idElement.text('true');
+                        idElement.css({ "color": "#45f533", "font-weight": "bold" });
                     }
                 });
             } else {
-                $("#" + id).text('Error..');
-                $("#" + id).css({ "font-weight": "bold", "color": "#f53333" });
+                idElement.text('Error..');
+                idElement.css({ "font-weight": "bold", "color": "#f53333" });
             }
         }
     });
