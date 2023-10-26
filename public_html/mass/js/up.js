@@ -15,8 +15,6 @@ function uploadImage(file, callback) {
     //---
     var api_url = 'https://nccommons.org/w/api.php';
     //---
-    var res = false;
-    //---
     jQuery.ajax({
         url: api_url,
         data: formData,
@@ -34,23 +32,68 @@ function uploadImage(file, callback) {
             callback('Error occurred');
         }
     });
-    return res;
+}
+
+function check_image_exist(name, callback) {
+    var api_url = 'https://nccroptool.toolforge.org/';
+    //---
+    var params = {
+        site: "nccommons.org",
+        title: name
+    };
+    //---
+    api_url = api_url + "api/file/exists?" + jQuery.param(params);
+    //---
+    // {"site":"nccommons.org","title":"Car.jpg","exists": true}
+    //---
+    jQuery.ajax({
+        url: api_url,
+        dataType: 'json',
+        success: function (data) {
+            var exists = data.exists;
+            var title = data.title;
+            if (exists == true || exists == 'true') {
+                callback(true, false, title);
+            } else {
+                callback(false, true);
+            };
+        },
+        error: function (data) {
+            callback(false, false);
+        }
+    });
+    //---
 }
 
 function upload_f(file, id) {
 
-    $("#" + id).text('Uploading...');
-
-    uploadImage(file, function (err, filename) {
-        if (err) {
-            $('#' + id).text('false');
-            $("#" + id).css({ "color": "black", "font-weight": "normal" });
+    var na = file.name;
+    $("#" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+    check_image_exist(file.name, function (exists, notexists, title) {
+        if (exists) {
+            $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + title + '" target="_blank">' + title + '</a>');
+            $("#" + id).text('File exists in NCC');
+            $("#" + id).css({ "color": "#f53333", "font-weight": "bold" });
         } else {
-            $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '">' + filename + '</a>');
-            $('#' + id).text('true');
-            $("#" + id).css({ "color": "green", "font-weight": "bold" });
+            if (notexists) {
+                $("#" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
+                uploadImage(file, function (err, filename) {
+                    if (err) {
+                        $('#' + id).text('false');
+                        $("#" + id).css({ "font-weight": "bold", "color": "#f53333" });
+                    } else {
+                        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '" target="_blank">' + filename + '</a>');
+                        $('#' + id).text('true');
+                        $("#" + id).css({ "color": "#45f533", "font-weight": "bold" });
+                    }
+                });
+            } else {
+                $("#" + id).text('Error..');
+                $("#" + id).css({ "font-weight": "bold", "color": "#f53333" });
+            }
         }
     });
+
 }
 
 $(document).ready(function () {
@@ -74,7 +117,11 @@ $(document).ready(function () {
 
             // add row to table with id "result"
             var row = $("<tr></tr>");
-            row.append("<td>" + (i + 1) + "</td><td id='name_" + id + "'>" + files[i].name + "</td><td id='" + id + "'></td>");
+
+            row.append("<td>" + (i + 1) + "</td>");
+            row.append("<td><span id='name_" + id + "'>" + files[i].name + "</span></td>");
+            row.append("<td><span id='" + id + "'></span></td>");
+
             $("#result tbody").append(row);
 
             // sleep(1000);

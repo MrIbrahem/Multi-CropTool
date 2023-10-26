@@ -1,15 +1,5 @@
 <!DOCTYPE html>
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-	<meta name="robots" content="noindex">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark" />
-
-    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#eeeeee" media="(prefers-color-scheme: dark)" />
-	<title>Mass NC Commons Upload</title>
 <?php
 
 if ($_REQUEST['test'] != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
@@ -18,41 +8,53 @@ if ($_REQUEST['test'] != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
 	error_reporting(E_ALL);
 };
 
+echo <<<HTML
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<meta name="robots" content="noindex">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark" />
+	<meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)" />
+	<meta name="theme-color" content="#eeeeee" media="(prefers-color-scheme: dark)" />
+	<title>Mass NC Commons Upload</title>
+	<link href='css/styles.css' rel='stylesheet' type='text/css'>
+HTML;
+//---
 $hoste = 'https://tools-static.wmflabs.org/cdnjs';
-if ( $_SERVER['SERVER_NAME'] == 'localhost' )  $hoste = 'https://cdnjs.cloudflare.com';
+if ( $_SERVER['SERVER_NAME'] == 'localhost' ) {
+	$hoste = 'https://cdnjs.cloudflare.com';
+}
+//---
+echo <<<HTML
+	<link href='$hoste/ajax/libs/font-awesome/5.15.3/css/all.min.css' rel='stylesheet' type='text/css'>
+	<link href='$hoste/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+	<!-- <link href='$hoste/ajax/libs/datatables.net-bs5/1.13.5/dataTables.bootstrap5.css' rel='stylesheet' type='text/css'> -->
+	<link rel="stylesheet" href="$hoste/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.css" rel='stylesheet' type='text/css'>
 
-if (isset($_GET['noboot']) == '') {
-    echo <<<HTML
-    <link href='css/styles.css' rel='stylesheet' type='text/css'>
-    <link href='$hoste/ajax/libs/font-awesome/5.15.3/css/all.min.css' rel='stylesheet' type='text/css'>
-    <link href='$hoste/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    <!-- <link href='$hoste/ajax/libs/datatables.net-bs5/1.13.5/dataTables.bootstrap5.css' rel='stylesheet' type='text/css'> -->
-    <link rel="stylesheet" href="$hoste/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.css" rel='stylesheet' type='text/css'>
-
-    <script src='$hoste/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
-    <script src='$hoste/ajax/libs/popper.js/2.11.8/umd/popper.min.js'></script>
-    <script src='$hoste/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js'></script>
-    <script src='$hoste/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'></script>
-    <!-- <script src='$hoste/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js'></script> -->
-    <!-- <script src='$hoste/ajax/libs/datatables.net-bs5/1.13.5/dataTables.bootstrap5.min.js'></script> -->
-    <script src="$hoste/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
-    <script src="js/up.js"></script>
-    <script src="js/sorttable.js"></script>
-    <script type="module" src="js/color-modes.js"></script>
-    HTML;
-};
-
-
-echo "
-</head>";
+	<script src='$hoste/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
+	<script src='$hoste/ajax/libs/popper.js/2.11.8/umd/popper.min.js'></script>
+	<script src='$hoste/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js'></script>
+	<!-- <script src='$hoste/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'></script> -->
+	<!-- <script src='$hoste/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js'></script> -->
+	<!-- <script src='$hoste/ajax/libs/datatables.net-bs5/1.13.5/dataTables.bootstrap5.min.js'></script> -->
+	<script src="$hoste/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
+HTML;
+//---
+echo <<<HTML
+	<script type="module" src="js/color-modes.js"></script>
+	<script src="js/up.js"></script>
+	<script src="js/sorttable.js"></script>
+</head>
+HTML;
 
 $them_li = <<<HTML
-		<button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (light)">
-		<svg class="bi my-1 theme-icon-active"><use href="#sun-fill"></use></svg>
-		<span class="d-lg-none ms-2" id="bd-theme-text"></span>
-		</button>
-		<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-		<li>
+	<button class="btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (light)">
+	<svg class="bi my-1 theme-icon-active"><use href="#sun-fill"></use></svg>
+	<span class="d-lg-none ms-2" id="bd-theme-text"></span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+	<li>
 			<button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="light" aria-pressed="true">
 			<svg class="bi me-2 opacity-50 theme-icon"><use href="#sun-fill"></use></svg>
 			Light
@@ -73,7 +75,7 @@ $them_li = <<<HTML
 			<svg class="bi ms-auto d-none"><use href="#check2"></use></svg>
 			</button>
 		</li>
-		</ul>
+	</ul>
 HTML;
 //---
 echo <<<HTML
@@ -115,6 +117,11 @@ echo <<<HTML
 						</a>
 					</li>
 					<li class="nav-item col-4 col-lg-auto">
+						<a class="nav-link py-2 px-0 px-lg-2" href="../multi" target="">
+							<span class="navtitles">Multi CropTool</span>
+						</a>
+					</li>
+					<li class="nav-item col-4 col-lg-auto">
 						<a class="nav-link py-2 px-0 px-lg-2" href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank">
 							<span class="navtitles">Github</span>
 						</a>
@@ -125,11 +132,10 @@ echo <<<HTML
 					<li class="nav-item col-4 col-lg-auto dropdown">
 						$them_li
 					</li>
-
 					<li class="nav-item col-4 col-lg-auto" id="user_label">
 						<a class="nav-link py-2 px-0 px-lg-2" href="https://nccroptool.toolforge.org/api/auth/login">
 							<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> Login
-						</a><span id="username"></span>
+						</a>
 					</li>
 				</ul>
 			</div>
@@ -154,9 +160,12 @@ HTML;
 			dataType: 'json',
 			success: function(data) {
 				if (data.user) {
-					var text = 'Authorized as <span id="username" style="color:blue;">' + data.user + '</span>';
+					var text = '<div class="navbar-text">Authorized as <a href="https://nccommons.org/wiki/User:' + data.user + '" target="_blank">' + data.user + '</a></div>';
 					$('#user_label').html(text);
 				}
+			},
+			error: function(data) {
+				$('#user_label').append("Authorized error");
 			}
 		});
 		//------

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>CropTool</title>
+    <title>Multi CropTool</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,7 +56,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#">Home1</a></li>
 				<li class=""><a href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank"><span style="font-size:16px">Github</span></a></li>
-				<!-- <li><a href="#">Page 2</a></li> -->
+				<li><a href="../mass">Mass Upload</a></li>
 			</ul>
 			
 			<ul class="nav navbar-nav navbar-right">
