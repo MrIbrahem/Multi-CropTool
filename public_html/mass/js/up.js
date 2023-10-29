@@ -2,6 +2,38 @@ function getApiToken() {
     return localStorage.getItem('token');
 }
 
+function publishnew(file, callback) {
+    var imagename = file.name;
+    //---
+    var api_url = 'https://nccroptool.toolforge.org/';
+    //---
+    var params = {
+        site: "nccommons.org",
+        title: imagename,
+        filename: file.name,
+        file: file,
+        comment: '',
+    };
+    //---
+    // save file to path 'files'
+    // move_uploaded_file($file.tmp_name, $filepath);
+    //---
+    api_url1 = api_url + "api/file/publishnew";
+    //---
+    jQuery.ajax({
+        url: api_url1,
+        data: params,
+        type: 'POST',
+        // dataType: 'json',
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (data) {
+            callback('Error occurred', null);
+        }
+    });
+
+};
 function uploadImage(file, callback) {
     var formData = {
         file: file,
@@ -55,19 +87,17 @@ function check_image_exist(name, callback) {
             if (exists == true || exists == 'true') {
                 callback(true, false, title);
             } else {
-                callback(false, true);
+                callback(false, true, null);
             };
         },
         error: function (data) {
-            callback(false, false);
+            callback(false, false, null);
         }
     });
     //---
 }
 
 function upload_f(file, id) {
-
-    var na = file.name;
     var idElement = $("#" + id);
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
     check_image_exist(file.name, function (exists, notexists, title) {
@@ -78,16 +108,25 @@ function upload_f(file, id) {
         } else {
             if (notexists) {
                 idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
-                uploadImage(file, function (err, filename) {
+                console.log(file)
+                //---
+                publishnew(file, function (err, data) {
                     if (err) {
-                        idElement.text('false');
+                        idElement.text('false' + err);
                         idElement.css({ "font-weight": "bold", "color": "#f53333" });
                     } else {
-                        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + filename + '" target="_blank">' + filename + '</a>');
+                    var result = data.result;
+                    if (result === 'Success') {
+                        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
                         idElement.text('true');
                         idElement.css({ "color": "#45f533", "font-weight": "bold" });
+                    } else {
+                        idElement.text('false' +  data.error);
+                        idElement.css({ "font-weight": "bold", "color": "#f53333" });
+                    }
                     }
                 });
+                //---
             } else {
                 idElement.text('Error..');
                 idElement.css({ "font-weight": "bold", "color": "#f53333" });
