@@ -30,6 +30,36 @@ function upload_api(file, callback) {
     });
 
 }
+function publishnew(file, callback) {
+    //---
+    var api_url = 'https://nccroptool.toolforge.org/';
+    //---
+    var params = {
+        site: "nccommons.org",
+        title: file.name,
+        // file: file,
+        comment: '',
+    };
+    //---
+    // save file to path 'files'
+    // move_uploaded_file($file.tmp_name, $filepath);
+    //---
+    var api_url1 = api_url + "api/file/publishnew?";
+    //---
+    console.log(params);
+    $.post({
+        url: api_url1,
+        data: params,
+        // dataType: 'json',
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (data) {
+            callback('Error occurred', data);
+        }
+    });
+
+}
 
 function check_image_exist(name, callback) {
     var api_url = 'https://nccroptool.toolforge.org/';
