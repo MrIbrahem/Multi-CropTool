@@ -77,26 +77,22 @@ function start_up(file, id) {
     publishnew(file, function (err, data) {
         console.log(data);
         // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
+        //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
         // if err or not data
-        if (err || !data) {
-            //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
-            idElement_err(idElement, 'false: ' + err);
-            if (data.responseJSON.error) {
-                idElement_err(idElement, 'false: ' +  data.responseJSON.error);
-            }
+        var error = err || data.error || data.responseJSON.error;
+        if (error) {
+            idElement_err(idElement, 'false: ' +  error);
+        }
+        if (!data) {
+            idElement_err(idElement, 'false: no data');
         } else {
-            var error = data.error;
-            if (error) {
-                idElement_err(idElement, 'false: ' +  data.error);
+            var result = data.result || data.responseJSON.result;
+            if (result == "Success") {
+                $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+                idElement.text('true');
+                idElement.css({ "color": "#45f533", "font-weight": "bold" });
             } else {
-                var result = data.result;
-                if (result == "Success") {
-                    $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
-                    idElement.text('true');
-                    idElement.css({ "color": "#45f533", "font-weight": "bold" });
-                } else {
-                    idElement_err(idElement, 'false: ' + result);
-                }
+                idElement_err(idElement, 'false: ' + result);
             }
         }
     });
