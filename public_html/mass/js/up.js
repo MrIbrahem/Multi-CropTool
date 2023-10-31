@@ -2,7 +2,9 @@ function getApiToken() {
     var api = $.get({
         url: 'https://nccroptool.toolforge.org/api/auth/getEditToken',
     });
-    return api;
+    // { "readyState": 4, "responseText": "5e27a50cd4f3b7d4567c18ba16a220f2654160ef+\\", "status": 200, "statusText": "success" }
+    console.log(api);
+    return api.responseText;
 }
 
 function upload_api(file, callback) {
@@ -17,6 +19,7 @@ function upload_api(file, callback) {
         token: getApiToken(),
     };
     //---
+    console.log(params);
     $.post({
         url: api_url,
         data: params,
