@@ -16,7 +16,7 @@ function publishnew(file, callback) {
     // save file to path 'files'
     // move_uploaded_file($file.tmp_name, $filepath);
     //---
-    var api_url1 = api_url + "api/file/publishnew";
+    var api_url1 = api_url + "api/file/publishnew?";
     //---
     console.log(params);
     jQuery.ajax({
