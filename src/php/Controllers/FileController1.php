@@ -79,14 +79,16 @@ class FileController1
         $stuffToRemove = array_get($body, 'elems');
         $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
         $newName = array_get($body, 'filename');
-        $page->assertExists();
         // $cropPath = $page->file->getAbsolutePathForPage($pageno, '_cropped');
+        if ($newName == '') {
+            throw new \RuntimeException('No filename provided.');
+        }
         $cropPath = ROOT_PATH + '/public_html/mass/files/' . $newName;
 
-        $wikitext = $page->wikitext;
+        // $wikitext = $page->wikitext;
         $elems = [];
         if ($overwrite) {
-
+            $page->assertExists();
         } else {
             $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
             if (!$ignoreWarnings) {
@@ -94,10 +96,10 @@ class FileController1
             }
 
             // Remove templates before appending {{Extracted from}}
-            $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
+            // $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
 
 
-            $newPage->setWikitext($wikitext);
+            // $newPage->setWikitext($wikitext);
 
             $uploadResponse = $newPage->upload($cropPath, $editComment, $ignoreWarnings);
             $logger->info('Uploaded new version of "' . $page->title . '" as "' . $newPage->title . '".');
