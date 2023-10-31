@@ -86,31 +86,30 @@ class FileController1
             throw new \RuntimeException('No filename provided.');
         }
         $cropPath = ROOT_PATH + '/public_html/mass/files/' . $newName;
-
+        //---
+        // throw new \RuntimeException('File already exists: ' . $this->title);
+        $page->assertNotExists();
+        //---
         // $wikitext = $page->wikitext;
-        $elems = [];
-        if ($overwrite) {
-            $page->assertExists();
-        } else {
-            $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
-            if (!$ignoreWarnings) {
-                $newPage->assertNotExists();
-            }
+        // $elems = [];
+        //---
+        $uploadResponse = $page->upload($cropPath, $editComment, false);
+        //---
+        // $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
 
-            // Remove templates before appending {{Extracted from}}
-            // $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
+        // Remove templates before appending {{Extracted from}}
+        // $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
 
 
-            // $newPage->setWikitext($wikitext);
+        // $newPage->setWikitext($wikitext);
 
-            $uploadResponse = $newPage->upload($cropPath, $editComment, $ignoreWarnings);
-            $logger->info('Uploaded new version of "' . $page->title . '" as "' . $newPage->title . '".');
+        // $uploadResponse = $newPage->upload($cropPath, $editComment, $ignoreWarnings);
+        // $logger->info('Uploaded new version of "' . $page->title . '" as "' . $newPage->title . '".');
 
-            $editSummary = new EditSummary();
+        // $editSummary = new EditSummary();
 
-        }
 
-        $uploadResponse->elems = $elems;
+        // $uploadResponse->elems = $elems;
 
         return $response->withJson($uploadResponse);
     }
