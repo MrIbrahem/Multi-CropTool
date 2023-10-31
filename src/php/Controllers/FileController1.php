@@ -78,7 +78,9 @@ class FileController1
         $editComment = array_get($body, 'comment');
         $stuffToRemove = array_get($body, 'elems');
         $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
-        $newName = array_get($body, 'filename');
+        //---
+        // $newName = array_get($body, 'title');
+        $newName = $body['title'] ?? '';
         // $cropPath = $page->file->getAbsolutePathForPage($pageno, '_cropped');
         if ($newName == '') {
             throw new \RuntimeException('No filename provided.');

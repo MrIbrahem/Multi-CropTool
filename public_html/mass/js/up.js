@@ -8,7 +8,7 @@ function publishnew(file, callback) {
     //---
     var params = {
         site: "nccommons.org",
-        filename: file.name,
+        title: file.name,
         // file: file,
         comment: '',
     };
@@ -24,6 +24,7 @@ function publishnew(file, callback) {
         type: 'POST',
         // dataType: 'json',
         success: function (data) {
+            console.log(params);
             callback(null, data);
         },
         error: function (data) {
