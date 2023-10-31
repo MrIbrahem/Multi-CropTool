@@ -18,7 +18,7 @@ function upload_api(file, callback) {
     };
     //---
     $.post({
-        url: api_urls,
+        url: api_url,
         data: params,
         // dataType: 'json',
         success: function (data) {
