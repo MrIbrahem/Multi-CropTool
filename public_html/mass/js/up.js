@@ -19,10 +19,9 @@ function publishnew(file, callback) {
     var api_url1 = api_url + "api/file/publishnew?";
     //---
     console.log(params);
-    $.ajax({
+    $.post({
         url: api_url1,
         data: params,
-        method: 'POST',
         // dataType: 'json',
         success: function (data) {
             callback(null, data);
@@ -46,7 +45,7 @@ function check_image_exist(name, callback) {
     //---
     // {"site":"nccommons.org","title":"Car.jpg","exists": true}
     //---
-    $.ajax({
+    $.get({
         url: api_url,
         dataType: 'json',
         success: function (data) {
