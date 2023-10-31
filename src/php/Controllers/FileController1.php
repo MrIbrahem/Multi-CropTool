@@ -31,7 +31,7 @@ class FileController1
      * @return array|null
      */
     
-    public function publishnewx(Response $response, Request $request, WikiPage $page, FactoryInterface $factory, LoggerInterface $logger)
+    public function publishnewxasdasd(Response $response, Request $request, WikiPage $page, FactoryInterface $factory, LoggerInterface $logger)
     {
         $body = $request->getParsedBody();
         $pageno = 0;
@@ -92,8 +92,9 @@ class FileController1
             throw new \RuntimeException('File does not exist: ' . $cropPath);
         }
         //---
-        // throw new \RuntimeException('File already exists: ' . $this->title);
-        $page->assertNotExists();
+        if ($page->exists) {
+            throw new \RuntimeException('File already exists: ' . $page->title);
+        }
         //---
         // $wikitext = $page->wikitext;
         // $elems = [];
