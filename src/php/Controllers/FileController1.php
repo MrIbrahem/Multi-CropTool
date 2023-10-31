@@ -79,7 +79,6 @@ class FileController1
         $stuffToRemove = array_get($body, 'elems');
         $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
         $newName = array_get($body, 'filename');
-
         $page->assertExists();
         // $cropPath = $page->file->getAbsolutePathForPage($pageno, '_cropped');
         $cropPath = ROOT_PATH + '/public_html/mass/files/' . $newName;
@@ -87,7 +86,7 @@ class FileController1
         $wikitext = $page->wikitext;
         $elems = [];
         if ($overwrite) {
-            
+
         } else {
             $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
             if (!$ignoreWarnings) {
