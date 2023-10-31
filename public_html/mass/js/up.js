@@ -79,10 +79,18 @@ function start_up(file, id) {
         // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
         //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
         // if err or not data
-        var error = err || data.error || data.responseJSON.error;
+        var error = err;
+        //---
+        if (!error && data.error && data.error != undefined) {
+            error = data.error;
+        }
+        if (!error && data.responseJSON.error && data.responseJSON.error != undefined) {
+            error = data.responseJSON.errors;
+        }
         if (error) {
             idElement_err(idElement, 'false: ' +  error);
         }
+        //---
         if (!data) {
             idElement_err(idElement, 'false: no data');
         } else {
