@@ -74,9 +74,6 @@ function start_up(file, id) {
     //---
     upload_api(file, function (err, data) {
         console.log(data);
-        // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
-        //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
-        // if err or not data
         var error = err;
         //---
         if (!error && data.error && data.error != undefined) {
