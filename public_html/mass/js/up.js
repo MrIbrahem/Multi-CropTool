@@ -81,8 +81,8 @@ function start_up(file, id) {
         if (err || !data) {
             //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
             idElement_err(idElement, 'false: ' + err);
-            if (data.error) {
-                idElement_err(idElement, 'false: ' +  data.error);
+            if (data.responseJSON.error) {
+                idElement_err(idElement, 'false: ' +  data.responseJSON.error);
             }
         } else {
             var error = data.error;
