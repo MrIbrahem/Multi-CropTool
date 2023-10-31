@@ -18,13 +18,13 @@ function publishnew(file, callback) {
     //---
     var api_url1 = api_url + "api/file/publishnew";
     //---
+    console.log(params);
     jQuery.ajax({
         url: api_url1,
         data: params,
         type: 'POST',
         // dataType: 'json',
         success: function (data) {
-            console.log(params);
             callback(null, data);
         },
         error: function (data) {
