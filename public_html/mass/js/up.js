@@ -64,9 +64,50 @@ function check_image_exist(name, callback) {
     //---
 }
 
+<<<<<<< Updated upstream
 function upload_f(file, id) {
     var idElement = $("#" + id);
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+=======
+function idElement_err(idElement, err) {
+    idElement.text(err);
+    idElement.css({ "font-weight": "bold", "color": "#f53333" });
+}
+
+function start_up(file, id) {
+    var idElement = $("#" + id);
+    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
+    // console.log(file)
+    //---
+    publishnew(file, function (err, data) {
+        console.log(data);
+        // if err or not data
+        if (err || !data) {
+            //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
+            idElement_err(idElement, 'false' + err);
+        } else {
+            var error = data.error;
+            if (error) {
+                idElement_err(idElement, 'false' +  data.error);
+            } else {
+                var result = data.result;
+                if (result == "Success") {
+                    $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+                    idElement.text('true');
+                    idElement.css({ "color": "#45f533", "font-weight": "bold" });
+                } else {
+                    idElement_err(idElement, 'false' + result);
+                }
+            }
+        }
+    });
+    
+}
+function upload_f(file, id) {
+    var idElement = $("#" + id);
+    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+    //---
+>>>>>>> Stashed changes
     check_image_exist(file.name, function (exists, notexists, title) {
         if (exists) {
             $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + title + '" target="_blank">' + title + '</a>');
@@ -74,6 +115,7 @@ function upload_f(file, id) {
             idElement.css({ "color": "#f53333", "font-weight": "bold" });
         } else {
             if (notexists) {
+<<<<<<< Updated upstream
                 idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
                 // console.log(file)
                 //---
@@ -101,6 +143,9 @@ function upload_f(file, id) {
                         }
                     }
                 });
+=======
+                start_up(file, id);
+>>>>>>> Stashed changes
                 //---
             } else {
                 idElement.text('Error..');
@@ -108,7 +153,10 @@ function upload_f(file, id) {
             }
         }
     });
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }
 
 $(document).ready(function () {
