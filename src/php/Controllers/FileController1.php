@@ -85,7 +85,9 @@ class FileController1
         if ($newName == '') {
             throw new \RuntimeException('No filename provided.');
         }
+        //---
         $cropPath = ROOT_PATH + '/public_html/mass/files/' . $newName;
+        //---
         if (!file_exists($cropPath)) {
             throw new \RuntimeException('File does not exist: ' . $cropPath);
         }
