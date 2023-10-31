@@ -1,7 +1,35 @@
 function getApiToken() {
-    return localStorage.getItem('token');
+    var api = $.get({
+        url: 'https://nccroptool.toolforge.org/api/auth/getEditToken',
+    });
+    return api;
 }
 
+function upload_api(file, callback) {
+    //---
+    var api_url = 'https://nccommons.org/wiki/api.php';
+    //---
+    var params = {
+        action: "upload",
+        format: "json",
+        filename: file.name,
+        file: file,
+        token: getApiToken(),
+    };
+    //---
+    $.post({
+        url: api_urls,
+        data: params,
+        // dataType: 'json',
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (data) {
+            callback('Error occurred', data);
+        }
+    });
+
+}
 function publishnew(file, callback) {
     //---
     var api_url = 'https://nccroptool.toolforge.org/';
@@ -74,7 +102,7 @@ function start_up(file, id) {
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
     // console.log(file)
     //---
-    publishnew(file, function (err, data) {
+    upload_api(file, function (err, data) {
         console.log(data);
         // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
         //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
