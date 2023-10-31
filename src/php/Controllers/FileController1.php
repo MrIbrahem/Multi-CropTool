@@ -80,7 +80,7 @@ class FileController1
         $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
         //---
         // $newName = array_get($body, 'title');
-        $newName = $body['title'] ?? '';
+        $newName = $body['title'] ?? $page->title;
         // $cropPath = $page->file->getAbsolutePathForPage($pageno, '_cropped');
         if ($newName == '') {
             throw new \RuntimeException('No filename provided.');
