@@ -73,11 +73,11 @@ class FileController1
 
         // @TODO: DRY
         $body = $request->getParsedBody();
-        $pageno = 0;
-        $overwrite = array_get($body, 'overwrite') == 'overwrite';
+        // $pageno = 0;
+        // $overwrite = array_get($body, 'overwrite') == 'overwrite';
         $editComment = array_get($body, 'comment');
-        $stuffToRemove = array_get($body, 'elems');
-        $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
+        // $stuffToRemove = array_get($body, 'elems');
+        // $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
         //---
         // $newName = array_get($body, 'title');
         $newName = $body['title'] ?? $page->title;
