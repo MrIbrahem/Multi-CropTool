@@ -80,14 +80,14 @@ function start_up(file, id) {
         // if err or not data
         if (err || !data) {
             //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
-            idElement_err(idElement, 'false ' + err);
+            idElement_err(idElement, 'false: ' + err);
             if (data.error) {
-                idElement_err(idElement, 'false ' +  data.error);
+                idElement_err(idElement, 'false: ' +  data.error);
             }
         } else {
             var error = data.error;
             if (error) {
-                idElement_err(idElement, 'false ' +  data.error);
+                idElement_err(idElement, 'false: ' +  data.error);
             } else {
                 var result = data.result;
                 if (result == "Success") {
@@ -95,7 +95,7 @@ function start_up(file, id) {
                     idElement.text('true');
                     idElement.css({ "color": "#45f533", "font-weight": "bold" });
                 } else {
-                    idElement_err(idElement, 'false ' + result);
+                    idElement_err(idElement, 'false: ' + result);
                 }
             }
         }
