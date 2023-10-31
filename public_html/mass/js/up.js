@@ -7,7 +7,7 @@ function getApiToken() {
 
 function upload_api(file, callback) {
     //---
-    var api_url = 'https://nccommons.org/wiki/api.php';
+    var api_url = 'https://nccommons.org/w/api.php';
     //---
     var params = {
         action: "upload",
