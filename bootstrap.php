@@ -105,7 +105,8 @@ $app->group('/api/file', function () use ($authMiddleware) {
     $this->get('/autodetect', [FileController::class, 'autodetect']);
     $this->get('/crop', [FileController::class, 'crop']);
     $this->post('/publish', [FileController::class, 'publish']);
-    $this->post('/publishnew', [FileController1::class, 'publishnew']);
+    $this->post('/publishnew', [FileController1::class, 'publishnew']); 
+    $this->get('/publishnew1', [FileController1::class, 'publishnew']); 
 
 })->add($authMiddleware)->add($pageMiddleware);
 

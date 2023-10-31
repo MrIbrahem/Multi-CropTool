@@ -3,22 +3,20 @@ function getApiToken() {
 }
 
 function publishnew(file, callback) {
-    var imagename = file.name;
     //---
     var api_url = 'https://nccroptool.toolforge.org/';
     //---
     var params = {
         site: "nccommons.org",
-        title: imagename,
         filename: file.name,
-        file: file,
+        // file: file,
         comment: '',
     };
     //---
     // save file to path 'files'
     // move_uploaded_file($file.tmp_name, $filepath);
     //---
-    api_url1 = api_url + "api/file/publishnew";
+    var api_url1 = api_url + "api/file/publishnew";
     //---
     jQuery.ajax({
         url: api_url1,
@@ -29,41 +27,10 @@ function publishnew(file, callback) {
             callback(null, data);
         },
         error: function (data) {
-            callback('Error occurred', null);
+            callback('Error occurred', data);
         }
     });
 
-};
-function uploadImage(file, callback) {
-    var formData = {
-        file: file,
-        action: 'upload',
-        comment: 'Uploaded via API',
-        token: getApiToken(),
-        filename: file.name,
-        format: 'json',
-        text: '== Summary ==\n{{Information\n|description=Uploaded via API\n|source={{own}}\n|date={{subst:today}}\n}}'
-    }
-    //---
-    var api_url = 'https://nccommons.org/w/api.php';
-    //---
-    jQuery.ajax({
-        url: api_url,
-        data: formData,
-        type: 'POST',
-        dataType: 'json',
-        success: function (data) {
-            var filename = data.upload.filename;
-            if (filename) {
-                callback(null, filename);
-            } else {
-                callback('No filename returned');
-            }
-        },
-        error: function (data) {
-            callback('Error occurred');
-        }
-    });
 }
 
 function check_image_exist(name, callback) {
@@ -108,22 +75,30 @@ function upload_f(file, id) {
         } else {
             if (notexists) {
                 idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
-                console.log(file)
+                // console.log(file)
                 //---
                 publishnew(file, function (err, data) {
+                    console.log(data);
                     if (err) {
+                        //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
                         idElement.text('false' + err);
                         idElement.css({ "font-weight": "bold", "color": "#f53333" });
                     } else {
-                    var result = data.result;
-                    if (result === 'Success') {
-                        $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
-                        idElement.text('true');
-                        idElement.css({ "color": "#45f533", "font-weight": "bold" });
-                    } else {
-                        idElement.text('false' +  data.error);
-                        idElement.css({ "font-weight": "bold", "color": "#f53333" });
-                    }
+                        var error = data.error;
+                        if (error) {
+                            idElement.text('false' +  data.error);
+                            idElement.css({ "font-weight": "bold", "color": "#f53333" });
+                        } else {
+                            var result = data.result;
+                            if (result == "Success") {
+                                $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+                                idElement.text('true');
+                                idElement.css({ "color": "#45f533", "font-weight": "bold" });
+                            } else {
+                                idElement.text('false' + result);
+                                idElement.css({ "font-weight": "bold", "color": "#f53333" });
+                            }
+                        }
                     }
                 });
                 //---
