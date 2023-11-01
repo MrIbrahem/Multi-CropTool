@@ -4,6 +4,7 @@ use CropTool\Controllers\AuthController;
 use CropTool\Controllers\FileController;
 use CropTool\Controllers\FileController1;
 use Slim\Http\Request;
+use CropTool\ApiService;
 use Slim\Http\Response;
 
 if (!defined('ROOT_PATH')) {
@@ -89,6 +90,7 @@ $app->group('/api/auth', function () use ($authMiddleware) {
 
     $this->get('/login', [AuthController::class, 'login']);
     $this->get('/callback', [AuthController::class, 'authCallback']);
+    $this->get('/getEditToken', [ApiService::class, 'getEditToken']);
     $this->get('/logout', [AuthController::class, 'logout']);
     $this->get('/user', [AuthController::class, 'getUser'])->add($authMiddleware);
 

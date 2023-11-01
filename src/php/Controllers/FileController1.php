@@ -31,7 +31,7 @@ class FileController1
      * @return array|null
      */
     
-    public function publishnewx(Response $response, Request $request, WikiPage $page, FactoryInterface $factory, LoggerInterface $logger)
+    public function publishnewxasdasd(Response $response, Request $request, WikiPage $page, FactoryInterface $factory, LoggerInterface $logger)
     {
         $body = $request->getParsedBody();
         $pageno = 0;
@@ -73,41 +73,49 @@ class FileController1
 
         // @TODO: DRY
         $body = $request->getParsedBody();
-        $pageno = 0;
-        $overwrite = array_get($body, 'overwrite') == 'overwrite';
+        // $pageno = 0;
+        // $overwrite = array_get($body, 'overwrite') == 'overwrite';
         $editComment = array_get($body, 'comment');
-        $stuffToRemove = array_get($body, 'elems');
-        $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
-        $newName = array_get($body, 'filename');
-
-        $page->assertExists();
+        // $stuffToRemove = array_get($body, 'elems');
+        // $ignoreWarnings = boolval(array_get($body, 'ignorewarnings', false));
+        //---
+        // $newName = array_get($body, 'title');
+        $newName = $body['title'] ?? $page->title;
         // $cropPath = $page->file->getAbsolutePathForPage($pageno, '_cropped');
-        $cropPath = ROOT_PATH + '/public_html/mass/files/' . $newName;
-
-        $wikitext = $page->wikitext;
-        $elems = [];
-        if ($overwrite) {
-            
-        } else {
-            $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
-            if (!$ignoreWarnings) {
-                $newPage->assertNotExists();
-            }
-
-            // Remove templates before appending {{Extracted from}}
-            $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
-
-
-            $newPage->setWikitext($wikitext);
-
-            $uploadResponse = $newPage->upload($cropPath, $editComment, $ignoreWarnings);
-            $logger->info('Uploaded new version of "' . $page->title . '" as "' . $newPage->title . '".');
-
-            $editSummary = new EditSummary();
-
+        if ($newName == '') {
+            throw new \RuntimeException('No filename provided.');
         }
+        //---
+        $cropPath = ROOT_PATH . '/public_html/mass/files/' . $newName;
+        //---
+        if (!file_exists($cropPath)) {
+            throw new \RuntimeException('File does not exist: ' . $cropPath);
+        }
+        //---
+        if ($page->exists) {
+            throw new \RuntimeException('File already exists: ' . $page->title);
+        }
+        //---
+        // $wikitext = $page->wikitext;
+        // $elems = [];
+        //---
+        $uploadResponse = $page->upload($cropPath, $editComment, false);
+        //---
+        // $newPage = $factory->make(WikiPage::class, ['title' => $newName]);
 
-        $uploadResponse->elems = $elems;
+        // Remove templates before appending {{Extracted from}}
+        // $wikitext = $wikitext->withoutTemplatesNotToBeCopied();
+
+
+        // $newPage->setWikitext($wikitext);
+
+        // $uploadResponse = $newPage->upload($cropPath, $editComment, $ignoreWarnings);
+        // $logger->info('Uploaded new version of "' . $page->title . '" as "' . $newPage->title . '".');
+
+        // $editSummary = new EditSummary();
+
+
+        // $uploadResponse->elems = $elems;
 
         return $response->withJson($uploadResponse);
     }

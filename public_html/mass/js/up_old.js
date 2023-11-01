@@ -2,14 +2,12 @@ function getApiToken() {
     var api = $.get({
         url: 'https://nccroptool.toolforge.org/api/auth/getEditToken',
     });
-    // { "readyState": 4, "responseText": "5e27a50cd4f3b7d4567c18ba16a220f2654160ef+\\", "status": 200, "statusText": "success" }
-    console.log(api);
-    return api.responseText;
+    return api;
 }
 
 function upload_api(file, callback) {
     //---
-    var api_url = 'https://nccommons.org/w/api.php';
+    var api_url = 'https://nccommons.org/wiki/api.php';
     //---
     var params = {
         action: "upload",
@@ -19,9 +17,38 @@ function upload_api(file, callback) {
         token: getApiToken(),
     };
     //---
+    $.post({
+        url: api_urls,
+        data: params,
+        // dataType: 'json',
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (data) {
+            callback('Error occurred', data);
+        }
+    });
+
+}
+function publishnew(file, callback) {
+    //---
+    var api_url = 'https://nccroptool.toolforge.org/';
+    //---
+    var params = {
+        site: "nccommons.org",
+        title: file.name,
+        // file: file,
+        comment: '',
+    };
+    //---
+    // save file to path 'files'
+    // move_uploaded_file($file.tmp_name, $filepath);
+    //---
+    var api_url1 = api_url + "api/file/publishnew?";
+    //---
     console.log(params);
     $.post({
-        url: api_url,
+        url: api_url1,
         data: params,
         // dataType: 'json',
         success: function (data) {
@@ -77,6 +104,9 @@ function start_up(file, id) {
     //---
     upload_api(file, function (err, data) {
         console.log(data);
+        // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
+        //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
+        // if err or not data
         var error = err;
         //---
         if (!error && data.error && data.error != undefined) {
