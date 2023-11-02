@@ -5,7 +5,7 @@ echo <<<HTML
     <div class='card-header'>
     </div>
     <div class='card-body'>
-        <form id="uploadForm" enctype="multipart/form-data" action="index.php?action=upload" method="post">
+        <form id="uploadForm" enctype="multipart/form-data" action="index2.php?action=upload" method="post">
             <div class="mb-3">
                 <label for="imageUpload">Select Images</label>
                 <input type="file" class="form-control" id="imageUpload" name="imageUpload[]" multiple>
