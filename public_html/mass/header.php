@@ -138,9 +138,20 @@ echo <<<HTML
 					<li class="nav-item col-4 col-lg-auto dropdown">
 						$them_li
 					</li>
-					<li class="nav-item col-4 col-lg-auto" id="user_label">
-						<a class="nav-link py-2 px-0 px-lg-2" href="https://nccroptool.toolforge.org/api/auth/login">
-							<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> Login
+					
+					<li class="nav-item col-4 col-lg-auto" id="">
+						<a id="username_li" href="leaderboard.php?user=$username" class="nav-link py-2 px-0 px-lg-2" style="display:none">
+							<i class="fas fa-user fa-sm fa-fw mr-2"></i> <span class="navtitles" id="user_name"></span>
+						</a>
+					</li>
+					<li class="nav-item col-4 col-lg-auto" id="loginli">
+						<a role="button" class="nav-link py-2 px-0 px-lg-2" onclick="login()">
+							<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
+						</a>
+					</li>
+					<li class="nav-item col-4 col-lg-auto">
+						<a id="logout_btn" class="nav-link py-2 px-0 px-lg-2" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" style="display:none">
+							<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> <span class="d-lg-none navtitles">Logout</span>
 						</a>
 					</li>
 				</ul>
