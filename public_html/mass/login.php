@@ -417,7 +417,7 @@ function doIdentify($gg) {
     //---
     setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
     //---
-    if ($username == 'Mr. Ibrahem') {
+    if ($username == 'Mr. Ibrahem' && $_REQUEST['test'] != '1') {
         echo var_export($payload, 1);
     }
     //---
