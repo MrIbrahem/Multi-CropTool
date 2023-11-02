@@ -483,12 +483,12 @@ function get_csrftoken() {
 		'type' => '*',
 	), $ch );
     // "createaccounttoken", "csrftoken", "logintoken", "patroltoken", "rollbacktoken", "userrightstoken", "watchtoken"
-    if ( !isset( $res->tokens->csrftoken ) ) {
+    if ( !isset( $res->query->tokens->csrftoken ) ) {
 		header( "HTTP/1.1 $errorCode Internal Server Error" );
 		echo 'Bad API response: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
 		exit(0);
 	}
-    $token = $res->tokens->csrftoken;
+    $token = $res->query->tokens->csrftoken;
 
     // add the token to $data
     return $token;
