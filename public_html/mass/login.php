@@ -207,7 +207,7 @@ function doAuthorizationRedirect() {
     //---
     // echo $state;
     //---
-    $oauth_call = 'https://nccroptool.toolforge.org/madd/index.php' . '?' . $state ;
+    $oauth_call = 'https://nccroptool.toolforge.org/mass/index.php' . '?' . $state ;
     //---
     // $gTokenSecret = '';
     $url_ar = array(
