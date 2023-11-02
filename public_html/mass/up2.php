@@ -46,20 +46,20 @@ function check_exists($filename) {
     // { "batchcomplete": true, "query": { "normalized": [ { "fromencoded": false, "from": "File:IMG_20220107_153333.jpg", "to": "File:IMG 20220107 153333.jpg" } ], "pages": [ { "pageid": 1190645, "ns": 6, "title": "File:IMG 20220107 153333.jpg" } ] } }
     $pages = $res['query']['pages'][0];
     //---
-    $result = ["exists" => false];
-    //---
-    if ($pages && !isset($pages['missing'])) {
-        $result['exists'] = true;
+    if ($pages && isset($pages['missing'])) {
+        return false;
     };
     //---
-    return $result;
+    // echo json_encode($res);
+    //---
+    return true;
 }
 
 function upload_nccommons_api($file) {
-    $url = $post['url'] ?? '';
-    $file = $_FILES['file'];
+    $url  = ''; //$post['url'] ?? '';
+    // $file = $_FILES['file'];
     //---
-    $filename = $post['filename'] ?? '';
+    $filename = $file['name'] ?? '';
     //---
     $formData = array(
         'action' => 'upload',
@@ -106,8 +106,10 @@ if ($files != []) {
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>file</th>
-                    <th>result</th>
+                    <th>File</th>
+                    <th>Exists?</th>
+                    <th>Result</th>
+                    <th>Note</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,33 +131,42 @@ if ($files != []) {
         //---
         $error = '';
         $td_name   = "<span id='name_$n'>$name</span>";
-        $td_result = "";
         //---
         $ex_style = "";
         $exists = check_exists($name);
         //---
+        $td_exists = "false";
+        //---
+        $td_result = "";
+        $td_note   = "";
+        //---
         if ($exists) {
+            $td_exists = 'true';
             $td_name = $td_link;
-            $td_result = 'File exists in NCC';
+            $td_result = 'false';
+            $td_note = 'File exists in NCC';
             // color": "#f53333", "font-weight": "bold
             $ex_style = "color: #f53333; font-weight: bold";
         } else {
             $upload = upload_nccommons_api($file);
             // echo json_encode($upload);
             if ($upload['error']) {
-                $td_result = 'false: ' . $upload['error']['code'] . ': ' . $upload['error']['info'];
+                $td_result = 'false';
+                $td_note   = $upload['error']['code'] . ': ' . $upload['error']['info'];
                 // idElement.css({ "font-weight": "bold", "color": "#f53333" });
                 $ex_style = "color: #f53333; font-weight: bold";
             } else {
                 $result = $upload['result'];
                 if ($result == 'Success') {
-                    $td_result = $result;
-                    $td_name = $td_link;
+                    $td_result = 'true';
+                    $td_note   = $result;
+                    $td_name   = $td_link;
                     // idElement.css({ "color": "#45f533", "font-weight": "bold" });
                     $ex_style = "color: #45f533; font-weight: bold";
 
                 } else {
-                    $td_result = 'false, result: ' . $result;
+                    $td_result = 'false';
+                    $td_note   = 'result: ' . $result;
                 }
             }
         }
@@ -164,7 +175,9 @@ if ($files != []) {
                 <tr>
                     <td>$n</td>
                     <td>$td_name</td>
+                    <td>$td_exists</td>
                     <td style="$ex_style">$td_result</td>
+                    <td>$td_note</td>
                 </tr>
         HTML;
         //---
