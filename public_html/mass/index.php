@@ -10,15 +10,13 @@ if ($test != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
     define('TEST', false);
 }
 //---
-// get the root path from __file__ , split before public_html
-// split the file path on the public_html directory
-$pathParts = explode('public_html', __file__);
-
-// the root path is the first part of the split file path
-$ROOT_PATH = $pathParts[0];
-
-//---
 if (!defined('ROOT_PATH')) {
+    // get the root path from __file__ , split before public_html
+    // split the file path on the public_html directory
+    $pathParts = explode('public_html', __file__);
+
+    // the root path is the first part of the split file path
+    $ROOT_PATH = $pathParts[0];
     define('ROOT_PATH', $ROOT_PATH);
 }
 //---

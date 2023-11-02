@@ -5,6 +5,16 @@ if (isset($_REQUEST['test'])) {
     error_reporting(E_ALL);
 };
 //---
+if (!defined('ROOT_PATH')) {
+    // get the root path from __file__ , split before public_html
+    // split the file path on the public_html directory
+    $pathParts = explode('public_html', __file__);
+
+    // the root path is the first part of the split file path
+    $ROOT_PATH = $pathParts[0];
+    define('ROOT_PATH', $ROOT_PATH);
+}
+//---
 //include_once 'actions/nccommons_sql.php';
 //---
 $mwOAuthAuthorizeUrl = 'https://nccommons.org/wiki/Special:OAuth/authorize';
@@ -74,52 +84,6 @@ if ( isset($_REQUEST['oauth_verifier']) ) {
     if ($gTokenSecret != '' and $gTokenKey != '') doIdentify('');
     //---
 };
-// Take any requested action
-switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
-    case 'login':
-        if ($_SERVER['SERVER_NAME'] == 'localhost') { 
-            $fa = $_GET['test1'] ?? '';
-            if ($fa == '') { 
-                $username = 'Mr. Ibrahem';
-                setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
-                header("Location: index.php");
-            };
-        };
-        doAuthorizationRedirect();
-        return;
-
-    case 'logout':
-        // session_unset();
-        //---
-        session_start();
-        session_destroy();
-        //---
-        // unset cookies
-        setcookie('username', '', time()-$twoYears,'/',$server_name,true,true);
-        setcookie('OAuthHelloWorld', '', time()-$twoYears,'/',$server_name,true,true);
-        if (isset($_SERVER['HTTP_COOKIE'])) {
-            $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-            foreach($cookies as $cookie) {
-                $parts = explode('=', $cookie);
-                $name = trim($parts[0]);
-                setcookie($name, '', time()-$twoYears,'/',$server_name,true,true);
-            };
-        };
-        // session_start();
-        
-        unset($_COOKIE['username']);
-        unset($_SESSION["tokenKey"]);
-        unset($_SESSION["tokenSecret"]);
-        unset($username);
-        header("Location: index.php");
-        exit;
-        break;
-
-    case 'identify':
-        $ma = doIdentify('n');
-        break;
-
-}
 //---
 function sign_request( $method, $url, $params = array() ) {
     global $gConsumerSecret, $gTokenSecret;
@@ -212,16 +176,16 @@ function doAuthorizationRedirect() {
     }
     curl_close( $ch );
     //---
-    $token = json_decode( $data );
+    $token = json_decode( $data, true );
     //---
-    if ( is_object( $token ) && isset( $token->error ) ) {
-        echo 'Error when retrieving token: ' . htmlspecialchars( $token->error ) . '<br>' . htmlspecialchars( $token->message );
+    if ( is_object( $token ) && isset( $token["error"] ) ) {
+        echo 'Error when retrieving token: ' . htmlspecialchars( $token["error"] ) . '<br>' . htmlspecialchars( $token["message"] );
         if (isset($_REQUEST['test'])) {
             header( "HTTP/1.1 $errorCode Internal Server Error" );
             exit(0);
         };
     }
-    if ( !is_object( $token ) || !isset( $token->key ) || !isset( $token->secret ) ) {
+    if ( !is_object( $token ) || !isset( $token["key"] ) || !isset( $token["secret"] ) ) {
         echo 'Invalid response from token request';
         if (isset($_REQUEST['test'])) {
             header( "HTTP/1.1 $errorCode Internal Server Error" );
@@ -233,15 +197,15 @@ function doAuthorizationRedirect() {
     //---
     // Now we have the request token, we need to save it for later.
     session_start();
-    $_SESSION['tokenKey'] = $token->key;
-    $_SESSION['tokenSecret'] = $token->secret;
+    $_SESSION['tokenKey'] = $token["key"];
+    $_SESSION['tokenSecret'] = $token["secret"];
     session_write_close();
 
     // Then we send the user off to authorize
     $url = $mwOAuthAuthorizeUrl;
     $url .= strpos( $url, '?' ) ? '&' : '?';
     $url .= http_build_query( array(
-        'oauth_token' => $token->key,
+        'oauth_token' => $token["key"],
         'oauth_consumer_key' => $gConsumerKey,
     ) );
     //---
@@ -291,13 +255,13 @@ function fetchAccessToken() {
         exit(0);
     }
     curl_close( $ch );
-    $token = json_decode( $data );
-    if ( is_object( $token ) && isset( $token->error ) ) {
+    $token = json_decode( $data, true );
+    if ( is_object( $token ) && isset( $token["error"] ) ) {
         header( "HTTP/1.1 $errorCode Internal Server Error" );
-        //echo 'Error retrieving token: ' . htmlspecialchars( $token->error ) . '<br>' . htmlspecialchars( $token->message );
+        //echo 'Error retrieving token: ' . htmlspecialchars( $token["error"] ) . '<br>' . htmlspecialchars( $token["message"] );
         exit(0);
     }
-    if ( !is_object( $token ) || !isset( $token->key ) || !isset( $token->secret ) ) {
+    if ( !is_object( $token ) || !isset( $token["key"] ) || !isset( $token["secret"] ) ) {
         header( "HTTP/1.1 $errorCode Internal Server Error" );
         echo 'Invalid response from token request';
         exit(0);
@@ -305,13 +269,13 @@ function fetchAccessToken() {
 
     // Save the access token
     session_start();
-    $gTokenKey = $token->key;
-    $gTokenSecret = $token->secret;
+    $gTokenKey = $token["key"];
+    $gTokenSecret = $token["secret"];
     
-    $_SESSION['tokenKey'] = $token->key;
+    $_SESSION['tokenKey'] = $token["key"];
     // setcookie('tokenKey',$gTokenKey,time()+$twoYears,'/',$server_name,true,true);
     
-    $_SESSION['tokenSecret'] = $token->secret;
+    $_SESSION['tokenSecret'] = $token["secret"];
     // setcookie('tokenSecret',$gTokenSecret,time()+$twoYears,'/',$server_name,true,true);
     
     session_write_close();
@@ -360,9 +324,9 @@ function doIdentify($gg) {
         echo '# Curl error: ' . htmlspecialchars( curl_error( $ch ) );
         exit(0);
     }
-    $err = json_decode( $data );
+    $err = json_decode( $data, true );
     //---
-    if ( is_object( $err ) && isset( $err->error ) && $err->error === 'mwoauthdatastore-access-token-not-found' ) {
+    if ( is_object( $err ) && isset( $err["error"] ) && $err["error"] === 'mwoauthdatastore-access-token-not-found' ) {
         // We're not authorized!
         //echo "You haven't authorized this application yet! Go <a href='" . htmlspecialchars( $_SERVER['SCRIPT_NAME'] ) . "?action=login'>here</a> to do that.";
         //echo "<hr>";
@@ -482,6 +446,120 @@ function doApiQuery( $post, $ch = null ) {
     return $ret;
 }
 
-//}
-//login()
+function get_csrftoken() {
+	global $errorCode;
+    
+    // doIdentify('');
+
+	$ch = null;
+
+	// First fetch the username
+	$res = doApiQuery( array(
+		'format' => 'json',
+		'action' => 'query',
+		'meta' => 'userinfo',
+	), $ch );
+
+	if ( isset( $res["error"]["code"] ) && $res["error"]["code"] === 'mwoauth-invalid-authorization' ) {
+		// We're not authorized!
+		echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars( $_SERVER['SCRIPT_NAME'] ) . '?action=authorize">here</a> to do that.';
+		echo '<hr>';
+		return;
+	}
+
+	if ( !isset( $res["query"]["userinfo"] ) ) {
+		header( "HTTP/1.1 $errorCode Internal Server Error" );
+		echo 'Bad API response: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
+		exit(0);
+	}
+	if ( isset( $res["query"]["userinfo"]["anon"] ) ) {
+		header( "HTTP/1.1 $errorCode Internal Server Error" );
+		echo 'Not logged in. (How did that happen?)';
+		exit(0);
+	}
+	// Next fetch the edit token
+	$res = doApiQuery( array(
+		'format' => 'json',
+		'action' => 'query',
+		'meta' => 'tokens',
+		'type' => '*',
+	), $ch );
+    // "createaccounttoken", "csrftoken", "logintoken", "patroltoken", "rollbacktoken", "userrightstoken", "watchtoken"
+	if ( !isset( $res["query"]["tokens"]["csrftoken"] ) ) {
+		header( "HTTP/1.1 $errorCode Internal Server Error" );
+		echo 'Bad API response: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
+		exit(0);
+	}
+	$token = $res["query"]["tokens"]["csrftoken"];
+
+    // add the token to $data
+    return $token;
+}
+
+function doEdit($data) {
+	$ch = null;
+
+    // add the token to $data
+    $data['token'] = get_csrftoken();
+	// Now perform the edit
+	$res = doApiQuery( $data, $ch );
+    return $res;
+	// echo 'API edit result: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
+	// echo '<hr>';
+}
+
+// Take any requested action
+switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
+    case 'login':
+        if ($_SERVER['SERVER_NAME'] == 'localhost') { 
+            $fa = $_GET['test1'] ?? '';
+            if ($fa == '') { 
+                $username = 'Mr. Ibrahem';
+                setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
+                header("Location: index.php");
+            };
+        };
+        doAuthorizationRedirect();
+        return;
+
+    case 'logout':
+        // session_unset();
+        //---
+        session_start();
+        session_destroy();
+        //---
+        // unset cookies
+        setcookie('username', '', time()-$twoYears,'/',$server_name,true,true);
+        setcookie('OAuthHelloWorld', '', time()-$twoYears,'/',$server_name,true,true);
+        if (isset($_SERVER['HTTP_COOKIE'])) {
+            $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+            foreach($cookies as $cookie) {
+                $parts = explode('=', $cookie);
+                $name = trim($parts[0]);
+                setcookie($name, '', time()-$twoYears,'/',$server_name,true,true);
+            };
+        };
+        // session_start();
+        
+        unset($_COOKIE['username']);
+        unset($_SESSION["tokenKey"]);
+        unset($_SESSION["tokenSecret"]);
+        unset($username);
+        header("Location: index.php");
+        exit;
+        break;
+
+    case 'identify':
+        $ma = doIdentify('n');
+        break;
+
+    case 'api':
+        $post = $_REQUEST;
+        // remove do 
+        unset($post['do']);
+        //---
+        $res = doApiQuery($post);
+        echo var_export($res, 1);
+        break;
+}
 ?>

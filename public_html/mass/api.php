@@ -1,75 +1,95 @@
-<?
-function doEdit($data) {
-	global $errorCode;
+<?php
+//---
+$errorCode = 200;
+//---
+if (!defined('ROOT_PATH')) {
+    // get the root path from __file__ , split before public_html
+    // split the file path on the public_html directory
+    $pathParts = explode('public_html', __file__);
 
-	$ch = null;
-
-	// First fetch the username
-	$res = doApiQuery( array(
-		'format' => 'json',
-		'action' => 'query',
-		'meta' => 'userinfo',
-	), $ch );
-
-	if ( isset( $res->error->code ) && $res->error->code === 'mwoauth-invalid-authorization' ) {
-		// We're not authorized!
-		echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars( $_SERVER['SCRIPT_NAME'] ) . '?action=authorize">here</a> to do that.';
-		echo '<hr>';
-		return;
-	}
-
-	if ( !isset( $res->query->userinfo ) ) {
-		header( "HTTP/1.1 $errorCode Internal Server Error" );
-		echo 'Bad API response: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
-		exit(0);
-	}
-	if ( isset( $res->query->userinfo->anon ) ) {
-		header( "HTTP/1.1 $errorCode Internal Server Error" );
-		echo 'Not logged in. (How did that happen?)';
-		exit(0);
-	}
-	$page = 'User talk:' . $res->query->userinfo->name;
-
-	// Next fetch the edit token
-	$res = doApiQuery( array(
-		'format' => 'json',
-		'action' => 'tokens',
-		'type' => 'edit',
-	), $ch );
-	if ( !isset( $res->tokens->edittoken ) ) {
-		header( "HTTP/1.1 $errorCode Internal Server Error" );
-		echo 'Bad API response: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
-		exit(0);
-	}
-	$token = $res->tokens->edittoken;
-
-    // add the token to $data
-    $data['token'] = $token;
-	// Now perform the edit
-	$res = doApiQuery( $data, $ch );
-    return $res;
-	// echo 'API edit result: <pre>' . htmlspecialchars( var_export( $res, 1 ) ) . '</pre>';
-	// echo '<hr>';
+    // the root path is the first part of the split file path
+    $ROOT_PATH = $pathParts[0];
+    define('ROOT_PATH', $ROOT_PATH);
 }
+//---
+require 'login.php';
 
-$post = $_POST;
-$filename = $post['filename'] ?? '';
-$url = $post['url'] ?? '';
+$post = $_REQUEST;
+// remove do from $post
+unset( $post['do'] );
 
-$data = [
-    'action' => 'upload',
-    'format' => 'json',
-    'filename' => $filename,
-    // 'file' => $post['file'],
-    'comment' => $post['comment'] ?? '',
-    // 'title' => $post['title'],
-    // 'text' => $post['text'],
-    'url' => $url,
-];
-
-if ($filename != '' && $url != '') {
+function upload() {
+    global $post;
+    $url = $post['url'] ?? '';
+    $file = $_FILES['file'];
+    //---
+    $filename = $post['filename'] ?? '';
+    //---
+    $data = [
+        'action' => 'upload',
+        'format' => 'json',
+        'filename' => $filename,
+        // 'file' => $post['file'],
+        'comment' => $post['comment'] ?? '',
+        // 'title' => $post['title'],
+        // 'text' => $post['text'],
+    ];
+    //---
+    if ($url == '' && $file == '') {
+        $err = ["error" => "Invalid", "filename" => $filename, "url" => $url];
+        echo json_encode($err);
+        return;
+    }
+    //---
+    if ($url != '') {
+        $data['url'] = $url;
+    } else {
+        // CURLFile
+        $data['file'] = new \CURLFile($file['name'], $file['type'], $file['tmp_name'], $file['size']);
+    }
+    //---
     $uu = doEdit($data);
-    var_export($uu, 1);
+    echo json_encode($uu);
 }
 
+function find_exists() {
+    global $post;
+    $filename = $post['filename'] ?? '';
+    $params = [
+        'action' => 'query',
+        'format' => 'json',
+        'formatversion' => '2',
+        'titles' => "File:" . $filename
+    ];
+
+    $res = doApiQuery($params);
+    // { "batchcomplete": true, "query": { "normalized": [ { "fromencoded": false, "from": "File:IMG_20220107_153333.jpg", "to": "File:IMG 20220107 153333.jpg" } ], "pages": [ { "pageid": 1190645, "ns": 6, "title": "File:IMG 20220107 153333.jpg" } ] } }
+    $pages = $res['query']['pages'][0];
+    //---
+    $result = ["exists" => false];
+    //---
+    if ($pages && !isset($pages['missing'])) {
+        $result['exists'] = true;
+    };
+    //---
+    echo json_encode($result);
+}
+
+switch ( $_REQUEST['do'] ?? '' ) {
+    case 'upload':
+        upload();
+        break;
+    case 'api':
+        $res = doApiQuery($post);
+        // echo result as json
+        echo json_encode($res);
+        break;
+    case 'exists':
+        find_exists();
+        break;
+    case 'get_csrftoken':
+        echo get_csrftoken();
+        break;
+}
+//---
 ?>
