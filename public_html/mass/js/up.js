@@ -1,21 +1,18 @@
 function getApiToken() {
-    var api = $.get({
-        url: 'https://nccroptool.toolforge.org/api/auth/getEditToken',
-    });
-    // { "readyState": 4, "responseText": "5e27a50cd4f3b7d4567c18ba16a220f2654160ef+\\", "status": 200, "statusText": "success" }
-    console.log(api);
-    return api.responseText;
+    var msg = $.ajax({type: "GET", url: "https://nccroptool.toolforge.org/api/auth/getEditToken", async: false}).responseText;
+    return msg;
 }
 
 function upload_api(file, callback) {
     //---
-    var api_url = 'https://nccommons.org/w/api.php';
+    var api_url = 'api.php';
     //---
     var params = {
         action: "upload",
         format: "json",
         filename: file.name,
-        file: file,
+        // file: file,
+        url : 'https://nccroptool.toolforge.org/mass/files/' + file.name,
         token: getApiToken(),
     };
     //---
