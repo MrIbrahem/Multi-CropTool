@@ -149,7 +149,7 @@ function upload_f(file, id) {
 }
 
 $(document).ready(function () {
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+    document.getElementById("uploadFormzz").addEventListener("submit", function (e) {
         e.preventDefault();
 
         const files = document.getElementById("imageUpload").files;
