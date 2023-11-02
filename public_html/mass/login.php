@@ -179,16 +179,16 @@ function doAuthorizationRedirect()
     }
     curl_close($ch);
     //---
-    $token = json_decode($data, true);
+    $token = json_decode($data);
     //---
-    if (is_object($token) && isset($token["error"])) {
-        echo 'Error when retrieving token: ' . htmlspecialchars($token["error"]) . '<br>' . htmlspecialchars($token["message"]);
+    if (is_object($token) && isset($token->error)) {
+        echo 'Error when retrieving token: ' . htmlspecialchars($token->error) . '<br>' . htmlspecialchars($token->message);
         if (isset($_REQUEST['test'])) {
             header("HTTP/1.1 $errorCode Internal Server Error");
             exit(0);
         };
     }
-    if (!is_object($token) || !isset($token["key"]) || !isset($token["secret"])) {
+    if (!is_object($token) || !isset($token->key) || !isset($token->secret)) {
         echo 'doAuthorizationRedirect: Invalid response from token request';
         if (isset($_REQUEST['test'])) {
             header("HTTP/1.1 $errorCode Internal Server Error");
@@ -200,15 +200,15 @@ function doAuthorizationRedirect()
     //---
     // Now we have the request token, we need to save it for later.
     session_start();
-    $_SESSION['tokenKey'] = $token["key"];
-    $_SESSION['tokenSecret'] = $token["secret"];
+    $_SESSION['tokenKey'] = $token->key;
+    $_SESSION['tokenSecret'] = $token->secret;
     session_write_close();
 
     // Then we send the user off to authorize
     $url = $mwOAuthAuthorizeUrl;
     $url .= strpos($url, '?') ? '&' : '?';
     $url .= http_build_query(array(
-        'oauth_token' => $token["key"],
+        'oauth_token' => $token->key,
         'oauth_consumer_key' => $gConsumerKey,
     ));
     //---
@@ -259,13 +259,13 @@ function fetchAccessToken()
         exit(0);
     }
     curl_close($ch);
-    $token = json_decode($data, true);
-    if (is_object($token) && isset($token["error"])) {
+    $token = json_decode($data);
+    if (is_object($token) && isset($token->error)) {
         header("HTTP/1.1 $errorCode Internal Server Error");
-        //echo 'Error retrieving token: ' . htmlspecialchars( $token["error"] ) . '<br>' . htmlspecialchars( $token["message"] );
+        //echo 'Error retrieving token: ' . htmlspecialchars( $token->error ) . '<br>' . htmlspecialchars( $token->message );
         exit(0);
     }
-    if (!is_object($token) || !isset($token["key"]) || !isset($token["secret"])) {
+    if (!is_object($token) || !isset($token->key) || !isset($token->secret)) {
         header("HTTP/1.1 $errorCode Internal Server Error");
         echo 'fetchAccessToken: Invalid response from token request';
         exit(0);
@@ -273,13 +273,13 @@ function fetchAccessToken()
 
     // Save the access token
     session_start();
-    $gTokenKey = $token["key"];
-    $gTokenSecret = $token["secret"];
+    $gTokenKey = $token->key;
+    $gTokenSecret = $token->secret;
 
-    $_SESSION['tokenKey'] = $token["key"];
+    $_SESSION['tokenKey'] = $token->key;
     // setcookie('tokenKey',$gTokenKey,time()+$twoYears,'/',$server_name,true,true);
 
-    $_SESSION['tokenSecret'] = $token["secret"];
+    $_SESSION['tokenSecret'] = $token->secret;
     // setcookie('tokenSecret',$gTokenSecret,time()+$twoYears,'/',$server_name,true,true);
 
     session_write_close();
@@ -329,9 +329,9 @@ function doIdentify($gg)
         echo '# Curl error: ' . htmlspecialchars(curl_error($ch));
         exit(0);
     }
-    $err = json_decode($data, true);
+    $err = json_decode($data);
     //---
-    if (is_object($err) && isset($err["error"]) && $err["error"] === 'mwoauthdatastore-access-token-not-found') {
+    if (is_object($err) && isset($err->error) && $err->error === 'mwoauthdatastore-access-token-not-found') {
         // We're not authorized!
         //echo "You haven't authorized this application yet! Go <a href='" . htmlspecialchars( $_SERVER['SCRIPT_NAME'] ) . "?action=login'>here</a> to do that.";
         //echo "<hr>";
@@ -380,6 +380,8 @@ function doIdentify($gg)
         exit(0);
     }
     //---
+    //return $payload
+    //$dd = var_export( $payload, 1 );
     $username = $payload->{'username'};
     //---
     setcookie('username', $username, time() + $twoYears, '/', $server_name, true, true);
@@ -471,8 +473,8 @@ function get_csrftoken()
         'action' => 'query',
         'meta' => 'userinfo',
     ), $ch);
-    $err_code = $res['error']['code'] ?? '';
-    if ($err_code === 'mwoauth-invalid-authorization') {
+
+    if (isset($res->error->code) && $res->error->code === 'mwoauth-invalid-authorization') {
         // We're not authorized!
         echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars($_SERVER['SCRIPT_NAME']) . '?action=authorize">here</a> to do that.';
         echo '<hr>';
@@ -480,13 +482,12 @@ function get_csrftoken()
     }
 
     // { "batchcomplete": "", "query": { "userinfo": { "id": 13, "name": "Mr. Ibrahem" } }
-    if (!isset($res["query"]["userinfo"])) {
+    if (!isset($res->query->userinfo)) {
         header("HTTP/1.1 $errorCode Internal Server Error");
-        echo 'Bad API response:( !isset( $res["query"]["userinfo"] ) ) <pre>' . htmlspecialchars(json_encode($res)) . '</pre>';
+        echo 'Bad API response: <pre>' . htmlspecialchars(json_encode($res)) . '</pre>';
         exit(0);
     }
-    // 
-    if (isset($res["query"]["userinfo"]["anon"])) {
+    if (isset($res->query->userinfo->anon)) {
         header("HTTP/1.1 $errorCode Internal Server Error");
         echo 'Not logged in. (How did that happen?)';
         exit(0);
@@ -499,12 +500,12 @@ function get_csrftoken()
         'type' => '*',
     ), $ch);
     // "createaccounttoken", "csrftoken", "logintoken", "patroltoken", "rollbacktoken", "userrightstoken", "watchtoken"
-    if (!isset($res["query"]["tokens"]["csrftoken"])) {
+    if (!isset($res->query->tokens->csrftoken)) {
         header("HTTP/1.1 $errorCode Internal Server Error");
-        echo 'Bad API response:( !isset( $res["query"]["tokens"]["csrftoken"] ) ) <pre>' . htmlspecialchars(json_encode($res)) . '</pre>';
+        echo 'Bad API response: <pre>' . htmlspecialchars(json_encode($res)) . '</pre>';
         exit(0);
     }
-    $token = $res["query"]["tokens"]["csrftoken"];
+    $token = $res->query->tokens->csrftoken;
 
     // add the token to $data
     return $token;
