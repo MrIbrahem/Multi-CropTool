@@ -7,7 +7,13 @@ if ($_REQUEST['test'] != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 };
-
+include_once('login.php');
+//---
+define('global_username', $username);
+//---
+echo "
+<span id='myusername' style='display:none'>" . global_username . "</span>";
+//---
 echo <<<HTML
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
@@ -144,33 +150,30 @@ echo <<<HTML
 </header>
 HTML;
 ?>
-<script>
-	function user_login() {
-		//------
-		/*
-		{"error":"Unauthorized","messages":[]}
-		{"user":"Mr. Ibrahem"}
-		*/
-		//------
-		var url = 'https://nccroptool.toolforge.org/api/auth/user';
-		//------
-		jQuery.ajax({
-			url: url,
-			type: 'GET',
-			dataType: 'json',
-			success: function(data) {
-				if (data.user) {
-					var text = '<div class="navbar-text">Authorized as <a href="https://nccommons.org/wiki/User:' + data.user + '" target="_blank">' + data.user + '</a></div>';
-					$('#user_label').html(text);
-				}
-			},
-			error: function(data) {
-				$('#user_label').append("Authorized error");
-			}
-		});
-		//------
+<script>	
+	// $(document).ready(function() {
+	var lo = $('#myusername').text();
+	if ( lo != '' ) {
+		$('#login_btn').hide();
+		$("#doit_btn").show();
+	
+		$('#myboard').show();
+		$('#loginli').hide();
+	
+		$('#username_li').show();
+		$('#logout_btn').show();
+		$('#user_name').text(lo);
+	
+	} else {
+		$('#login_btn').show();
+		$("#doit_btn").hide();
+	
+		$('#loginli').show();
+	
+		$('#username_li').hide();
+		$('#logout_btn').hide();
 	};
-	user_login();
+	// });
 </script>
 <main id="body">
 	<!-- <div id="maindiv" class="container-fluid"> -->
