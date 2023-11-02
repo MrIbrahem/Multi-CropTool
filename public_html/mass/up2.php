@@ -17,13 +17,14 @@ echo <<<HTML
 
 HTML;
 //---
-function getFiles() {
+function getFiles()
+{
     $result = array();
-    foreach($_FILES as $name => $fileArray) {
+    foreach ($_FILES as $name => $fileArray) {
         if (is_array($fileArray['name'])) {
             foreach ($fileArray as $attrib => $list) {
                 foreach ($list as $index => $value) {
-                    $result[$name][$index][$attrib]=$value;
+                    $result[$name][$index][$attrib] = $value;
                 }
             }
         } else {
@@ -33,7 +34,8 @@ function getFiles() {
     return $result;
 }
 
-function check_exists($filename) {
+function check_exists($filename)
+{
     // check if file exists
     $params = [
         'action' => 'query',
@@ -55,7 +57,8 @@ function check_exists($filename) {
     return true;
 }
 
-function upload_nccommons_api($file) {
+function upload_nccommons_api($file)
+{
     $url  = ''; //$post['url'] ?? '';
     // $file = $_FILES['file'];
     //---
@@ -65,8 +68,7 @@ function upload_nccommons_api($file) {
         'action' => 'upload',
         'format' => 'json',
         'comment' => '',
-        'filename' => basename($file),
-        'token' => get_csrftoken()
+        'filename' => basename($file)
     );
     //---
     if ($url == '' && $file == '') {
@@ -117,7 +119,7 @@ if ($files != []) {
     //---
     // echo json_encode($files);
     //---
-    $n = 0; 
+    $n = 0;
     foreach ($files as $key => $file) {
         //---
         $name = $file['name'] ?? '';
@@ -152,7 +154,7 @@ if ($files != []) {
             // echo json_encode($upload);
             if ($upload['error']) {
                 $td_result = 'false';
-                $td_note   = $upload['error']['code'] . ': ' . $upload['error']['info'];
+                $td_note   = $upload['error']['code'] . ';;info: ' . $upload['error']['info'];
                 // idElement.css({ "font-weight": "bold", "color": "#f53333" });
                 $ex_style = "color: #f53333; font-weight: bold";
             } else {
@@ -163,7 +165,6 @@ if ($files != []) {
                     $td_name   = $td_link;
                     // idElement.css({ "color": "#45f533", "font-weight": "bold" });
                     $ex_style = "color: #45f533; font-weight: bold";
-
                 } else {
                     $td_result = 'false';
                     $td_note   = 'result: ' . $result;

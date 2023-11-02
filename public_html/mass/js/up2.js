@@ -1,6 +1,6 @@
 
 function getApiToken() {
-    var msg = $.ajax({type: "GET", url: "https://nccroptool.toolforge.org/mass/api.php?do=get_csrftoken", async: false}).responseText;
+    var msg = $.ajax({ type: "GET", url: "https://nccroptool.toolforge.org/mass/api.php?do=get_csrftoken", async: false }).responseText;
     return msg;
 }
 
@@ -110,7 +110,7 @@ function start_up(file, id) {
         }
         //---
         if (error) {
-            idElement_err(idElement, 'false: ' +  error);
+            idElement_err(idElement, 'false: ' + error);
         } else if (!data) {
             idElement_err(idElement, 'false: no data');
         } else {
@@ -124,7 +124,7 @@ function start_up(file, id) {
             }
         }
     });
-    
+
 }
 function upload_f(file, id) {
     var idElement = $("#" + id);

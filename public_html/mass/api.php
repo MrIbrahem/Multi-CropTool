@@ -16,9 +16,10 @@ require 'login.php';
 
 $post = $_REQUEST;
 // remove do from $post
-unset( $post['do'] );
+unset($post['do']);
 
-function upload() {
+function upload()
+{
     global $post;
     $url = $post['url'] ?? '';
     $file = $_FILES['file'];
@@ -52,7 +53,8 @@ function upload() {
     echo json_encode($uu);
 }
 
-function find_exists() {
+function find_exists()
+{
     global $post;
     $filename = $post['filename'] ?? '';
     $params = [
@@ -75,12 +77,13 @@ function find_exists() {
     echo json_encode($result);
 }
 
-switch ( $_REQUEST['do'] ?? '' ) {
+switch ($_REQUEST['do'] ?? '') {
     case 'upload':
         upload();
         break;
     case 'api':
-        $res = doApiQuery($post);
+        $post['format'] = 'json';
+        $res = doApiQuery($post, $ch = null, $addtoken = true);
         // echo result as json
         echo json_encode($res);
         break;
@@ -92,4 +95,3 @@ switch ( $_REQUEST['do'] ?? '' ) {
         break;
 }
 //---
-?>

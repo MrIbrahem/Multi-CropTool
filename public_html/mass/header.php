@@ -21,7 +21,7 @@ echo <<<HTML
 HTML;
 //---
 $hoste = 'https://tools-static.wmflabs.org/cdnjs';
-if ( $_SERVER['SERVER_NAME'] == 'localhost' ) {
+if ($_SERVER['SERVER_NAME'] == 'localhost') {
 	$hoste = 'https://cdnjs.cloudflare.com';
 }
 //---
@@ -175,20 +175,20 @@ echo <<<HTML
 </header>
 HTML;
 ?>
-<script>	
+<script>
 	var lo = $('#myusername').text();
-	if ( lo != '' ) {
-	
+	if (lo != '') {
+
 		$('#loginli').hide();
-	
+
 		$('#username_li').show();
 		$('#logout_btn').show();
 		$('#user_name').text(lo);
-	
+
 	} else {
-	
+
 		$('#loginli').show();
-	
+
 		$('#username_li').hide();
 		$('#logout_btn').hide();
 	};
@@ -196,4 +196,4 @@ HTML;
 </script>
 <main id="body">
 	<div id="maindiv" class="container">
-	<br>
+		<br>

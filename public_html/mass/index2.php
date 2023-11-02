@@ -34,4 +34,3 @@ if (TEST) {
 require 'up2.php';
 //---
 require 'foter.php';
-?>
