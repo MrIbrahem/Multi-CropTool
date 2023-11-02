@@ -82,8 +82,7 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
             if ($fa == '') { 
                 $username = 'Mr. Ibrahem';
                 setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
-                $REFERER = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : 'index.php';
-                header("Location: " . $REFERER);
+                header("Location: index.php");
             };
         };
         doAuthorizationRedirect();
@@ -112,8 +111,7 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
         unset($_SESSION["tokenKey"]);
         unset($_SESSION["tokenSecret"]);
         unset($username);
-        $REFERER = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : 'index.php';
-        header("Location: " . $REFERER);
+        header("Location: index.php");
         exit;
         break;
 
@@ -417,13 +415,11 @@ function doIdentify($gg) {
     //---
     setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
     //---
-    if ($username == 'Mr. Ibrahem' && $_REQUEST['test'] != '1') {
+    if ($username == 'Mr. Ibrahem' && $_REQUEST['test'] == '1') {
         echo var_export($payload, 1);
     }
     //---
-    if ( $gg != '' ) {
-        echo 'JWT payload: <pre>' . htmlspecialchars( var_export( $payload, 1 ) ) . '</pre><br><hr>';
-        }
+    // if ( $gg != '' ) echo 'JWT payload: <pre>' . htmlspecialchars( var_export( $payload, 1 ) ) . '</pre><br><hr>';
     //---
 }
 
@@ -485,7 +481,6 @@ function doApiQuery( $post, $ch = null ) {
     //---
     return $ret;
 }
-
 
 //}
 //login()

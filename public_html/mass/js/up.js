@@ -1,7 +1,3 @@
-function getApiToken() {
-    var msg = $.ajax({type: "GET", url: "https://nccroptool.toolforge.org/api/auth/getEditToken", async: false}).responseText;
-    return msg;
-}
 
 function upload_api(file, callback) {
     //---
@@ -13,7 +9,6 @@ function upload_api(file, callback) {
         filename: file.name,
         // file: file,
         url : 'https://nccroptool.toolforge.org/mass/files/' + file.name,
-        token: getApiToken(),
     };
     //---
     console.log(params);
@@ -28,7 +23,6 @@ function upload_api(file, callback) {
             callback('Error occurred', data);
         }
     });
-
 }
 
 function check_image_exist(name, callback) {
