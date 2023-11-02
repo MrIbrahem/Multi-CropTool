@@ -8,8 +8,8 @@ if (isset($_REQUEST['test'])) {
 //include_once 'actions/nccommons_sql.php';
 //---
 $mwOAuthAuthorizeUrl = 'https://nccommons.org/wiki/Special:OAuth/authorize';
-$mwOAuthUrl = 'https://nccommons.org/w/index.php?title=Special:OAuth';
-$apiUrl = 'https://nccommons.org/w/api.php';
+$mwOAuthUrl          = 'https://nccommons.org/w/index.php?title=Special:OAuth';
+$apiUrl              = 'https://nccommons.org/w/api.php';
 //---
 $twoYears = time() + 60 * 60 * 24 * 365 * 2;
 $errorCode = 200;
@@ -22,18 +22,7 @@ session_set_cookie_params(
     dirname( $_SERVER['SCRIPT_NAME'] )
 );
 //---
-$inifile_local = '../../confs/OAuthConfig.ini';
-$inifile_nccommons = '/data/project/nccroptool/confs/OAuthConfig.ini';
-//---
-$inifile = $inifile_nccommons;
-//---
-// $teste = file_get_contents($inifile_nccommons);
-// if ( $teste != '' ) { 
-if ( strpos( __file__ , '/mnt/' ) === 0 ) {
-    $inifile = $inifile_nccommons;
-} else {
-    $inifile = $inifile_local;
-};
+$inifile = ROOT_PATH . '/confs/OAuthConfig.ini';
 //---
 $ini = parse_ini_file( $inifile );
 //---
@@ -50,30 +39,20 @@ if ( !isset( $ini['agent'] ) ||
     echo 'Required configuration directives not found in ini file';
     exit(0);
 }
-$gUserAgent = $ini['agent'];
-$gConsumerKey = $ini['consumerKey'];
+$gUserAgent      = $ini['agent'];
+$gConsumerKey    = $ini['consumerKey'];
 $gConsumerSecret = $ini['consumerSecret'];
-$sqlpass = $ini['sqlpass'];
-// Load the user token (request or access) from the session
 //---
 $server_name = 'nccroptool.toolforge.org';
 $server_name = $_SERVER['SERVER_NAME'];
 //---
 $username = '';
-if ($_SERVER['SERVER_NAME'] == 'localhost') { 
-    $fa = $_GET['test1'] ?? '';
-    if ($fa == 'xx') { 
-        $username = 'Mr. Ibrahem';
-        setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
-    };
-};
 //---
 if(isset($_COOKIE['username'])) $username = $_COOKIE['username'];
 //---
 $gTokenKey = '';
 $gTokenSecret = '';
 //---
-// if (session_status() == 0) session_start();
 session_start();
 //---
 if ( isset( $_SESSION['tokenKey'] ) ) {
@@ -102,9 +81,9 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
             $fa = $_GET['test1'] ?? '';
             if ($fa == '') { 
                 $username = 'Mr. Ibrahem';
-                log_new_user($username);
                 setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
-                header("Location: " . $_SERVER['HTTP_REFERER']);
+                $REFERER = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : 'index.php';
+                header("Location: " . $REFERER);
             };
         };
         doAuthorizationRedirect();
@@ -133,7 +112,8 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
         unset($_SESSION["tokenKey"]);
         unset($_SESSION["tokenSecret"]);
         unset($username);
-        header("Location: " . $_SERVER['HTTP_REFERER']);
+        $REFERER = $_SERVER['HTTP_REFERER'] ? $_SERVER['HTTP_REFERER'] : 'index.php';
+        header("Location: " . $REFERER);
         exit;
         break;
 
@@ -191,23 +171,8 @@ function sign_request( $method, $url, $params = array() ) {
 
 function doAuthorizationRedirect() {
     global $mwOAuthUrl, $mwOAuthAuthorizeUrl, $gUserAgent, $gConsumerKey, $errorCode;
-
-    // First, we need to fetch a request token.
-    // The request is signed with an empty token secret and no token key.
     //---
-    $state = array();
-    // login5.php?action=login&cat=RTT&depth=1&code=&type=lead
-    
-    foreach (['cat', 'code', 'type', 'test'] as $key) {
-        $da = $_REQUEST[$key] ?? '';
-        if ($da != '') $state[$key] = $da;
-    };
-    // $state = implode('&', $state);
-    $state = http_build_query($state);
-    //---
-    // echo $state;
-    //---
-    $oauth_call = 'https://nccroptool.toolforge.org/mass/index.php' . '?' . $state ;
+    $oauth_call = 'https://nccroptool.toolforge.org/mass/index.php' . '?action=identify';
     //---
     // $gTokenSecret = '';
     $url_ar = array(
@@ -453,11 +418,8 @@ function doIdentify($gg) {
     setcookie('username',$username,time()+$twoYears,'/',$server_name,true,true);
     //---
     if ($username == 'Mr. Ibrahem') {
-        # dump $payload
         echo var_export($payload, 1);
     }
-    //---
-    log_new_user($username);
     //---
     if ( $gg != '' ) {
         echo 'JWT payload: <pre>' . htmlspecialchars( var_export( $payload, 1 ) ) . '</pre><br><hr>';

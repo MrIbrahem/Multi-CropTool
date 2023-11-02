@@ -15,6 +15,8 @@ rm -r -f public_html/mass
 # Into a new directory called 'wd_core/' in the current working directory
 cp -r Multi-CropTool-main/public_html/mass public_html/mass
 
+chmod -R 6770 public_html
+
 # Remove the `Multi-CropTool-main` directory.
 rm -r Multi-CropTool-main
 

@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
-
-if ($_REQUEST['test'] != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
-};
+//---
 include_once('login.php');
 //---
-define('global_username', $username);
-//---
 echo "
-<span id='myusername' style='display:none'>" . global_username . "</span>";
+<span id='myusername' style='display:none'>$username</span>";
 //---
 echo <<<HTML
 <head>
@@ -123,6 +116,11 @@ echo <<<HTML
 						</a>
 					</li>
 					<li class="nav-item col-4 col-lg-auto">
+						<a class="nav-link py-2 px-0 px-lg-2" href="../" target="_blank">
+							<span class="navtitles">CropTool</span>
+						</a>
+					</li>
+					<li class="nav-item col-4 col-lg-auto">
 						<a class="nav-link py-2 px-0 px-lg-2" href="../multi" target="">
 							<span class="navtitles">Multi CropTool</span>
 						</a>
@@ -140,12 +138,12 @@ echo <<<HTML
 					</li>
 					
 					<li class="nav-item col-4 col-lg-auto" id="">
-						<a id="username_li" href="leaderboard.php?user=$username" class="nav-link py-2 px-0 px-lg-2" style="display:none">
+						<a id="username_li" href="" class="nav-link py-2 px-0 px-lg-2" style="display:none">
 							<i class="fas fa-user fa-sm fa-fw mr-2"></i> <span class="navtitles" id="user_name"></span>
 						</a>
 					</li>
 					<li class="nav-item col-4 col-lg-auto" id="loginli">
-						<a role="button" class="nav-link py-2 px-0 px-lg-2" onclick="login()">
+						<a role="button" class="nav-link py-2 px-0 px-lg-2" href="index.php?action=login">
 							<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
 						</a>
 					</li>
@@ -158,17 +156,29 @@ echo <<<HTML
 			</div>
 		</div>
 	</nav>
+	<!-- Logout Modal-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="modal-title" id="exampleModalLabel">Ready to Leave?</h6>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">Select &quot;Logout&quot; below if you are ready to end your current session.</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+					<a class="btn btn-primary" href="index.php?action=logout">Logout</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </header>
 HTML;
 ?>
 <script>	
-	// $(document).ready(function() {
 	var lo = $('#myusername').text();
 	if ( lo != '' ) {
-		$('#login_btn').hide();
-		$("#doit_btn").show();
 	
-		$('#myboard').show();
 		$('#loginli').hide();
 	
 		$('#username_li').show();
@@ -176,8 +186,6 @@ HTML;
 		$('#user_name').text(lo);
 	
 	} else {
-		$('#login_btn').show();
-		$("#doit_btn").hide();
 	
 		$('#loginli').show();
 	
@@ -187,6 +195,5 @@ HTML;
 	// });
 </script>
 <main id="body">
-	<!-- <div id="maindiv" class="container-fluid"> -->
 	<div id="maindiv" class="container">
 	<br>
