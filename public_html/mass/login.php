@@ -5,7 +5,7 @@ if (isset($_REQUEST['test'])) {
     error_reporting(E_ALL);
 };
 //---
-include_once 'actions/nccommons_sql.php';
+//include_once 'actions/nccommons_sql.php';
 //---
 $mwOAuthAuthorizeUrl = 'https://nccommons.org/wiki/Special:OAuth/authorize';
 $mwOAuthUrl = 'https://nccommons.org/w/index.php?title=Special:OAuth';
@@ -141,10 +141,6 @@ switch ( isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '' ) {
         $ma = doIdentify('n');
         break;
 
-}
-//---
-function log_new_user($username) {
-    sql_add_user($username, '', '', '', '');
 }
 //---
 function sign_request( $method, $url, $params = array() ) {
