@@ -23,7 +23,7 @@ if (!defined('ROOT_PATH')) {
 require 'header.php';
 //---
 echo <<<HTML
-	<script src="js/up2.js"></script>
+	<!-- <script src="js/up2.js"></script> -->
 </head>
 HTML;
 //---

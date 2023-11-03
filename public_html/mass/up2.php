@@ -46,9 +46,13 @@ function check_exists($filename)
 
     $res = doApiQuery($params);
     // { "batchcomplete": true, "query": { "normalized": [ { "fromencoded": false, "from": "File:IMG_20220107_153333.jpg", "to": "File:IMG 20220107 153333.jpg" } ], "pages": [ { "pageid": 1190645, "ns": 6, "title": "File:IMG 20220107 153333.jpg" } ] } }
-    $pages = $res['query']['pages'][0];
+    $pages = $res->query->pages;
     //---
-    if ($pages && isset($pages['missing'])) {
+    // echo json_encode($pages);
+    //---
+    $pages = $pages[0];
+    //---
+    if ($pages && isset($pages->missing)) {
         return false;
     };
     //---
@@ -62,13 +66,15 @@ function upload_nccommons_api($file)
     $url  = ''; //$post['url'] ?? '';
     // $file = $_FILES['file'];
     //---
+    // var_dump($file);
+    //---
     $filename = $file['name'] ?? '';
     //---
     $formData = array(
         'action' => 'upload',
         'format' => 'json',
         'comment' => '',
-        'filename' => basename($file)
+        'filename' => $filename
     );
     //---
     if ($url == '' && $file == '') {
@@ -80,10 +86,11 @@ function upload_nccommons_api($file)
         $formData['url'] = $url;
     } else {
         // CURLFile
-        $formData['file'] = new \CURLFile($file);
+        $formData['file'] = new \CURLFile($file['tmp_name']);
     }
     //---
-    $uu = doEdit($formData);
+    // $uu = doEdit($formData);
+    $uu = upload_file($file);
     //---
     return $uu;
 }
