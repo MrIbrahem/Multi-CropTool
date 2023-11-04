@@ -1,26 +1,55 @@
+
 function getApiToken() {
-    var api = $.get({
-        url: 'https://nccroptool.toolforge.org/api/auth/getEditToken',
-    });
-    return api;
+    var msg = $.ajax({ type: "GET", url: "https://nccroptool.toolforge.org/mass/api.php?do=get_csrftoken", async: false }).responseText;
+    return msg;
 }
 
+function upload_nccommons_api(file, callback) {
+    //---
+    var api_url = 'nccommons_api.php';
+    //---
+    var formData = new FormData();
+    formData.append('action', 'upload');
+    formData.append('format', 'json');
+    //---
+    formData.append('file', file);
+    formData.append('comment', 'comment');
+    formData.append('filename', file.name);
+    formData.append('token', getApiToken());
+    // formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
+    //---
+    // console.log(params);
+    $.ajax({
+        url: api_url,
+        data: formData,
+        type: "POST",
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            callback(null, data);
+        },
+        error: function (data) {
+            callback('Error occurred', data);
+        }
+    });
+}
 function upload_api(file, callback) {
     //---
-    var api_url = 'https://nccommons.org/wiki/api.php';
+    var api_url = 'api.php?do=upload';
     //---
-    var params = {
-        action: "upload",
-        format: "json",
-        filename: file.name,
-        file: file,
-        token: getApiToken(),
-    };
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('comment', 'comment');
+    formData.append('filename', file.name);
+    // formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
     //---
-    $.post({
-        url: api_urls,
-        data: params,
-        // dataType: 'json',
+    // console.log(params);
+    $.ajax({
+        url: api_url,
+        data: formData,
+        type: "POST",
+        processData: false,
+        contentType: false,
         success: function (data) {
             callback(null, data);
         },
@@ -28,64 +57,30 @@ function upload_api(file, callback) {
             callback('Error occurred', data);
         }
     });
-
-}
-function publishnew(file, callback) {
-    //---
-    var api_url = 'https://nccroptool.toolforge.org/';
-    //---
-    var params = {
-        site: "nccommons.org",
-        title: file.name,
-        // file: file,
-        comment: '',
-    };
-    //---
-    // save file to path 'files'
-    // move_uploaded_file($file.tmp_name, $filepath);
-    //---
-    var api_url1 = api_url + "api/file/publishnew?";
-    //---
-    console.log(params);
-    $.post({
-        url: api_url1,
-        data: params,
-        // dataType: 'json',
-        success: function (data) {
-            callback(null, data);
-        },
-        error: function (data) {
-            callback('Error occurred', data);
-        }
-    });
-
 }
 
 function check_image_exist(name, callback) {
-    var api_url = 'https://nccroptool.toolforge.org/';
+    //---
+    var api_url = 'api.php?do=exists';
     //---
     var params = {
-        site: "nccommons.org",
-        title: name
+        "filename": name
     };
     //---
-    api_url = api_url + "api/file/exists?" + jQuery.param(params);
-    //---
-    // {"site":"nccommons.org","title":"Car.jpg","exists": true}
-    //---
-    $.get({
+    $.post({
         url: api_url,
+        data: params,
         dataType: 'json',
         success: function (data) {
             var exists = data.exists;
-            var title = data.title;
             if (exists == true || exists == 'true') {
-                callback(true, false, title);
+                callback(true, false, name);
             } else {
                 callback(false, true, null);
             };
         },
         error: function (data) {
+            console.log(api_url + "&" + jQuery.param(params));
             callback(false, false, null);
         }
     });
@@ -102,37 +97,34 @@ function start_up(file, id) {
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
     // console.log(file)
     //---
-    upload_api(file, function (err, data) {
+    upload_nccommons_api(file, function (err, data) {
+        // load json
+        data = JSON.parse(data);
+        //---
+        // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
         console.log(data);
-        // { "readyState": 4, "responseText": "{\"error\":\"File doesn't exist: \"}", "responseJSON": { "error": "File doesn't exist: " }, "status": 500, "statusText": "error" }
-        //{    "error": "[api] Received error :- invalidtitle : Bad title \"File:\"."}
-        // if err or not data
         var error = err;
         //---
-        if (!error && data.error && data.error != undefined) {
-            error = data.error;
-        }
-        if (!error && data.responseJSON.error && data.responseJSON.error != undefined) {
-            error = data.responseJSON.errors;
-        }
-        if (error) {
-            idElement_err(idElement, 'false: ' +  error);
+        if (data.error) {
+            error = data.error.code + ': ' + data.error.info;
         }
         //---
-        if (!data) {
+        if (error) {
+            idElement_err(idElement, 'false: ' + error);
+        } else if (!data) {
             idElement_err(idElement, 'false: no data');
         } else {
-            var result = data.result || data.responseJSON.result;
+            var result = data.result;
             if (result == "Success") {
                 $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
                 idElement.text('true');
                 idElement.css({ "color": "#45f533", "font-weight": "bold" });
             } else {
-                idElement_err(idElement, 'false: ' + result);
+                idElement_err(idElement, 'false, result: ' + result);
             }
         }
     });
-    
+
 }
 function upload_f(file, id) {
     var idElement = $("#" + id);
@@ -148,6 +140,7 @@ function upload_f(file, id) {
                 start_up(file, id);
                 //---
             } else {
+
                 idElement.text('Error..');
                 idElement.css({ "font-weight": "bold", "color": "#f53333" });
             }
@@ -156,7 +149,7 @@ function upload_f(file, id) {
 }
 
 $(document).ready(function () {
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+    document.getElementById("uploadFormzz").addEventListener("submit", function (e) {
         e.preventDefault();
 
         const files = document.getElementById("imageUpload").files;

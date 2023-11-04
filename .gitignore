@@ -17,8 +17,7 @@ public_html/test4/**
 public_html/multi/multilog/**
 public_html/js/app-a7add89014.js
 public_html/mass/js/a.js
-public_html/mass/u.php
-public_html/mass/log.php
-public_html/mass/help.php
+**/old/**
 public_html/index_old.html
 public_html/scripts.js
+confs/OAuthConfig.ini

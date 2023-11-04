@@ -54,9 +54,17 @@
 				<a class="navbar-brand" href="index.php" style="color:blue;"><i class="fa fa-crop"></i> Multi CropTool</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Home1</a></li>
-				<li class=""><a href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank"><span style="font-size:16px">Github</span></a></li>
-				<li><a href="../mass">Mass Upload</a></li>
+                <li class="nav-item col-4 col-lg-auto">
+                    <a class="nav-link py-2 px-0 px-lg-2" href="../">
+                        <span class="navtitles">CropTool</span>
+                    </a>
+                </li>
+				<li class="nav-item col-4 col-lg-auto">
+                    <a href="../mass">Mass Upload</a>
+                </li>
+				<li class="nav-item col-4 col-lg-auto">
+                    <a href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank"><span style="font-size:16px">Github</span></a>
+                </li>
 			</ul>
 			
 			<ul class="nav navbar-nav navbar-right">
