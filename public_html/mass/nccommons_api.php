@@ -14,9 +14,12 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 $result = curl_exec($ch);
+$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 if (curl_errno($ch)) {
   // handle error, e.g. log error message
   error_log('cURL error: ' . curl_error($ch));
+} elseif ($httpcode != 200) {
+  error_log('API request failed with status code: ' . $httpcode);
 }
 curl_close($ch);
 echo $result;
