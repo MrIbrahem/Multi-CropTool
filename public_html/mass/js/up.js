@@ -23,7 +23,7 @@ function save_it(file, id) {
         console.log(data);
         // Assuming the response contains the value 'true' or 'false'
         if (data.trim() === 'true') {
-            $("#save_" + id).html('<span class="bi bi-check2"></span> Saved!');
+            $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file.name + '" target="_blank">Saved!</a>');
         } else {
             $("#save_" + id).html('<span class="bi bi-x"></span> Error!');
         }
@@ -41,10 +41,10 @@ function upload_nccommons_api(file, callback) {
     formData.append('action', 'upload');
     formData.append('format', 'json');
     //---
-    formData.append('file', file);
+    // formData.append('file', file);
     formData.append('comment', 'comment');
     formData.append('filename', file.name);
-    // formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
+    formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
     //---
     // console.log(params);
     $.ajax({
@@ -66,10 +66,10 @@ function upload_api(file, callback) {
     var api_url = 'api.php?do=upload';
     //---
     var formData = new FormData();
-    formData.append('file', file);
+    // formData.append('file', file);
     formData.append('comment', 'comment');
     formData.append('filename', file.name);
-    // formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
+    formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
     //---
     // console.log(params);
     $.ajax({
@@ -97,9 +97,7 @@ function start_up(file, id) {
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
     // console.log(file)
     //---
-    upload_nccommons_api(file, function (err, data) {
-        // load json
-        data = JSON.parse(data);
+    upload_api(file, function (err, data) {
         //---
         // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
         console.log(data);
@@ -172,7 +170,7 @@ function upload_f(file, id) {
                 //---
             } else {
 
-                idElement.text('Error..');
+                idElement.text('Exists Error..');
                 idElement.css({ "font-weight": "bold", "color": "#f53333" });
             }
         }
