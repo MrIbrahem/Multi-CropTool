@@ -1,11 +1,13 @@
 <?php
 //---
+$test = $_GET['test'] ?? '';
+//---
 echo <<<HTML
 <div class='card'>
     <div class='card-header'>
     </div>
     <div class='card-body'>
-        <form id="uploadForm" enctype="multipart/form-data" action="index2.php?action=upload" method="post">
+        <form id="uploadForm" enctype="multipart/form-data" action="index.php?action=upload&test=$test" method="post">
             <div class="mb-3">
                 <label for="imageUpload">Select Images</label>
                 <input type="file" class="form-control" id="imageUpload" name="imageUpload[]" multiple>
@@ -77,6 +79,12 @@ function upload_nccommons_api($file)
         'filename' => $filename
     );
     //---
+    // save file to files
+    $target_file = 'files/' . $filename;
+    if (move_uploaded_file($file['tmp_name'], $target_file)) {
+        $url = 'https://nccroptool.toolforge.org/mass/files/' . $filename;
+    }
+    //---
     if ($url == '' && $file == '') {
         $err = ["error" => "Invalid", "filename" => $filename, "url" => $url];
         return $err;
@@ -89,8 +97,8 @@ function upload_nccommons_api($file)
         $formData['file'] = new \CURLFile($file['tmp_name']);
     }
     //---
-    // $uu = doEdit($formData);
-    $uu = upload_file($file);
+    $uu = doEdit($formData);
+    // $uu = upload_file($file);
     //---
     return $uu;
 }
@@ -157,21 +165,39 @@ if ($files != []) {
             // color": "#f53333", "font-weight": "bold
             $ex_style = "color: #f53333; font-weight: bold";
         } else {
+            //---
             $upload = upload_nccommons_api($file);
-            // echo json_encode($upload);
-            if ($upload['error']) {
+            //---
+            if ($test != '') {
+                echo 'json:' . json_encode($upload);
+            }
+            //---
+            // {"upload":{"result":"Warning","warnings":{"duplicate-archive":"Ts33.jpg"},"filekey":"1ah3u6r5yqho.ghdmel.13.","sessionkey":"1ah3u6r5yqho.ghdmel.13."}}
+            //---
+            $error = $upload['error'] ?? '';
+            if ($error != '') {
                 $td_result = 'false';
                 $td_note   = $upload['error']['code'] . ';;info: ' . $upload['error']['info'];
                 // idElement.css({ "font-weight": "bold", "color": "#f53333" });
                 $ex_style = "color: #f53333; font-weight: bold";
             } else {
-                $result = $upload['result'];
+                // $upload = $upload['upload'];
+                $upload = $upload['upload'] ?? $upload;
+                //---
+                $result = $upload['result'] ?? '';
+                //---
                 if ($result == 'Success') {
                     $td_result = 'true';
                     $td_note   = $result;
                     $td_name   = $td_link;
                     // idElement.css({ "color": "#45f533", "font-weight": "bold" });
                     $ex_style = "color: #45f533; font-weight: bold";
+                } else if ($result == 'Warning') {
+                        $td_result = 'Warning';
+                        $td_note   = json_encode($upload);
+                        // $td_name   = $td_link;
+                        // idElement.css({ "color": "#45f533", "font-weight": "bold" });
+                        // $ex_style = "color: #45f533; font-weight: bold";
                 } else {
                     $td_result = 'false';
                     $td_note   = 'result: ' . $result;

@@ -42,7 +42,6 @@ HTML;
 //---
 echo <<<HTML
 	<script type="module" src="js/color-modes.js"></script>
-	<!-- <script src="js/up2.js"></script> -->
 	<script src="js/sorttable.js"></script>
 </head>
 HTML;

@@ -24,6 +24,7 @@ echo <<<HTML
                 <tr>
                     <th>#</th>
                     <th>file</th>
+                    <th>save</th>
                     <th>result</th>
                 </tr>
             </thead>

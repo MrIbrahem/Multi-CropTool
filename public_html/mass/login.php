@@ -365,7 +365,7 @@ function doIdentify()
     //---
 }
 
-function doApiQuery($post, &$ch = null)
+function doApiQuery($post, &$ch = null, $jso = false)
 {
 	global $apiUrl, $gUserAgent, $gConsumerKey, $gTokenKey, $errorCode;
 
@@ -406,7 +406,11 @@ function doApiQuery($post, &$ch = null)
 		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
 		exit(0);
 	}
-	$ret = json_decode($data);
+	if ($jso) {
+		$ret = json_decode($data, true);
+	} else {
+		$ret = json_decode($data);
+	}
 	if ($ret === null) {
 		header("HTTP/1.1 $errorCode Internal Server Error");
 		echo 'Unparsable API response: <pre>' . htmlspecialchars($data) . '</pre>';
@@ -419,7 +423,7 @@ function doApiQuery($post, &$ch = null)
  * Perform a generic edit
  * @return void
  */
-function doEdit()
+function doEdit($data)
 {
 	global $errorCode;
 
@@ -449,7 +453,6 @@ function doEdit()
 		echo 'Not logged in. (How did that happen?)';
 		exit(0);
 	}
-	$page = 'User talk:' . $res->query->userinfo->name;
 
 	// Next fetch the edit token
 	$res = doApiQuery(array(
@@ -464,22 +467,13 @@ function doEdit()
 		exit(0);
 	}
 	$token = $res->query->tokens->csrftoken;
-
+	$data['token'] = $token;
 	// Now perform the edit
-	$res = doApiQuery(array(
-		'format' => 'json',
-		'action' => 'edit',
-		'title' => $page,
-		'section' => 'new',
-		'sectiontitle' => 'Hello, world',
-		'text' => 'This message was posted using the OAuth Hello World application, and should be seen as coming from yourself. To revoke this application\'s access to your account, visit [[:en:Special:OAuthManageMyGrants]]. ~~~~',
-		'summary' => '/* Hello, world */ Hello from OAuth!',
-		'watchlist' => 'nochange',
-		'token' => $token,
-	), $ch);
+	$res = doApiQuery($data, $ch, true);
 
-	echo 'API edit result: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
-	echo '<hr>';
+	// echo 'API edit result: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
+	// echo '<hr>';
+	return $res;
 }
 
 function doTestSpecial()
@@ -569,7 +563,7 @@ function upload_file($file)
 	// "createaccounttoken", "csrftoken", "logintoken", "patroltoken", "rollbacktoken", "userrightstoken", "watchtoken"
 	if (!isset($res->query->tokens->csrftoken) ) {
 		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Bad API response: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
+		echo 'Bad API response csrftoken: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
 		exit(0);
 	}
 
@@ -584,7 +578,7 @@ function upload_file($file)
 		'token' => $token,
 	), $ch);
 
-	echo 'API edit result: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
+	echo 'API upload result: <pre>' . htmlspecialchars(var_export($res, 1)) . '</pre>';
 	echo '<hr>';
 }
 
@@ -628,10 +622,6 @@ switch (isset($_GET['action']) ? $_GET['action'] : '') {
 			header("Location: index.php");
 			exit;
 			break;
-
-	case 'edit':
-		doEdit();
-		break;
 
 	case 'identify':
 		doIdentify();
