@@ -169,7 +169,7 @@ if ($files != []) {
             $upload = upload_nccommons_api($file);
             //---
             if ($test != '') {
-                echo 'json:' . json_encode($upload);
+                echo 'json:' . htmlspecialchars(json_encode($upload), ENT_QUOTES, 'UTF-8');
             }
             //---
             // {"upload":{"result":"Warning","warnings":{"duplicate-archive":"Ts33.jpg"},"filekey":"1ah3u6r5yqho.ghdmel.13.","sessionkey":"1ah3u6r5yqho.ghdmel.13."}}

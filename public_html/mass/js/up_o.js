@@ -1,59 +1,59 @@
-function save_it(file, id) {
-    return new Promise((resolve, reject) => {
-        // save file to server
-        //---
-        $("#save_" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
-        //---
-        // Create a FormData object to send files
-        const formData = new FormData();
-        formData.append('file', file);
+function save_it(file, id, callback) {
+    // save file to server
+    //---
+    $("#save_" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+    //---
+    // Create a FormData object to send files
+    const formData = new FormData();
+    formData.append('file', file);
 
-        let attempt = 0;
+    let attempt = 0;
 
-        // Define a function to handle the fetch operation
-        const sendRequest = () => {
-            attempt++;
-            fetch('save.php', {
-                method: 'POST',
-                body: formData
+    // Define a function to handle the fetch operation
+    const sendRequest = () => {
+        attempt++;
+        // Send the files to the PHP page using Fetch API
+
+        fetch('save.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Network response was not ok.');
             })
-                .then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    }
-                    throw new Error('Network response was not ok.');
-                })
-                .then(data => {
-                    if (data.trim() === 'true') {
-                        $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file.name + '" target="_blank">Saved!</a>');
-                        resolve(true); // Resolves the Promise with true if saved successfully
-                    } else {
-                        if (attempt < 3) {
-                            $("#save_" + id).html('<span class="bi bi-x"></span> Error! (Attempt ' + attempt + ') Retrying...');
-                            // Retry after 1 second in case of an error
-                            setTimeout(sendRequest, 1000); // Retry after 1 second
-                        } else {
-                            $("#save_" + id).html('<span class="bi bi-x"></span> Error! Maximum attempts reached');
-                            reject(false); // Rejects the Promise with false after maximum attempts
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
+            .then(data => {
+                // console.log(data);
+                // Assuming the response contains the value 'true' or 'false'
+                if (data.trim() === 'true') {
+                    $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file.name + '" target="_blank">Saved!</a>');
+                    callback();
+                } else {
                     if (attempt < 3) {
                         $("#save_" + id).html('<span class="bi bi-x"></span> Error! (Attempt ' + attempt + ') Retrying...');
                         // Retry after 1 second in case of an error
                         setTimeout(sendRequest, 1000); // Retry after 1 second
                     } else {
                         $("#save_" + id).html('<span class="bi bi-x"></span> Error! Maximum attempts reached');
-                        reject(false); // Rejects the Promise with false after maximum attempts
                     }
-                });
-        };
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                if (attempt < 3) {
+                    $("#save_" + id).html('<span class="bi bi-x"></span> Error! (Attempt ' + attempt + ') Retrying...');
+                    // Retry after 1 second in case of an error
+                    setTimeout(sendRequest, 1000); // Retry after 1 second
+                } else {
+                    $("#save_" + id).html('<span class="bi bi-x"></span> Error! Maximum attempts reached');
+                }
+            });
+    };
 
-        // Initial request
-        sendRequest();
-    });
+    // Initial request
+    sendRequest();
 }
 
 function upload_nccommons_api(file, callback) {
@@ -218,36 +218,32 @@ function check_image_exist(name, callback) {
 function upload_f(file, id) {
     var idElement = $("#" + id);
     //---
-    // استخدام الوظيفة المعدلة
-    save_it(file, id).then(result => {
-        // تم الحفظ بنجاح
-        if (result === true) {
-            //---
-            idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
-            //---
-            check_image_exist(file.name, function (exists, notexists, data) {
-                console.log('check_image_exist' + JSON.stringify(data));
-                if (notexists) {
-                    start_up(file, id);
+    save_it(file, id, function () {
+        //---
+        idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+        //---
+        check_image_exist(file.name, function (exists, notexists, data) {
+            console.log('check_image_exist' + JSON.stringify(data));
+            if (notexists) {
+                start_up(file, id);
+                
+            } else if (exists) {
+                $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+                idElement.text('File exists in NCC');
+                idElement.css({ "color": "#f53333", "font-weight": "bold" });
 
-                } else if (exists) {
-                    $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
-                    idElement.text('File exists in NCC');
-                    idElement.css({ "color": "#f53333", "font-weight": "bold" });
-
+            } else {
+                // console.log(JSON.stringify(data));
+                var error = data.error;
+                if (error == "You haven't authorized this application yet!") {
+                    idElement.html($('#loginli').html());
                 } else {
-                    // console.log(JSON.stringify(data));
-                    var error = data.error;
-                    if (error == "You haven't authorized this application yet!") {
-                        idElement.html($('#loginli').html());
-                    } else {
-                        idElement.text('Exists Error..');
-                        idElement.css({ "font-weight": "bold", "color": "#f53333" });
-                    }
+                    idElement.text('Exists Error..');
+                    idElement.css({ "font-weight": "bold", "color": "#f53333" });
                 }
-            });
-        }
-    })
+            }
+        });
+    });
 }
 
 $(document).ready(function () {

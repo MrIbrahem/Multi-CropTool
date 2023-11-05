@@ -38,6 +38,8 @@ echo <<<HTML
 	<!-- <script src='$hoste/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js'></script> -->
 	<!-- <script src='$hoste/ajax/libs/datatables.net-bs5/1.13.5/dataTables.bootstrap5.min.js'></script> -->
 	<script src="$hoste/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
+	<!-- Bootstrap Icons -->
+	<link rel="stylesheet" href="$hoste/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css">
 HTML;
 //---
 echo <<<HTML

@@ -22,10 +22,15 @@ if (!defined('ROOT_PATH')) {
 //---
 require 'header.php';
 //---
+echo <<<HTML
+	<script src="js/up.js"></script>
+</head>
+HTML;
+//---
 if (TEST) {
     echo "ROOT_PATH: " . ROOT_PATH;
 }
 //---
-require 'up2.php';
-//---
+require 'up.php';
 require 'foter.php';
+?>

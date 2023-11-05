@@ -306,9 +306,8 @@ function doIdentify()
 	$err = json_decode($data);
 	if (is_object($err) && isset($err->error) && $err->error === 'mwoauthdatastore-access-token-not-found') {
 		// We're not authorized!
-		echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars($_SERVER['SCRIPT_NAME']) . '?action=authorize">here</a> to do that.';
-		echo '<hr>';
-		return;
+		echo '{"error": "You haven\'t authorized this application yet!"}';
+		return "login";
 	}
 
 	// There are three fields in the response
@@ -438,9 +437,8 @@ function doEdit($data)
 
 	if (isset($res->error->code) && $res->error->code === 'mwoauth-invalid-authorization') {
 		// We're not authorized!
-		echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars($_SERVER['SCRIPT_NAME']) . '?action=authorize">here</a> to do that.';
-		echo '<hr>';
-		return;
+		echo '{"error": "You haven\'t authorized this application yet!"}';
+		return "login";
 	}
 
 	if (!isset($res->query->userinfo)) {
@@ -538,9 +536,8 @@ function upload_file($file)
 	$eeeee = $res->error->code ?? '';
 	if ($eeeee === 'mwoauth-invalid-authorization') {
 		// We're not authorized!
-		echo 'You haven\'t authorized this application yet! Go <a href="' . htmlspecialchars($_SERVER['SCRIPT_NAME']) . '?action=authorize">here</a> to do that.';
-		echo '<hr>';
-		return;
+		echo '{"error": "You haven\'t authorized this application yet!"}';
+		return "login";
 	}
 	if (!isset($res->query->userinfo)) {
 		header("HTTP/1.1 $errorCode Internal Server Error");
