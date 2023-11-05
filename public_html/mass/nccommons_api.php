@@ -8,9 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $data = $_POST;
 $api = 'https://nccommons.org/w/api.php';
 // post data to api
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $api);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	@@ -8,6 +14,12 @@
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 $result = curl_exec($ch);

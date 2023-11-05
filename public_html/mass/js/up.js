@@ -1,7 +1,36 @@
+function save_it(file, id) {
+    // save file to server
+    //---
+    $("#save_" + id).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+    //---
+    // Create a FormData object to send files
+    const formData = new FormData();
+    formData.append('file', file);
 
-function getApiToken() {
-    var msg = $.ajax({type: "GET", url: "https://nccroptool.toolforge.org/mass/api.php?do=get_csrftoken", async: false}).responseText;
-    return msg;
+    // Send the files to the PHP page using Fetch API
+
+    fetch('save.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        console.log(data);
+        // Assuming the response contains the value 'true' or 'false'
+        if (data.trim() === 'true') {
+            $("#save_" + id).html('<span class="bi bi-check2"></span> Saved!');
+        } else {
+            $("#save_" + id).html('<span class="bi bi-x"></span> Error!');
+        }
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
 }
 
 function upload_nccommons_api(file, callback) {
@@ -15,7 +44,6 @@ function upload_nccommons_api(file, callback) {
     formData.append('file', file);
     formData.append('comment', 'comment');
     formData.append('filename', file.name);
-    formData.append('token', getApiToken());
     // formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
     //---
     // console.log(params);
@@ -59,34 +87,6 @@ function upload_api(file, callback) {
     });
 }
 
-function check_image_exist(name, callback) {
-    //---
-    var api_url = 'api.php?do=exists';
-    //---
-    var params = {
-        "filename": name
-    };
-    //---
-    $.post({
-        url: api_url,
-        data: params,
-        dataType: 'json',
-        success: function (data) {
-            var exists = data.exists;
-            if (exists == true || exists == 'true') {
-                callback(true, false, name);
-            } else {
-                callback(false, true, null);
-            };
-        },
-        error: function (data) {
-            console.log(api_url + "&" + jQuery.param(params));
-            callback(false, false, null);
-        }
-    });
-    //---
-}
-
 function idElement_err(idElement, err) {
     idElement.text(err);
     idElement.css({ "font-weight": "bold", "color": "#f53333" });
@@ -126,9 +126,40 @@ function start_up(file, id) {
     });
     
 }
+
+function check_image_exist(name, callback) {
+    //---
+    var api_url = 'api.php?do=exists';
+    //---
+    var params = {
+        "filename": name
+    };
+    //---
+    $.post({
+        url: api_url,
+        data: params,
+        dataType: 'json',
+        success: function (data) {
+            var exists = data.exists;
+            if (exists == true || exists == 'true') {
+                callback(true, false, name);
+            } else {
+                callback(false, true, null);
+            };
+        },
+        error: function (data) {
+            console.log(api_url + "&" + jQuery.param(params));
+            callback(false, false, null);
+        }
+    });
+    //---
+}
+
 function upload_f(file, id) {
     var idElement = $("#" + id);
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+    //---
+    save_it(file, id);
     //---
     check_image_exist(file.name, function (exists, notexists, title) {
         if (exists) {
@@ -172,6 +203,7 @@ $(document).ready(function () {
 
             row.append("<td>" + (i + 1) + "</td>");
             row.append("<td><span id='name_" + id + "'>" + files[i].name + "</span></td>");
+            row.append("<td><span id='save_" + id + "'>" + "</span></td>");
             row.append("<td><span id='" + id + "'></span></td>");
 
             $("#result tbody").append(row);
