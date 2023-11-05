@@ -20,7 +20,7 @@ function save_it(file, id) {
         throw new Error('Network response was not ok.');
     })
     .then(data => {
-        console.log(data);
+        // console.log(data);
         // Assuming the response contains the value 'true' or 'false'
         if (data.trim() === 'true') {
             $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file.name + '" target="_blank">Saved!</a>');
@@ -100,7 +100,7 @@ function start_up(file, id) {
     upload_api(file, function (err, data) {
         //---
         // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
-        console.log(data);
+        // console.log(data);
         var error = err;
         //---
         if (data.error) {
@@ -146,7 +146,7 @@ function check_image_exist(name, callback) {
             };
         },
         error: function (data) {
-            console.log(api_url + "&" + jQuery.param(params));
+            // console.log(api_url + "&" + jQuery.param(params));
             callback(false, false, null);
         }
     });
