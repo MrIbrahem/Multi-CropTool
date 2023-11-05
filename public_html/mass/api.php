@@ -55,23 +55,30 @@ function upload()
 
 function find_exists()
 {
-    global $post;
-    $filename = $post['filename'] ?? '';
+    $filename = $_GET['filename'] ?? '';
     $params = [
         'action' => 'query',
         'format' => 'json',
         'formatversion' => '2',
         'titles' => "File:" . $filename
     ];
-
-    $res = doApiQuery($params, $jso = true);
-    // { "batchcomplete": true, "query": { "normalized": [ { "fromencoded": false, "from": "File:IMG_20220107_153333.jpg", "to": "File:IMG 20220107 153333.jpg" } ], "pages": [ { "pageid": 1190645, "ns": 6, "title": "File:IMG 20220107 153333.jpg" } ] } }
-    $pages = $res['query']['pages'][0];
     //---
-    $result = ["exists" => false];
+    $res = doEdit($params);
+    //---
+    // Check if $res contains the specific phrase "authorized this application yet"
+    if (is_string($res) && $res == 'login') {
+        // echo "login";
+        return;
+    }
+    //---
+    // { "batchcomplete": true, "query": { "normalized": [ { "fromencoded": false, "from": "File:IMG_20220107_153333.jpg", "to": "File:IMG 20220107 153333.jpg" } ], "pages": [ { "pageid": 1190645, "ns": 6, "title": "File:IMG 20220107 153333.jpg" } ] } }
+    // echo json_encode($res);
+    $pages = $res['query']['pages'][0] ?? null;
+    //---
+    $result = ["exists" => "false"];
     //---
     if ($pages && !isset($pages['missing'])) {
-        $result['exists'] = true;
+        $result['exists'] = "true";
     };
     //---
     echo json_encode($result);
