@@ -27,19 +27,25 @@ $SCRIPT_NAME = htmlspecialchars($_SERVER['SCRIPT_NAME']);
 //---
 session_name('cropwrld');
 $params = session_get_cookie_params();
-session_set_cookie_params(
-	$params['lifetime'],
-	dirname($_SERVER['SCRIPT_NAME'])
-);
+session_set_cookie_params([
+    'lifetime' => $params['lifetime'],
+    'path' => dirname($_SERVER['SCRIPT_NAME']),
+    'secure' => true,
+    'httponly' => true
+]);
 
-$inifile = ROOT_PATH . '/confs/OAuthConfig.ini';
-
-// Read the ini file
-$ini = parse_ini_file($inifile);
-if ($ini === false) {
-	header("HTTP/1.1 $errorCode Internal Server Error");
-	echo 'The ini file could not be read';
-	exit(0);
+$inifile = $ROOT_PATH . '/confs/OAuthConfig.ini';
+if (file_exists($inifile) && is_readable($inifile)) {
+    $ini = parse_ini_file($inifile);
+    if ($ini === false) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo "The ini file:($inifile) could not be read";
+        exit(0);
+    }
+} else {
+    header("HTTP/1.1 $errorCode Internal Server Error");
+    echo "The ini file:($inifile) could not be found or read";
+    exit(0);
 }
 if (
 	!isset($ini['agent']) ||
@@ -159,12 +165,17 @@ function doAuthorizationRedirect()
 	curl_setopt($ch, CURLOPT_USERAGENT, $gUserAgent);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	$data = curl_exec($ch);
-	if (!$data) {
-		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
-		exit(0);
-	}
+    //---
+    $data = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (!$data || $httpcode != 200) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo '- Curl error: ' . htmlspecialchars(curl_error($ch));
+        echo '- HTTP status: ' . $httpcode;
+        // throw new Exception ( '- Curl error: ' . htmlspecialchars( curl_error( $ch ) ) ) ;
+        exit(0);
+    }
+    //---
 	curl_close($ch);
 	$token = json_decode($data);
 	if (is_object($token) && isset($token->error)) {
@@ -227,12 +238,17 @@ function fetchAccessToken()
 	curl_setopt($ch, CURLOPT_USERAGENT, $gUserAgent);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	$data = curl_exec($ch);
-	if (!$data) {
-		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
-		exit(0);
-	}
+    //---
+    $data = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (!$data || $httpcode != 200) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo '- Curl error: ' . htmlspecialchars(curl_error($ch));
+        echo '- HTTP status: ' . $httpcode;
+        // throw new Exception ( '- Curl error: ' . htmlspecialchars( curl_error( $ch ) ) ) ;
+        exit(0);
+    }
+    //---
 	curl_close($ch);
 	$token = json_decode($data);
 	if (is_object($token) && isset($token->error)) {
@@ -297,12 +313,17 @@ function doIdentify()
 	curl_setopt($ch, CURLOPT_USERAGENT, $gUserAgent);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	$data = curl_exec($ch);
-	if (!$data) {
-		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
-		exit(0);
-	}
+    //---
+    $data = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (!$data || $httpcode != 200) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo '- Curl error: ' . htmlspecialchars(curl_error($ch));
+        echo '- HTTP status: ' . $httpcode;
+        // throw new Exception ( '- Curl error: ' . htmlspecialchars( curl_error( $ch ) ) ) ;
+        exit(0);
+    }
+    //---
 	$err = json_decode($data);
 	if (is_object($err) && isset($err->error) && $err->error === 'mwoauthdatastore-access-token-not-found') {
 		// We're not authorized!
@@ -399,12 +420,17 @@ function doApiQuery($post, &$ch = null, $jso = false)
 	curl_setopt($ch, CURLOPT_USERAGENT, $gUserAgent);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	$data = curl_exec($ch);
-	if (!$data) {
-		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
-		exit(0);
-	}
+    //---
+    $data = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (!$data || $httpcode != 200) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo '- Curl error: ' . htmlspecialchars(curl_error($ch));
+        echo '- HTTP status: ' . $httpcode;
+        // throw new Exception ( '- Curl error: ' . htmlspecialchars( curl_error( $ch ) ) ) ;
+        exit(0);
+    }
+    //---
 	if ($jso) {
 		$ret = json_decode($data, true);
 	} else {
@@ -507,13 +533,17 @@ function doTestSpecial()
 	curl_setopt($ch, CURLOPT_HEADER, 1);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-	$data = curl_exec($ch);
-	if (!$data) {
-		header("HTTP/1.1 $errorCode Internal Server Error");
-		echo 'Curl error: ' . htmlspecialchars(curl_error($ch));
-		exit(0);
-	}
-
+    //---
+    $data = curl_exec($ch);
+    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if (!$data || $httpcode != 200) {
+        header("HTTP/1.1 $errorCode Internal Server Error");
+        echo '- Curl error: ' . htmlspecialchars(curl_error($ch));
+        echo '- HTTP status: ' . $httpcode;
+        // throw new Exception ( '- Curl error: ' . htmlspecialchars( curl_error( $ch ) ) ) ;
+        exit(0);
+    }
+    //---
 	echo 'Redirect response from Special:MyPage: <pre>' . htmlspecialchars($data) . '</pre>';
 	echo '<hr>';
 }
