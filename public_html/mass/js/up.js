@@ -56,81 +56,31 @@ function save_it(file, id) {
     });
 }
 
-function upload_nccommons_api(file, callback) {
-    //---
-    var api_url = 'nccommons_api.php';
-    //---
-    var formData = new FormData();
-    formData.append('action', 'upload');
-    formData.append('format', 'json');
-    //---
-    // formData.append('file', file);
-    formData.append('comment', 'comment');
-    formData.append('filename', file.name);
-    formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
-    //---
-    // console.log(params);
-    $.ajax({
-        url: api_url,
-        data: formData,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            callback(null, data);
-        },
-        error: function (data) {
-            callback('Error occurred', data);
-        }
-    });
-}
-function upload_apixx(file, callback) {
-    //---
-    var api_url = 'api.php?do=upload';
-    //---
-    var formData = new FormData();
-    // formData.append('file', file);
-    formData.append('comment', 'comment');
-    formData.append('filename', file.name);
-    formData.append('url', 'https://nccroptool.toolforge.org/mass/files/' + file.name);
-    //---
-    // console.log(params);
-    $.ajax({
-        url: api_url,
-        data: formData,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            callback(null, data);
-        },
-        error: function (data) {
-            callback('Error occurred', data);
-        }
-    });
-}
-
 function upload_api(file, callback) {
     //---
     var file_url = 'https://nccroptool.toolforge.org/mass/files/' + file.name;
     //---
-    var api_url = 'api.php?do=upload';
+    var api_url = 'auth/api.php';
     //---
     var formData = {
         filename: file.name,
         url: file_url,
-        comment: 'comment'
+        comment: 'comment',
+        do: 'upload',
     }
+    //---
+    var urlx = api_url + '?' + $.param(formData);
+    //---
     $.ajax({
         url: api_url,
         data: formData,
         type: "POST",
         dataType: "json",
         success: function (data) {
-            callback(null, data);
+            callback(null, data, urlx);
         },
         error: function (data) {
-            callback('Error occurred', data);
+            callback('Error occurred', data, urlx);
         }
     });
 }
@@ -144,13 +94,16 @@ function start_up(file, id) {
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
     // console.log(file)
     //---
-    upload_api(file, function (err, data) {
+    upload_api(file, function (err, data, urlx) {
         //---
         // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
         var error = err;
         //---
         if (data.error) {
-            error = data.error.code + ': ' + data.error.info;
+            error = data.error;
+            if (data.error.code) {
+                error = data.error.code + ': ' + data.error.info;
+            }
         }
         //---
         // {"upload":{"result":"Warning","warnings":{"was-deleted":"Z.jpg"},"filekey":"1ah474dii5sk.fjn2sw.13.","sessionkey":"1ah474dii5sk.fjn2sw.13."}}
@@ -158,6 +111,7 @@ function start_up(file, id) {
             data = data.upload;
         }
         //---
+        console.log(urlx);
         console.log(data);
         //---
         if (error) {
@@ -186,7 +140,7 @@ function start_up(file, id) {
 
 function check_image_exist(name, callback) {
     //---
-    var api_url = 'api.php?do=exists&filename=' + name;
+    var api_url = 'auth/api.php?do=exists&filename=' + name;
     //---
     $.ajax({
         url: api_url,
@@ -218,36 +172,34 @@ function check_image_exist(name, callback) {
 function upload_f(file, id) {
     var idElement = $("#" + id);
     //---
-    // استخدام الوظيفة المعدلة
-    save_it(file, id).then(result => {
-        // تم الحفظ بنجاح
-        if (result === true) {
-            //---
-            idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
-            //---
-            check_image_exist(file.name, function (exists, notexists, data) {
-                console.log('check_image_exist' + JSON.stringify(data));
-                if (notexists) {
-                    start_up(file, id);
-
-                } else if (exists) {
-                    $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
-                    idElement.text('File exists in NCC');
-                    idElement.css({ "color": "#f53333", "font-weight": "bold" });
-
-                } else {
-                    // console.log(JSON.stringify(data));
-                    var error = data.error;
-                    if (error == "You haven't authorized this application yet!") {
-                        idElement.html($('#loginli').html());
-                    } else {
-                        idElement.text('Exists Error..');
-                        idElement.css({ "font-weight": "bold", "color": "#f53333" });
-                    }
+    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
+    //---
+    check_image_exist(file.name, function (exists, notexists, data) {
+        console.log('check_image_exist' + JSON.stringify(data));
+        if (notexists) {
+            // استخدام الوظيفة المعدلة
+            save_it(file, id).then(result => {
+                // تم الحفظ بنجاح
+                if (result === true) {
+                    start_up(file, id);        
                 }
-            });
+            })
+        } else if (exists) {
+            $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+            idElement.text('File exists in NCC');
+            idElement.css({ "color": "#f53333", "font-weight": "bold" });
+
+        } else {
+            // console.log(JSON.stringify(data));
+            var error = data.error;
+            if (error == "You haven't authorized this application yet!") {
+                idElement.html($('#loginli').html());
+            } else {
+                idElement.text('Exists Error..');
+                idElement.css({ "font-weight": "bold", "color": "#f53333" });
+            }
         }
-    })
+    });
 }
 
 $(document).ready(function () {
