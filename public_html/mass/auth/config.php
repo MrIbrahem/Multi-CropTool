@@ -11,7 +11,7 @@ $inifile = $ROOT_PATH . '/confs/OAuthConfig.ini';
 $ini = parse_ini_file($inifile);
 //---
 if ($ini === false) {
-    header("HTTP/1.1 $errorCode Internal Server Error");
+    header("HTTP/1.1 500 Internal Server Error");
     echo "The ini file:($inifile) could not be read";
     // exit(0);
 }
@@ -20,7 +20,7 @@ if (
     !isset($ini['consumerKey']) ||
     !isset($ini['consumerSecret'])
 ) {
-    header("HTTP/1.1 $errorCode Internal Server Error");
+    header("HTTP/1.1 500 Internal Server Error");
     echo 'Required configuration directives not found in ini file';
     exit(0);
 }

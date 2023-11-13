@@ -29,7 +29,7 @@ echo "You are authenticated as $ident->username.\n\n";
 
 
 function get_edit_token(){
-    global $client, $accessToken, $apiUrl, $editToken;
+    global $client, $accessToken, $apiUrl;
     // Example 3: make an edit (getting the edit token first).
     $editToken = json_decode( $client->makeOAuthCall(
         $accessToken,

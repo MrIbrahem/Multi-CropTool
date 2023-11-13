@@ -10,6 +10,10 @@ use MediaWiki\OAuthClient\Token;
 
 if (!isset($_GET['oauth_verifier'])) {
 	echo "This page should only be access after redirection back from the wiki.";
+	echo <<<HTML
+		Go to this URL to authorize this tool:<br />
+		<a href='auth.php?a=login'>Login</a><br />
+	HTML;
 	exit(1);
 }
 
