@@ -2,7 +2,7 @@
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
 //---
-include_once('login.php');
+include_once('auth/index.php');
 //---
 echo "
 <span id='myusername' style='display:none'>$username</span>";
@@ -144,7 +144,7 @@ echo <<<HTML
 						</a>
 					</li>
 					<li class="nav-item col-4 col-lg-auto" id="loginli">
-						<a role="button" class="nav-link py-2 px-0 px-lg-2" href="index.php?action=login">
+						<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login">
 							<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
 						</a>
 					</li>

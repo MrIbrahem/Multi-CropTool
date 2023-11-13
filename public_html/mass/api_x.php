@@ -1,25 +1,6 @@
 <?php
 //---
-$errorCode = 200;
-//---
-if (!defined('ROOT_PATH')) {
-    // get the root path from __file__ , split before public_html
-    // split the file path on the public_html directory
-    $pathParts = explode('public_html', __file__);
-
-    // the root path is the first part of the split file path
-    $ROOT_PATH = $pathParts[0];
-    define('ROOT_PATH', $ROOT_PATH);
-}
-//---
-require 'login.php';
-
-$post = $_REQUEST;
-// remove do from $post
-unset($post['do']);
-
-function upload()
-{
+function upload($post) {
     global $post;
     $url = $post['url'] ?? '';
     $file = $_FILES['file'];
@@ -53,8 +34,7 @@ function upload()
     echo json_encode($uu);
 }
 
-function find_exists()
-{
+function find_exists() {
     $filename = $_GET['filename'] ?? '';
     $params = [
         'action' => 'query',
@@ -84,15 +64,10 @@ function find_exists()
     echo json_encode($result);
 }
 
+//---
 switch ($_REQUEST['do'] ?? '') {
     case 'upload':
-        upload();
-        break;
-    case 'api':
-        $post['format'] = 'json';
-        $res = doEdit($post);
-        // echo result as json
-        echo json_encode($res);
+        upload($_REQUEST);
         break;
     case 'exists':
         find_exists();
