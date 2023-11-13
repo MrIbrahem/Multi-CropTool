@@ -48,7 +48,7 @@ function doApiQuery($Params, $addtoken = null)
 {
     global $client, $accessToken, $apiUrl;
     //---
-    if ($addtoken != null) $Params['token'] = get_edit_token();
+    if ($addtoken !== null) $Params['token'] = get_edit_token();
     //---
     $Result = $client->makeOAuthCall(
         $accessToken,
