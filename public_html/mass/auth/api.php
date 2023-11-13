@@ -14,39 +14,41 @@ use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Token;
 
 // Output the demo as plain text, for easier formatting.
-header( 'Content-type: text/plain' );
+header('Content-type: text/plain');
 
 // Get the wiki URL and OAuth consumer details from the config file.
 require_once __DIR__ . '/config.php';
 
 // Configure the OAuth client with the URL and consumer details.
-$conf = new ClientConfig( $oauthUrl );
-$conf->setConsumer( new Consumer( $consumerKey, $consumerSecret ) );
+$conf = new ClientConfig($oauthUrl);
+$conf->setConsumer(new Consumer($consumerKey, $consumerSecret));
 $conf->setUserAgent($gUserAgent);
-$client = new Client( $conf );
+$client = new Client($conf);
 
 // Load the Access Token from the session.
 session_start();
-$accessToken = new Token( $_SESSION['access_key'], $_SESSION['access_secret'] );
+$accessToken = new Token($_SESSION['access_key'], $_SESSION['access_secret']);
 
 // Example 1: get the authenticated user's identity.
-$ident = $client->identify( $accessToken );
+$ident = $client->identify($accessToken);
 
-function get_edit_token(){
-    global $client, $accessToken, $apiUrl, $editToken;
+function get_edit_token()
+{
+    global $client, $accessToken, $apiUrl;
     // Example 3: make an edit (getting the edit token first).
-    $editToken = json_decode( $client->makeOAuthCall(
+    $editToken = json_decode($client->makeOAuthCall(
         $accessToken,
         "$apiUrl?action=query&meta=tokens&format=json"
-    ) )->query->tokens->csrftoken;
+    ))->query->tokens->csrftoken;
     //---
     return $editToken;
 }
 
-function doApiQuery($Params, $addtoken = null){
+function doApiQuery($Params, $addtoken = null)
+{
     global $client, $accessToken, $apiUrl;
     //---
-    if ($addtoken != null) $Params['token'] = get_edit_token();    
+    if ($addtoken !== null) $Params['token'] = get_edit_token();
     //---
     $Result = $client->makeOAuthCall(
         $accessToken,
@@ -59,51 +61,66 @@ function doApiQuery($Params, $addtoken = null){
 }
 
 function doEdit($data) {
-	return doApiQuery($data, $addtoken = true);
+    return doApiQuery($data, $addtoken = true);
 }
+
 
 function upload($post) {
     $url = $post['url'] ?? '';
     $file = $_FILES['file'];
+
+    // Validate and sanitize other inputs if needed
+    $filename = filter_var($post['filename'] ?? '', FILTER_SANITIZE_STRING);
+    $comment = filter_var($post['comment'] ?? '', FILTER_SANITIZE_STRING);
+
     //---
-    $filename = $post['filename'] ?? '';
-    //---
+
     $data = [
         'action' => 'upload',
         'format' => 'json',
         'filename' => $filename,
-        // 'file' => $post['file'],
-        'comment' => $post['comment'] ?? '',
-        // 'title' => $post['title'],
-        // 'text' => $post['text'],
+        'comment' => $comment,
     ];
+
     //---
+
     if ($url == '' && $file == '') {
         $err = ["error" => "Invalid", "filename" => $filename, "url" => $url];
         echo json_encode($err);
         return;
     }
+
     //---
+
     if ($url != '') {
         $data['url'] = $url;
     } else {
         // CURLFile
         $data['file'] = new \CURLFile($file['name'], $file['type'], $file['tmp_name'], $file['size']);
     }
+
     //---
+
     $uu = doEdit($data);
+
     //---
+
     echo json_encode($uu);
 }
 
+
 function find_exists() {
-    $filename = $_GET['filename'] ?? '';
+    // Sanitize the filename to prevent malicious code injection
+    $sanitizedFilename = filter_var($_GET['filename'], FILTER_SANITIZE_STRING);
+    $filename = $sanitizedFilename ?? '';
+
     $params = [
         'action' => 'query',
         'format' => 'json',
         'formatversion' => '2',
         'titles' => "File:" . $filename
     ];
+
     //---
     $res = doEdit($params);
     //---
@@ -125,6 +142,7 @@ function find_exists() {
     //---
     echo json_encode($result);
 }
+
 
 //---
 switch ($_REQUEST['do'] ?? '') {
