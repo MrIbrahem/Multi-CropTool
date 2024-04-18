@@ -17,7 +17,7 @@ function make_errors_form($x, $y, $width, $height)
             <textarea class="new_textarea" id="text" name="text" cols="100" rows="15" hidden>
 
             </textarea>
-            <input type="submit" class="btn btn-outline-primary" value="Errors">
+            <input id="restart" type="submit" class="btn btn-outline-primary" value="Re Start Errors" disabled>
         </form>
     HTML;
 }

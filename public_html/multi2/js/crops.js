@@ -102,8 +102,8 @@ async function make_crops() {
         var id = to_crop[i].getAttribute("idt");
         console.log(JSON.stringify(to_crop[i]));
 
-        // var imagename = $("#name" + id).text();
-        var imagename = sessionStorage.getItem(id);
+        var imagename = $("#name" + id).text();
+        // var imagename = sessionStorage.getItem(id);
 
         console.log("make_crops: id:" + id + " imagename:" + imagename);
         if (imagename != null && imagename != undefined && imagename != '') {

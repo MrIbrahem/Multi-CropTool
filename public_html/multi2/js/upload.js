@@ -92,8 +92,8 @@ function upload_t(tab) {
     for (var i = 0; i < tab.length; i++) {
         var id = tab[i];
 
-        var imagename = sessionStorage.getItem(id);
-        // var imagename = $("#name" + id).text();
+        // var imagename = sessionStorage.getItem(id);
+        var imagename = $("#name" + id).text();
 
         if (imagename == null || imagename == undefined || imagename == '') {
             $('#test' + id).html('imagename is null');

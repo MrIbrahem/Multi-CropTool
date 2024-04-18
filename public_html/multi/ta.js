@@ -358,6 +358,8 @@ async function load_tds() {
         // ---
         await load_td(id, imagename);
     };
+    // remove disabled from #restart
+    $('#restart').removeAttr('disabled');
 };
 
 function start() {

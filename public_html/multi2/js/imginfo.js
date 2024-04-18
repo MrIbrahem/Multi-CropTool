@@ -136,5 +136,7 @@ async function get_infos() {
 
     $("#info_logo").hide();
     $("#info_logo_done").show();
+    // remove disabled from #restart
+    $('#restart').removeAttr('disabled');
 };
 
