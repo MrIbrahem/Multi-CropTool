@@ -12,6 +12,7 @@ function user_login() {
         return;
     }
     jQuery.ajax({
+        async: true,
         url: url,
         type: 'GET',
         dataType: 'json',
