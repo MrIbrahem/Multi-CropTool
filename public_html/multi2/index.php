@@ -35,6 +35,22 @@ if ($text != '' && $start != '') {
 
 </div>
 <script>
+    function selects() {
+        var ele = document.getElementsByName('chk');
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].type == 'checkbox' && ele[i].disabled != '1')
+                ele[i].checked = true;
+        };
+        // $('#uploaderror').css({ "display": "none" });
+    };
+
+    function deSelect() {
+        var ele = document.getElementsByName('chk');
+        for (var i = 0; i < ele.length; i++) {
+            if (ele[i].type == 'checkbox')
+                ele[i].checked = false;
+        }
+    };
     $(document).ready(function() {
 
         // let lastname = sessionStorage.getItem("username");
@@ -42,22 +58,6 @@ if ($text != '' && $start != '') {
         user_login();
         // };
 
-        function selects() {
-            var ele = document.getElementsByName('chk');
-            for (var i = 0; i < ele.length; i++) {
-                if (ele[i].type == 'checkbox' && ele[i].disabled != '1')
-                    ele[i].checked = true;
-            };
-            // $('#uploaderror').css({ "display": "none" });
-        };
-
-        function deSelect() {
-            var ele = document.getElementsByName('chk');
-            for (var i = 0; i < ele.length; i++) {
-                if (ele[i].type == 'checkbox')
-                    ele[i].checked = false;
-            }
-        };
         async function start() {
             await get_infos();
             await make_crops();

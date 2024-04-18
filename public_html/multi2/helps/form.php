@@ -5,11 +5,13 @@ namespace Form;
 use function HelpHTML\group_input;
 
 $files = '
-(DermNet NZ pachydermodactyly-1).jpg
-(DermNet NZ pachydermodactyly-2).jpg
-(DermNet NZ pachydermodactyly-3).jpg
+Gallbladder adenocarcinoma (Radiopaedia 84615-100022 Axial 103).jpg
+Gallbladder adenocarcinoma (Radiopaedia 84615-100022 Axial 104).jpg
+Gallbladder adenocarcinoma (Radiopaedia 84615-100022 Axial 105).jpg
 (DermNet NZ pachydermodactyly-4).jpg
 (DermNet NZ pachydermodactyly-5).jpg
+Gallbladder adenocarcinoma (Radiopaedia 84615-100022 Axial 106).jpg
+Gallbladder adenocarcinoma (Radiopaedia 84615-100022 Axial 107).jpg
 ';
 function make_form($x, $y, $width, $height, $text)
 {

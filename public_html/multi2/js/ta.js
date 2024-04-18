@@ -2,12 +2,13 @@ let rand_number = Math.random();
 let table_json = new Map();
 
 function loge(imgname, value, type) {
-    table_json[imgname].set(type, value);
+    table_json.get(imgname).set(type, value);
 };
 
 function log_all() {
     table_json['user'] = $("#username").html();
     jQuery.ajax({
+        async: true,
         url: 'log.php',
         data: { a: JSON.stringify(table_json), file_name: rand_number },
         type: 'POST'
@@ -18,6 +19,7 @@ function user_login() {
     var url = 'https://nccroptool.toolforge.org/api/auth/user';
 
     jQuery.ajax({
+        async: true,
         url: url,
         type: 'GET',
         dataType: 'json',
@@ -52,7 +54,8 @@ function error_file(id, filename, Type, add) {
 
 function count_done_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function make_width_and_high(width, height) {
@@ -81,10 +84,11 @@ function get_crop(id, imagename, params = null) {
             height: $('#height').html(),
         }
 
-    if (table_json[imagename] == null || table_json[imagename] == undefined) {
-        table_json[imagename] = new Map();
-    };
-
+    // ---
+    if (!table_json.has(imagename)) {
+        table_json.set(imagename, new Map());
+    }
+    // ---
     var y = params.y;
     var x = params.x;
     var width = params.width;
@@ -103,13 +107,14 @@ function get_crop(id, imagename, params = null) {
         method: 'precise',
         rotate: '0'
     };
-    api_url2 = api_url + "api/file/crop?" + jQuery.param(params2);
+    var api_url2 = api_url + "api/file/crop?" + jQuery.param(params2);
 
 
 
 
 
     jQuery.ajax({
+        async: true,
         url: api_url2,
         dataType: 'json',
         success: function (data) {
@@ -159,6 +164,7 @@ function get_one_file_info(id, imagename, crop = true) {
     var api_url1 = api_url + "api/file/info?" + jQuery.param(params);
 
     jQuery.ajax({
+        async: true,
         url: api_url1,
         dataType: 'json',
         success: function (data) {
@@ -214,7 +220,7 @@ function get_one_file_info(id, imagename, crop = true) {
 async function get_infos() {
     var ele = document.getElementsByName('divtd');
 
-    $("#info_all").html(ele.length);
+    $("#info_all").text(ele.length);
 
     for (var i = 0; i < ele.length; i++) {
         var id = ele[i].id;
@@ -247,9 +253,10 @@ function upload(check) {
             store: !0
         };
 
-        api_url1 = api_url + "api/file/publish?";
+        var api_url1 = api_url + "api/file/publish?";
 
         jQuery.ajax({
+            async: true,
             url: api_url1,
             data: params,
             type: 'POST',

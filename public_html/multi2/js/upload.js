@@ -1,7 +1,8 @@
 
 function count_up_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function upload(id, imagename) {
@@ -22,6 +23,7 @@ function upload(id, imagename) {
         var api_url1 = api_url + "api/file/publish?";
 
         jQuery.ajax({
+            async: true,
             url: api_url1,
             data: params,
             type: 'POST',
@@ -104,10 +106,17 @@ function upload_t(tab) {
         }
     }
 }
-async function upload_all() {
 
-    $("#up_logo").show();
-    $("#up_name").css("font-weight", "bold");
+
+function change_color(id) {
+    if ($('#' + id + '_done').text() == $('#' + id + '_all').text()) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    }
+}
+
+async function upload_all() {
 
     var ele = document.getElementsByName('chk');
 
@@ -129,8 +138,16 @@ async function upload_all() {
         }
     };
 
+    if (ele.length == notchecked.length || checked_tab.length == 0) {
+        $('#uploaderror').css({ "display": "inline" });
+        return;
+    }
+
     $("#up_all").val(checked_tab.length);
     $("#up_all").css("font-weight", "bold");
+
+    $("#up_logo").show();
+    $("#up_name").css("font-weight", "bold");
 
     if (notchecked.length > 0) {
         // $('#imgerror_card').show();
@@ -144,6 +161,8 @@ async function upload_all() {
     }
 
     await upload_t(checked_tab);
+
+    change_color('up');
 
     $("#up_logo").hide();
     $("#up_logo_done").show();
