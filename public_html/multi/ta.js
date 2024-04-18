@@ -10,9 +10,9 @@ function log_all() {
     table_json['user'] = $("#username").html();
     jQuery.ajax({
         url: 'log.php',
-        data: {a : JSON.stringify(table_json), file_name : ope},
+        data: { a: JSON.stringify(table_json), file_name: ope },
         type: 'POST'
-        });
+    });
 };
 
 function user_login() {
@@ -28,7 +28,7 @@ function user_login() {
         url: url,
         type: 'GET',
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             if (data.user) {
                 var text = 'Authorized as <span id="username" style="color:blue;">' + data.user + '</span>';
                 $('#user_login').html(text);
@@ -39,17 +39,17 @@ function user_login() {
     // ---
 };
 
-function error_file(id,filename,Type,add) {
+function error_file(id, filename, Type, add) {
     // <div id="panel' . $id_td . '" class="panel panel-default">
     // ---
     var error = "<strong><i class='fa fa-exclamation-triangle'></i> Error! </strong>";
     // ---
     var imageurl = 'https://nccommons.org/wiki/File:' + filename;
     // ---
-    if(Type == 'exist')
+    if (Type == 'exist')
         error += "<a href='" + imageurl + "' target='_blank'><b>The file</b></a> is not available on nccommons.org, Please check the file name and try again.";
     // ---
-    if(Type != 'exist')
+    if (Type != 'exist')
         error += Type;
     // ---
     // error += "<br>" + add;
@@ -60,7 +60,7 @@ function error_file(id,filename,Type,add) {
     $('#panelbody' + id).html(error);
     // ---
     $('#panel' + id).addClass("panel-danger");
-    $('#input'+id).attr("disabled","1");
+    $('#input' + id).attr("disabled", "1");
 }
 
 function check_image_exist(name, id = '', success = '', notsuccess = '') {
@@ -79,26 +79,26 @@ function check_image_exist(name, id = '', success = '', notsuccess = '') {
     var exist = false;
     // ---
     jQuery.ajax({
-        url : api_url,
+        url: api_url,
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             var exists = data.exists;
             if (exists == true || exists == 'true') {
                 // ---
-                if(id != '' && success != '')
-                $('#' + id).html(success);
+                if (id != '' && success != '')
+                    $('#' + id).html(success);
                 // ---
                 exist = true;
             } else {
                 // ---
-                if(id != '' && notsuccess != '')
+                if (id != '' && notsuccess != '')
                     $('#' + id).html(notsuccess);
                 // ---
                 exist = false;
             };
         },
-        error: function(data) {
-            if(id != '' && notsuccess != '')
+        error: function (data) {
+            if (id != '' && notsuccess != '')
                 $('#' + id).html(notsuccess);
         }
     });
@@ -129,14 +129,14 @@ function make_width_and_high(width, height) {
     return [new_width, new_height];
 };
 
-function get_crop(id, imagename,params = null) {
+function get_crop(id, imagename, params = null) {
     // ---
-    if(params == null)
+    if (params == null)
         params = {
-            y : $('#y').html(),
-            x : $('#x').html(),
-            width : $('#width').html(),
-            height : $('#height').html(),
+            y: $('#y').html(),
+            x: $('#x').html(),
+            width: $('#width').html(),
+            height: $('#height').html(),
         }
     // ---
     if (table_json[imagename] == null || table_json[imagename] == undefined) {
@@ -161,7 +161,7 @@ function get_crop(id, imagename,params = null) {
         method: 'precise',
         rotate: '0'
     };
-    api_url2 = api_url + "api/file/crop?" + jQuery.param(params2);
+    var api_url2 = api_url + "api/file/crop?" + jQuery.param(params2);
     // ---
     // {"site":"nccommons.org","title":"(DermNet NZ pachydermodactyly-3).jpg","pageno":0,"method":"precise","dim":"30 % horizontally, 39 % vertically using [[Commons:CropTool|CropTool]] with precise mode.","page":{"elems":[],"hasAssessmentTemplates":false,"hasDoNotCropTemplate":false},"crop":{"name":"files\/c83c48c5edb1d920e59d6feb1e4b196c191be2be_cropped.jpg","width":445,"height":295},"thumb":null,"time":1649538183,"wikidata":null,"msecs":481}
     // ---
@@ -170,7 +170,7 @@ function get_crop(id, imagename,params = null) {
     jQuery.ajax({
         url: api_url2,
         dataType: 'json',
-        success: function(data) {
+        success: function (data) {
             // table_json[imagename].crop = 'success';
             loge(imagename, 'success', 'crop');
             var cropimgname = data.crop.name;
@@ -196,17 +196,17 @@ function get_crop(id, imagename,params = null) {
             // ---
             $('#panel' + id).addClass("panel-info");
         },
-        error: function(data) {
+        error: function (data) {
             // table_json[imagename].crop = 'error';
             loge(imagename, 'error', 'crop');
-            error_file(id, imagename, 'when crop','dd');
+            error_file(id, imagename, 'when crop', 'dd');
             count_done_plus_one();
             // return;
         }
     });
 };
 
-function load_td(id, imagename, crop = true) {
+function load_td(id, imagename) {
     // ---
     // $('#test'+id).html("kk");
     // ---
@@ -217,44 +217,44 @@ function load_td(id, imagename, crop = true) {
         title: imagename
     };
     // ---
-    api_url1 = api_url + "api/file/info?" + jQuery.param(params);
+    var api_url1 = api_url + "api/file/info?" + jQuery.param(params);
     // ---
     /*{
-	"site": "nccommons.org",
-	"title": "Cardiac amyloidosis (Radiopaedia 39736-42124 F 1).jpg",
-	"description": "https:\/\/nccommons.org\/wiki\/File:Cardiac_amyloidosis_(Radiopaedia_39736-42124_F_1).jpg",
-	"pagecount": 1,
-	"mime": "image\/jpeg",
-	"original": {
-		"name": "files\/13914d9ed30cd475d205fe088a6c9276783f4ed0.jpg",
-		"width": 1564,
-		"height": 856
-	},
-	"thumb": {
-		"name": "files\/13914d9ed30cd475d205fe088a6c9276783f4ed0_thumb.jpg",
-		"width": 800,
-		"height": 438
-	},
-	"samplingFactor": 0,
-	"orientation": 0,
-	"categories": ["Radiopaedia case 39736 Cardiac amyloidosis", "Uploads by F\u00e6"]
+    "site": "nccommons.org",
+    "title": "Cardiac amyloidosis (Radiopaedia 39736-42124 F 1).jpg",
+    "description": "https:\/\/nccommons.org\/wiki\/File:Cardiac_amyloidosis_(Radiopaedia_39736-42124_F_1).jpg",
+    "pagecount": 1,
+    "mime": "image\/jpeg",
+    "original": {
+        "name": "files\/13914d9ed30cd475d205fe088a6c9276783f4ed0.jpg",
+        "width": 1564,
+        "height": 856
+    },
+    "thumb": {
+        "name": "files\/13914d9ed30cd475d205fe088a6c9276783f4ed0_thumb.jpg",
+        "width": 800,
+        "height": 438
+    },
+    "samplingFactor": 0,
+    "orientation": 0,
+    "categories": ["Radiopaedia case 39736 Cardiac amyloidosis", "Uploads by F\u00e6"]
     }*/
     // ---
     /* {
-	"site": "nccommons.org",
-	"title": "(DermNet NZ pachydermodactyly-3).jpg",
-	"description": "https:\/\/nccommons.org\/wiki\/File:(DermNet_NZ_pachydermodactyly-3).jpg",
-	"pagecount": 1,
-	"mime": "image\/jpeg",
-	"original": {
-		"name": "files\/c83c48c5edb1d920e59d6feb1e4b196c191be2be.jpg",
-		"width": 640,
-		"height": 480
-	},
-	"thumb": null,
-	"samplingFactor": 0,
-	"orientation": 0,
-	"categories": ["CC-NC", "CC-ND", "DermNet images", "Pachydermodactyly", "Uploads by F\u00e6"]
+    "site": "nccommons.org",
+    "title": "(DermNet NZ pachydermodactyly-3).jpg",
+    "description": "https:\/\/nccommons.org\/wiki\/File:(DermNet_NZ_pachydermodactyly-3).jpg",
+    "pagecount": 1,
+    "mime": "image\/jpeg",
+    "original": {
+        "name": "files\/c83c48c5edb1d920e59d6feb1e4b196c191be2be.jpg",
+        "width": 640,
+        "height": 480
+    },
+    "thumb": null,
+    "samplingFactor": 0,
+    "orientation": 0,
+    "categories": ["CC-NC", "CC-ND", "DermNet images", "Pachydermodactyly", "Uploads by F\u00e6"]
     }*/
     // ---
     var thumb = '';
@@ -270,7 +270,7 @@ function load_td(id, imagename, crop = true) {
             count_done_plus_one();
           }
         },*/
-        success: function(data) {
+        success: function (data) {
             // ---
             // alert( "success "  + id);
             // ---
@@ -281,7 +281,7 @@ function load_td(id, imagename, crop = true) {
                 // table_json[imagename].exist = error;
                 loge(imagename, 'error', 'exist');
                 $('#test' + id).html(error);
-                error_file(id, imagename, error,'bbo');
+                error_file(id, imagename, error, 'bbo');
                 count_done_plus_one();
                 // return;
             } else {
@@ -290,7 +290,7 @@ function load_td(id, imagename, crop = true) {
                 loge(imagename, 'exist', 'exist');
                 // ---
                 var aa = data.thumb;
-                if(aa == null){
+                if (aa == null) {
                     aa = data.original;
                 }
                 // ---
@@ -308,33 +308,31 @@ function load_td(id, imagename, crop = true) {
                 // ---
                 $('#home' + id).html(img_tag);
                 // ---
-                if (crop == true) {
-                    get_crop(id, imagename);
-                };
+                get_crop(id, imagename);
             };
         },
-        error: function(data) {
+        error: function (data) {
             // alert( "Error " + id );
             // log(imagename, 'file', 'error when getting image info');
-            error_file(id, imagename, 'when getting image info','cc');
+            error_file(id, imagename, 'when getting image info', 'cc');
             count_done_plus_one();
             // return;
         }
     });
     // ---
-    
+
     // ---
 };
 
-function load_tds() {
+async function load_tds() {
     var ele = document.getElementsByName('divtd');
-	// ---
-	// ---
-    $("#workcount").html(ele.length);
-	// ---
+    // ---
+    // ---
+    $("#workcount").val(ele.length);
+    // ---
     var notexists = [];
     var exists = [];
-	// ---
+    // ---
     for (var i = 0; i < ele.length; i++) {
         var id = ele[i].id;
         var nameid = "name" + id;
@@ -342,36 +340,8 @@ function load_tds() {
         // ---
         table_json[imagename] = new Map();
         // ---
-        load_td(id, imagename, crop = true);
-        /*
-        // ---
-        var fileexist = check_image_exist(imagename);
-        if(fileexist == true)
-            exists.push(id);
-        // ---
-        if(fileexist != true)
-            notexists.push(id);
-        // ---
-        */
+        await load_td(id, imagename);
     };
-    // ---
-    /*
-    for (var g = 0; g < exists.length; g++) {
-        var id = exists[g];
-        var nameid = "name" + id;
-        var imagename = $('#' + nameid).html();
-        load_td(id, imagename);
-    };
-    // ---
-    for (var f = 0; f < notexists.length; f++) {
-        var ide = notexists[f];
-        var nameida = "name" + ide;
-        var imagename1 = $('#' + nameida).html();
-        count_done_plus_one();
-        error_file(ide, imagename1,'exist','aa');
-    };
-    */
-    // ---
     log_all();
     // ---
 };
@@ -379,9 +349,9 @@ function load_tds() {
 function upload(check) {
     for (var i = 0; i < check.length; i++) {
         // var id = 't' + check[i];
-        var id = $('#h'+check[i]).text();
-        var imagename = $("#name"+id).text();
-        
+        var id = $('#h' + check[i]).text();
+        var imagename = $("#name" + id).text();
+
         // ---
         if (table_json[imagename] == null || table_json[imagename] == undefined) {
             table_json[imagename] = new Map();
@@ -401,7 +371,7 @@ function upload(check) {
             store: !0
         };
         // ---
-        api_url1 = api_url + "api/file/publish?";// + jQuery.param(params);
+        var api_url1 = api_url + "api/file/publish?";// + jQuery.param(params);
         // ---
         // var formData = new FormData();
         // formData.append('file', imagelink);
@@ -413,7 +383,7 @@ function upload(check) {
             // contentType: false,
             // processData: false,
             type: 'POST',
-            success: function(data) {
+            success: function (data) {
                 // ---
                 var result = data.result;
                 var error = data.error;
@@ -426,7 +396,7 @@ function upload(check) {
                     $('#panel' + id).removeClass("panel-default");
                     $('#panel' + id).removeClass("panel-info");
                     // ---
-                    $('#test' + id).css({"color": "green", "font-size": "20px"});
+                    $('#test' + id).css({ "color": "green", "font-size": "20px" });
                     $('#test' + id).html('<i class="fa fa-check-circle-o"></i> uploaded');
                     // ---
 
@@ -438,7 +408,7 @@ function upload(check) {
                     // return;
                 };
             },
-            error: function(data) {
+            error: function (data) {
                 // table_json[imagename].upload = 'failed';
                 loge(imagename, 'failed', 'upload');
                 $('#test' + id).html('error when uploading');
@@ -452,7 +422,7 @@ function upload(check) {
         $('#uploaddone').html(uploaddone);
         // ---
     };
-    
+
     // ---
 };
 
@@ -488,10 +458,10 @@ function upload_all() {
     for (var i = 0; i < notchecked.length; i++) {
         number = number + 1;
         // ---
-        var id = $('#h'+notchecked[i]).html();
+        var id = $('#h' + notchecked[i]).html();
         var mainid = 'main' + id;
         // ---
-        var td_html = $('#'+mainid).html();
+        var td_html = $('#' + mainid).html();
         // ---
         img_error += '<div class="col-sm-3" div id="' + mainid + '" style="display:inline;">';
         img_error += td_html;
@@ -516,10 +486,10 @@ function upload_all() {
     for (var i = 0; i < checked.length; i++) {
         numb = numb + 1;
         // ---
-        var id = $('#h'+checked[i]).html();
+        var id = $('#h' + checked[i]).html();
         var mainid = 'main' + id;
         // ---
-        var td_html = $('#'+mainid).html();
+        var td_html = $('#' + mainid).html();
         // ---
         to_uploa += '<div class="col-sm-3" div id="' + mainid + '" style="display:inline;">';
         to_uploa += td_html;
@@ -540,8 +510,8 @@ function upload_all() {
     $('#img_error_panel').show();
     $('#to_upload_panel').show();
     // ---
-    $('#loadinfo_panel' ).hide();
-    $('#loadinfo_panel' ).empty();
+    $('#loadinfo_panel').hide();
+    $('#loadinfo_panel').empty();
     // ---
     upload(checked);
     // ---
@@ -551,10 +521,10 @@ function upload_all() {
 
 function change_uploaderror_display(type) {
     if (type == 'none') {
-		$('#uploaderror').css({"display": "none"});
+        $('#uploaderror').css({ "display": "none" });
     }
     if (type == 'inline') {
-		$('#uploaderror').css({"display": "inline"});
+        $('#uploaderror').css({ "display": "inline" });
     }
 };
 
