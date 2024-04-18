@@ -63,7 +63,8 @@ function get_crop(id, imagename) {
 
                 var img_tag = $("<img/>").attr("src", url).attr("id", 'img' + id).attr("width", width).attr("height", height).attr("alt", imagename);
 
-                $('#co_' + id).html(img_tag);
+                $('#co_' + id).empty();
+                $('#co_' + id).append(img_tag);
 
                 var dim = 'Cropped ' + data.dim + ' Multi-CropTool';
                 $('#s' + id).html(dim);
