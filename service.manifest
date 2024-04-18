@@ -1,8 +1,6 @@
 # This file is used by Toolforge infrastructure.
 # Please do not edit manually at this time.
-# Tue Feb 14 12:24:13 2023
-backend: gridengine
-canonical: true
-release: buster
+# Thu Jul 21 21:39:33 2022
+backend: kubernetes
 version: 4
-web: lighttpd
+web: php7.4
