@@ -342,6 +342,10 @@ async function load_tds() {
         // ---
         await load_td(id, imagename);
     };
+};
+
+function start() {
+    load_tds();
     log_all();
     // ---
 };
