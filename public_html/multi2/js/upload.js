@@ -1,7 +1,8 @@
 
 function count_up_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function upload(id, imagename) {
@@ -105,6 +106,16 @@ function upload_t(tab) {
         }
     }
 }
+
+
+function change_color(id) {
+    if ($('#' + id + '_done').text() == $('#' + id + '_all').text()) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    }
+}
+
 async function upload_all() {
 
     var ele = document.getElementsByName('chk');
@@ -150,6 +161,8 @@ async function upload_all() {
     }
 
     await upload_t(checked_tab);
+
+    change_color('up');
 
     $("#up_logo").hide();
     $("#up_logo_done").show();

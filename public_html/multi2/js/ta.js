@@ -54,7 +54,8 @@ function error_file(id, filename, Type, add) {
 
 function count_done_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function make_width_and_high(width, height) {
@@ -219,7 +220,7 @@ function get_one_file_info(id, imagename, crop = true) {
 async function get_infos() {
     var ele = document.getElementsByName('divtd');
 
-    $("#info_all").html(ele.length);
+    $("#info_all").text(ele.length);
 
     for (var i = 0; i < ele.length; i++) {
         var id = ele[i].id;

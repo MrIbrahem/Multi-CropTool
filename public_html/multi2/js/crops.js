@@ -1,6 +1,7 @@
 function count_crop_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function make_width_and_high(width, height) {
@@ -84,14 +85,23 @@ function get_crop(id, imagename) {
 };
 
 
+function change_color(id) {
+    if ($('#' + id + '_done').text() == $('#' + id + '_all').text()) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    }
+}
 async function make_crops() {
 
     $("#crop_logo").show();
     $("#crop_name").css("font-weight", "bold");
 
-    var to_crop = document.getElementsByName('to_crop');
+    var to_crop = document.getElementsByName('tocrop');
 
-    $("#crop_all").val(to_crop.length);
+    $("#crop_all").text(to_crop.length);
+    // $("#crop_all").html($("#info_done").html());
+
     $("#crop_all").css("font-weight", "bold");
 
     if (to_crop.length == 0) {
@@ -102,7 +112,7 @@ async function make_crops() {
     // do get crop for to_crop elements
     for (var i = 0; i < to_crop.length; i++) {
         var id = to_crop[i].getAttribute("idt");
-        console.log(JSON.stringify(to_crop[i]));
+        // console.log(JSON.stringify(to_crop[i]));
 
         var imagename = $("#name" + id).text();
         // var imagename = sessionStorage.getItem(id);
@@ -115,4 +125,9 @@ async function make_crops() {
 
     $("#crop_logo").hide();
     $("#crop_logo_done").show();
+
+    change_color('crop');
+
+    $("#up_all").text($("#crop_done").html());
+    $("#up_all").css("font-weight", "bold");
 }

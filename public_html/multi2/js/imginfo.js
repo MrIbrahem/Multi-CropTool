@@ -22,7 +22,8 @@ function error_file_p(id, filename, Type) {
 
 function count_info_plus_one(na_id) {
     var uu = $('#' + na_id).html();
-    $('#' + na_id).html(parseFloat(uu) + 1);
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
 }
 
 function make_width_and_high_x(width, height) {
@@ -63,11 +64,13 @@ function gp(imagename, data, id) {
 
     var img_tag = $("<img/>").attr("src", api_url + img).attr("width", width).attr("height", height).attr("alt", imagename);
 
-    $('#img_' + id).html(img_tag);
+    $('#img_' + id).empty();
+    $('#img_' + id).append(img_tag);
+
     console.log('#img_' + id);
 
     // $('#crp_' + id).attr("idt", id);
-    $('#crp_' + id).attr("name", "to_crop");
+    $('#crp_' + id).attr("name", "tocrop");
     // get_crop(id, imagename);
 }
 
@@ -101,6 +104,7 @@ function get_one_file_info(id, imagename) {
                 };
             },
             error: function (data) {
+                // @ts-ignore
                 var err = data.error;
                 if (err == null || err == undefined) {
                     err = 'when getting image info';
@@ -115,10 +119,17 @@ function get_one_file_info(id, imagename) {
     });
 };
 
+function change_color(id) {
+    if ($('#' + id + '_done').text() == $('#' + id + '_all').text()) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    }
+}
 async function get_infos() {
     var ele = document.getElementsByName('images');
 
-    $("#info_all").val(ele.length);
+    $("#info_all").text(ele.length);
     // make it bold
     $("#info_all").css("font-weight", "bold");
 
@@ -137,6 +148,9 @@ async function get_infos() {
 
     $("#info_logo").hide();
     $("#info_logo_done").show();
+
+    change_color('info');
+
     // remove disabled from #restart
     $('#restart').removeAttr('disabled');
     $('#restart').addClass('btn-primary');
