@@ -83,6 +83,7 @@ function get_one_file_info(id, imagename) {
         var api_url1 = api_url + "api/file/info?" + jQuery.param(params);
 
         jQuery.ajax({
+            async: true,
             url: api_url1,
             dataType: 'json',
             success: function (data) {
@@ -138,5 +139,6 @@ async function get_infos() {
     $("#info_logo_done").show();
     // remove disabled from #restart
     $('#restart').removeAttr('disabled');
+    $('#restart').addClass('btn-primary');
 };
 

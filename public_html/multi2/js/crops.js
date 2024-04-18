@@ -45,6 +45,7 @@ function get_crop(id, imagename) {
         // count_crop_plus_one("crop_all");
 
         jQuery.ajax({
+            async: true,
             url: api_url2,
             dataType: 'json',
             success: function (data) {

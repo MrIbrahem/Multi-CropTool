@@ -22,6 +22,7 @@ function upload(id, imagename) {
         var api_url1 = api_url + "api/file/publish?";
 
         jQuery.ajax({
+            async: true,
             url: api_url1,
             data: params,
             type: 'POST',
@@ -106,9 +107,6 @@ function upload_t(tab) {
 }
 async function upload_all() {
 
-    $("#up_logo").show();
-    $("#up_name").css("font-weight", "bold");
-
     var ele = document.getElementsByName('chk');
 
     var checked_tab = [];
@@ -129,8 +127,16 @@ async function upload_all() {
         }
     };
 
+    if (ele.length == notchecked.length || checked_tab.length == 0) {
+        $('#uploaderror').css({ "display": "inline" });
+        return;
+    }
+
     $("#up_all").val(checked_tab.length);
     $("#up_all").css("font-weight", "bold");
+
+    $("#up_logo").show();
+    $("#up_name").css("font-weight", "bold");
 
     if (notchecked.length > 0) {
         // $('#imgerror_card').show();

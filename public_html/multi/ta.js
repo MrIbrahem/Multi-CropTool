@@ -18,12 +18,13 @@ function post_new_request() {
 
 function loge(imgname, value, type) {
     // table_json[imgname][type] = value;
-    table_json[imgname].set(type, value);
+    table_json.get(imgname).set(type, value);
 };
 
 function log_all() {
     table_json['user'] = $("#username").html();
     jQuery.ajax({
+        async: true,
         url: 'log.php',
         data: { a: JSON.stringify(table_json), file_name: ope },
         type: 'POST'
@@ -40,6 +41,7 @@ function user_login() {
     var url = 'https://nccroptool.toolforge.org/api/auth/user';
     // ---
     jQuery.ajax({
+        async: true,
         url: url,
         type: 'GET',
         dataType: 'json',
@@ -95,6 +97,7 @@ function check_image_exist(name, id = '', success = '', notsuccess = '') {
     var exist = false;
     // ---
     jQuery.ajax({
+        async: true,
         url: api_url,
         dataType: 'json',
         success: function (data) {
@@ -155,9 +158,9 @@ function get_crop(id, imagename, params = null) {
             height: $('#height').html(),
         }
     // ---
-    if (table_json[imagename] == null || table_json[imagename] == undefined) {
-        table_json[imagename] = new Map();
-    };
+    if (!table_json.has(imagename)) {
+        table_json.set(imagename, new Map());
+    }
     // ---
     var y = params.y;
     var x = params.x;
@@ -184,6 +187,7 @@ function get_crop(id, imagename, params = null) {
     // {"site":"nccommons.org","title":"(DermNet NZ pachydermodactyly-3).jpg","pageno":0,"method":"precise","dim":"40 % horizontally, 68 % vertically using [[Commons:CropTool|CropTool]] with precise mode.","page":{"elems":[],"hasAssessmentTemplates":false,"hasDoNotCropTemplate":false},"crop":{"name":"files\/c83c48c5edb1d920e59d6feb1e4b196c191be2be_cropped.jpg","width":387,"height":153},"thumb":null,"time":1649720872,"wikidata":null,"msecs":456}
     // ---
     jQuery.ajax({
+        async: true,
         url: api_url2,
         dataType: 'json',
         success: function (data) {
@@ -276,6 +280,7 @@ function load_td(id, imagename) {
     var thumb = '';
     // ---
     jQuery.ajax({
+        async: true,
         url: api_url1,
         dataType: 'json',
         /*statusCode: {
@@ -360,6 +365,7 @@ async function load_tds() {
     };
     // remove disabled from #restart
     $('#restart').removeAttr('disabled');
+    $('#restart').addClass('btn-primary');
 };
 
 function start() {
@@ -373,11 +379,10 @@ function upload(check) {
         // var id = 't' + check[i];
         var id = $('#h' + check[i]).text();
         var imagename = $("#name" + id).text();
-
         // ---
-        if (table_json[imagename] == null || table_json[imagename] == undefined) {
-            table_json[imagename] = new Map();
-        };
+        if (!table_json.has(imagename)) {
+            table_json.set(imagename, new Map());
+        }
         // ---
         var summary = $('#s' + id).text();
         var imagelink = $('#img' + id).attr("src");
@@ -399,6 +404,7 @@ function upload(check) {
         // formData.append('file', imagelink);
         // ---
         jQuery.ajax({
+            async: true,
             url: api_url1,
             data: params,
             // cache: false,
