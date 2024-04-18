@@ -1,6 +1,21 @@
 let ope = Math.random();
 let table_json = new Map();
 
+function post_new_request() {
+    var url = window.location.href;
+    var params = {
+        x: $('#x').html(),
+        y: $('#y').html(),
+        width: $('#width').html(),
+        height: $('#height').html(),
+        text: $('.new_textarea').val()
+    };
+
+    // إرسال طلب POST
+    url = url + '?' + jQuery.param(params);
+    window.open(url, '_blank');
+}
+
 function loge(imgname, value, type) {
     // table_json[imgname][type] = value;
     table_json[imgname].set(type, value);
@@ -61,6 +76,7 @@ function error_file(id, filename, Type, add) {
     // ---
     $('#panel' + id).addClass("panel-danger");
     $('#input' + id).attr("disabled", "1");
+    $(".new_textarea").append('\n' + filename);
 }
 
 function check_image_exist(name, id = '', success = '', notsuccess = '') {
@@ -403,6 +419,7 @@ function upload(check) {
                     $('#test' + id).css({ "color": "green", "font-size": "20px" });
                     $('#test' + id).html('<i class="fa fa-check-circle-o"></i> uploaded');
                     // ---
+                    $('#c_input' + id).empty();
 
                 } else {
                     // table_json[imagename].upload = 'failed';

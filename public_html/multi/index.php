@@ -11,54 +11,12 @@ $files = '
 ';
 // ---
 $test = $_REQUEST['test'];
-$text = $_REQUEST['text'];
+$text = $_REQUEST['text'] ?? '';
+$start = $_REQUEST['start'];
 $x = $_REQUEST['x'] != '' ? $_REQUEST['x'] : 168;
 $y = $_REQUEST['y'] != '' ? $_REQUEST['y'] : 368;
 $height = $_REQUEST['height'] != '' ? $_REQUEST['height'] : 105;
 $width = $_REQUEST['width'] != '' ? $_REQUEST['width'] : 208;
-// ---&x=64&y=64&width=450&height=368
-if ($text == '') {
-    // ---
-    $test_input = '';
-    if ($test != '') {
-        $test_input = '<label> text: </label> <input type="checkbox" name="test" id="test" checked>';
-    };
-    // ---
-    echo '
-    <div class="panel panel-default">
-
-        <div class="panel-heading"></div>
-        <div class="panel-body">
-            <div class="col-md-12">
-                <form action="index.php" method="POST">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <label> left (x):  </label> <input type="text"  name="x" id="x" value="' . $x . '">
-                        </div>
-                        <div class="col-sm-2">
-                            <label> top (y): </label> <input type="text" name="y" id="y" value="' . $y . '">
-                        </div>
-                        <div class="col-sm-2">
-                            <label> height: </label> <input type="text"  name="height" id="height" value="' . $height . '">
-                        </div>
-                        <div class="col-sm-2">
-                            <label> width: </label> <input type="text"  name="width" id="width" value="' . $width . '">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <label>files:</label><br>
-                            <textarea cols="50" rows="15" name="text">' . $files . '</textarea>
-                        </div>
-                    </div>
-                ' . $test_input . '
-                <input type="submit" value="send" />
-                </form>
-            </div>
-        </div>
-    </div>
-    ';
-};
 // ---
 function make_td($imgtitle, $numb)
 {
@@ -111,29 +69,27 @@ function make_td($imgtitle, $numb)
     // ---
     $fileurl = 'https://nccommons.org/wiki/File:' . $imgtitle;
     // ---
-    // $td = '<td>';
-    $td = '
-            <div class="col-sm-3" div id="main' . $id_td . '" style="display:inline;">
-                <div id="panel' . $id_td . '" class="panel panel-default">
-                    <div class="panel-heading">
-                        <input type="checkbox" name="chk" onclick="change_uploaderror_display(\'none\')" id="input' . $id_td . '"/> <a href="' . $fileurl . '" target="_blank"> ' . $imgtitle . '</a>
-                        <span id="' . $id_n . '" hidden="hidden">' . $imgtitle . '</span>
-                        <span id="s' . $id_td . '" hidden="hidden"></span>
-                        <span id="hinput' . $id_td . '" hidden="hidden">' . $id_td . '</span>
-                    </div>
-                    <div id="panelbody' . $id_td . '" class="panel-body">
-                        ' . $row1 . '
-                    </div>
-                    <div class="panel-footer">
-                        <span id="test' . $id_td . '" style=""></span>
-                    </div>
+    $td = <<<HTML
+        <div class="col-md-3" div id="main$id_td" style="display:inline;">
+            <div id="panel$id_td" class="panel panel-default">
+                <div class="panel-heading">
+                    <span id="c_input$id_td">
+                        <input type="checkbox" name="chk" onclick="change_uploaderror_display('none')" id="input$id_td"/>
+                    </span>
+                    <a href="$fileurl" target="_blank"> $imgtitle</a>
+                    <span id="$id_n" hidden="hidden">$imgtitle</span>
+                    <span id="s$id_td" hidden="hidden"></span>
+                    <span id="hinput$id_td" hidden="hidden">$id_td</span>
+                </div>
+                <div id="panelbody$id_td" class="panel-body">
+                    $row1
+                </div>
+                <div class="panel-footer">
+                    <span id="test$id_td" style=""></span>
                 </div>
             </div>
-
-    ';
-    // $td .= '</td>';
-    // ---
-    $js = "javascript:updateURLParameter('$line')";
+        </div>
+    HTML;
     // ---
     return $td;
 };
@@ -186,7 +142,70 @@ function make_table($text)
     return $tab;
 };
 // ---
-if ($text != '') {
+if ($start == '') {
+    // ---
+    $test_input = '';
+    if ($test != '') {
+        $test_input = '<label> text: </label> <input type="checkbox" name="test" id="test" checked>';
+    };
+    // ---
+    $text2 = ($text == '') ? $files : $text;
+    // ---
+    echo <<<HTML
+        <div class="panel panel-default">
+
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form action="index.php" method="POST">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label> left (x):  </label> <input type="text"  name="x" id="x" value="$x">
+                            </div>
+                            <div class="col-sm-2">
+                                <label> top (y): </label> <input type="text" name="y" id="y" value="$y">
+                            </div>
+                            <div class="col-sm-2">
+                                <label> height: </label> <input type="text"  name="height" id="height" value="$height">
+                            </div>
+                            <div class="col-sm-2">
+                                <label> width: </label> <input type="text"  name="width" id="width" value="$width">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label>files:</label><br>
+                                <textarea cols="50" rows="15" name="text">$text2</textarea>
+                            </div>
+                        </div>
+                    $test_input
+                    <input type="submit" class="btn btn-outline-primary" name="start" value="start">
+                    </form>
+                </div>
+            </div>
+        </div>
+    HTML;
+};
+// ---
+function make_errors_form($x, $y, $width, $height)
+{
+    return <<<HTML
+        <form action="index.php" method="POST" target="_blank">
+            <input id="x" id="x" value="$x" hidden>
+            <input id="y" id="y" value="$y" hidden>
+            <input id="width" id="width" value="$width" hidden>
+            <input id="height" id="height" value="$height" hidden>
+            <textarea class="new_textarea" id="text" name="text" cols="100" rows="15" hidden>
+
+            </textarea>
+            <input type="submit" class="btn btn-outline-primary" value="Errors">
+        </form>
+    HTML;
+}
+
+$errors_line = make_errors_form($x, $y, $width, $height);
+// ---
+if ($text != '' && $start != '') {
     // ---
     // $urlsuffix = "&y=" . $y . "&x=" . $x . "&width=" . $width . "&height=" . $height;
     // ---
@@ -197,44 +216,48 @@ if ($text != '') {
     // ---
     echo $lal;
     // ---
-    echo '
-    <div class="panel panel-default">
-        <h2>
-            <span id="working">working <span id="done">0</span>/' .
-        '<span id="workcount">0</span>
-            </span>
-            <span id="workingdone" style="color:red;"></span>
-            <small>
-            <div id="uploaderror" class="alert" style="color:red;display:none;">Please select at least one image to upload.</div>
-            </small>
-        </h2>
-        <div class="row">
-            <div class="col-sm-3">
-                <label>  x:  </label><input type="text"  name="xx" id="xx" readonly="true" value="' . $x . '">
+    echo <<<HTML
+        <div class="panel panel-default">
+            <h2>
+                <span id="working">working <span id="done">0</span>/<span id="workcount">0</span>
+                </span>
+                <span id="workingdone" style="color:red;"></span>
+                <small>
+                <div id="uploaderror" class="alert" style="color:red;display:none;">Please select at least one image to upload.</div>
+                </small>
+            </h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <label>  x:  </label><input type="text"  name="xx" id="xx" readonly="true" value="$x">
+                </div>
+                <div class="col-md-3">
+                    <label> y: </label><input type="text" name="yy" id="yy" readonly="true" value="$y">
+                </div>
+                <div class="col-md-3">
+                    <label> height: </label><input type="text" readonly="true" name="aheight" id="aheight" value="$height">
+                </div>
+                <div class="col-md-3">
+                    <label> width: </label><input type="text" readonly="true" name="awidth" id="awidth" value="$width">
+                </div>
             </div>
-            <div class="col-sm-3">
-                <label> y: </label><input type="text" name="yy" id="yy" readonly="true" value="' . $y . '">
-            </div>
-            <div class="col-sm-3">
-                <label> height: </label><input type="text" readonly="true" name="aheight" id="aheight" value="' . $height . '">
-            </div>
-            <div class="col-sm-3">
-                <label> width: </label><input type="text" readonly="true" name="awidth" id="awidth" value="' . $width . '">
+            <div class="row">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-default" onclick="selects()">Select all</button>
+                    <button type="button" class="btn btn-default" onclick="deSelect()">Deselect all</button>
+                </div>
+                <div class="col-md-3">
+                    <div>
+                        $errors_line
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-info" onclick="upload_all()">Upload</button> <!-- disabled -->
+                </div>
+                <div class="col-md-3">
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <button type="button" class="btn btn-default" onclick="selects()">Select all</button>
-                <button type="button" class="btn btn-default" onclick="deSelect()">Deselect all</button>
-            </div>
-            <div class="col-sm-3">
-                <button type="button" class="btn btn-info" onclick="upload_all()">Upload</button> <!-- disabled -->
-            </div>
-            <div class="col-sm-3">
-
-            </div>
-        </div>
-	</div>';
+    HTML;
     // ---
     // $table = '<form>';
     $table = make_table($text);
@@ -244,20 +267,20 @@ if ($text != '') {
     echo '<!-- end of loadinfo -->';
     // ---
     echo '
-<div id="to_upload_panel" class="panel panel-default" hidden="hidden">
-	<div class="panel-heading">Files ready to upload:</div>
-	<div id="to_upload" class="panel-body">
-	</div>
-</div>
-';
+        <div id="to_upload_panel" class="panel panel-default" hidden="hidden">
+            <div class="panel-heading">Files ready to upload:</div>
+            <div id="to_upload" class="panel-body">
+            </div>
+        </div>
+        ';
     // ---
     echo '
-<div id="img_error_panel" class="panel panel-default" hidden="hidden">
-	<div class="panel-heading">Files error:</div>
-	<div id="img_error" class="panel-body">
+        <div id="img_error_panel" class="panel panel-default" hidden="hidden">
+            <div class="panel-heading">Files error:</div>
+            <div id="img_error" class="panel-body">
 
-	</div>
-</div>
+            </div>
+        </div>
 	';
     // ---
     echo '
@@ -270,7 +293,6 @@ if ($text != '') {
 ?>
 
 </div>
-
 </body>
 
 </html>
