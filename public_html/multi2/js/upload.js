@@ -107,17 +107,26 @@ function upload_t(tab) {
     }
 }
 
-
 function change_color(id) {
-    if ($('#' + id + '_done').text() == $('#' + id + '_all').text()) {
+    $("#" + id + "_logo").hide();
+    $("#" + id + "_logo_done").show();
+
+    var done = $('#' + id + '_done').text();
+    var all = $('#' + id + '_all').text();
+    if (done == all) {
         // change font to green
         $('#' + id + '_done').css('color', 'green');
         $('#' + id + '_all').css('color', 'green');
+    };
+    if (done == "0") {
+        $("#" + id + "_logo_done").hide();
+        $("#" + id + "_logo_err").show();
+        // change font to red
+        $('#' + id + '_row').css('color', 'red');
     }
 }
 
 async function upload_all() {
-
     var ele = document.getElementsByName('chk');
 
     var checked_tab = [];
@@ -150,7 +159,7 @@ async function upload_all() {
     $("#up_name").css("font-weight", "bold");
 
     if (notchecked.length > 0) {
-        // $('#imgerror_card').show();
+        $('#imgerror_card').show();
         move_tabs_tab(notchecked, "img_error");
 
         // $('#toupload_card').show();
@@ -164,7 +173,5 @@ async function upload_all() {
 
     change_color('up');
 
-    $("#up_logo").hide();
-    $("#up_logo_done").show();
 
 };

@@ -2,30 +2,53 @@
 
 namespace HelpTable;
 
-function make_td($imgtitle, $numb)
+
+function make_li_div($id, $ty, $title, $active)
+{
+    $active = $active ? 'active' : '';
+    $tab = array();
+
+    $id_1 = "$ty" . "_btn_" . "$id";
+    $id_2 = "$ty" . "_" . "$id";
+
+    $tab["li"] = <<<HTML
+        <li class="nav-item" role="presentation">
+            <button class="nav-link $active" id="$id_1" data-bs-toggle="tab" data-bs-target="#$id_2" type="button" role="tab" aria-controls="$id_2" aria-selected="true">$title</button>
+        </li>
+    HTML;
+
+    $active2 = $active ? 'show active' : '';
+
+    $tab["div"] = <<<HTML
+        <div id="$id_2" class="tab-pane fade $active2" role="tabpanel" aria-labelledby="$id_1">
+            <i class="fa fa-regular fa-image" style="font-size:200px"></i>
+        </div>
+    HTML;
+
+    return $tab;
+}
+function make_td_new($imgtitle, $numb)
 {
 
     $id_td = "td$numb";
     $id_n  = "nametd$numb";
+    $crop_row = make_li_div($id_td, "co", "Cropped", true);
 
+    $crop_li = $crop_row['li'];
+    $crop_div = $crop_row['div'];
+
+    $img_row = make_li_div($id_td, "img", "Image", false);
+    $img_li = $img_row['li'];
+    $img_div = $img_row['div'];
+    // ---
     $row1 = <<<HTML
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="crop_btn_$id_td" data-bs-toggle="tab" data-bs-target="#co_$id_td" type="button"
-                    role="tab" aria-controls="co_$id_td" aria-selected="true">Cropped</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="img_btn_$id_td" data-bs-toggle="tab" data-bs-target="#img_$id_td" type="button"
-                    role="tab" aria-controls="img_$id_td" aria-selected="false">Image</button>
-            </li>
+            $crop_li
+            $img_li
         </ul>
         <div class="tab-content" id="myTabContent">
-            <div id="co_$id_td" class="tab-pane fade show active" role="tabpanel" aria-labelledby="crop_btn_$id_td">
-                <i class="fa fa-regular fa-image" style="font-size:200px"></i>
-            </div>
-            <div id="img_$id_td" class="tab-pane fade" role="tabpanel" aria-labelledby="img_btn_$id_td">
-                <i class="fa fa-image" style="font-size:200px"></i>
-            </div>
+            $crop_div
+            $img_div
         </div>
     HTML;
 
@@ -36,15 +59,15 @@ function make_td($imgtitle, $numb)
         <span id="crp_$id_td" idt="$id_td" hidden="hidden">$id_td</span>
         <span id="s$id_td" hidden="hidden"></span>
         <div class="col-md-3" id="main$id_td" style="display:inline;">
-            <div id="card$id_td" class="card">
+            <div id="card$id_td" class="card mb-1">
                 <div id="cardheader$id_td" class="card-header">
                     <span id="c_input$id_td">
                         <input type="checkbox" name="chk" id="input$id_td"/>
                     </span>
-                    <a href="$fileurl" target="_blank">$imgtitle</a>
+                    <a href="$fileurl" target="_blank" class="small">$imgtitle</a>
                     <span name="images" id="$id_n" main_id="$id_td" hidden="hidden">$imgtitle</span>
                 </div>
-                <div id="cardbody$id_td" class="card-body">
+                <div id="cardbody$id_td" class="card-body p-1">
                     $row1
                 </div>
                 <div class="card-footer">
@@ -55,7 +78,6 @@ function make_td($imgtitle, $numb)
     HTML;
     return $td;
 };
-
 function make_table($text)
 {
 
@@ -78,12 +100,13 @@ function make_table($text)
         $tabnumb = $tabnumb + 1;
         $numb = $numb + 1;
 
-        $tab .= make_td($line, $numb);
+        $tab .= make_td_new($line, $numb);
+
 
         if ($tabnumb == 4) {
             $tab .= '
-		</div>
-		<div class="row">';
+        </div>
+        <div class="row">';
             $tabnumb = 0;
         }
     };

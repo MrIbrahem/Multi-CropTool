@@ -122,7 +122,7 @@ echo <<<HTML
 						</a>
 					</li>
 					<li class="nav-item col-4 col-lg-auto">
-						<a class="nav-link py-2 px-0 px-lg-2" href="../multi" target="">
+						<a class="nav-link py-2 px-0 px-lg-2" href="../multi2" target="">
 							<span class="navtitles">Multi CropTool</span>
 						</a>
 					</li>
