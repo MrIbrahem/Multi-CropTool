@@ -5,7 +5,7 @@ namespace InfoTab;
 function generate_row($id_prefix, $name, $errors = 0, $done = 0, $all = 0)
 {
     return <<<HTML
-    <tr>
+    <tr id="{$id_prefix}_row">
         <td>
             <span id="{$id_prefix}_logo" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none;"></span>
             <span id="{$id_prefix}_logo_done" class="fa fa-check text-success" aria-hidden="true" style="display:none;"></span>
@@ -57,7 +57,7 @@ function make_info_table($coun)
     // Wrapping the table in a card
     $card_content = <<<HTML
     <div class="card">
-        <div class="card-body px-1 py-1">
+        <div class="card-body px-1 py-0">
             $table_content
         </div>
     </div>

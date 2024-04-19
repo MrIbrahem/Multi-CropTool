@@ -25,6 +25,11 @@ echo <<<HTML
         <script src="js/crops.js"></script>
         <script src="js/upload.js"></script>
         <!-- <script src="js/new.js"></script> -->
+        <style>
+            a {
+                text-decoration: none !important;
+            }
+        </style>
 HTML;
 //---
 $hoste = 'https://tools-static.wmflabs.org/cdnjs';

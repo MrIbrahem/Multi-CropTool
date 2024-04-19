@@ -31,6 +31,12 @@ function make_card($text, $x, $y, $width, $height)
 
     $text = explode("\n", $text);
 
+    // trim all items
+    $text = array_map('trim', $text);
+
+    // remove duplicate
+    $text = array_unique($text);
+
     $all_co = count($text);
     $info_table = make_info_table($all_co);
 
@@ -70,7 +76,7 @@ function make_card($text, $x, $y, $width, $height)
                             <button type="button" class="btn btn-outline-primary" onclick="deSelect()">Deselect all</button>
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-outline-primary" onclick="upload_all()">Upload</button>
+                            <button id="upload_icon" type="button" class="btn btn-outline-primary" onclick="upload_all()" disabled>Upload</button>
                         </div>
                         <div class="col-md-3">
                             <div>
@@ -103,7 +109,7 @@ function make_card($text, $x, $y, $width, $height)
         HTML;
 
     echo <<<HTML
-        <div id="imgerror_card" class="card">
+        <div id="imgerror_card" class="card" hidden="hidden">
             <div class="card-header">
                 Files error:
             </div>
