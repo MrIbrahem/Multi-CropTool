@@ -65,8 +65,8 @@ function move_tabs_tab(tab, to_id) {
 
     var number = 0;
 
-    // var img_row = '<div class="row">';
-    var img_row = $('<div/>').addClass('row');
+    // var img_row = '<div class="row">';<div class="row row-cols-4">
+    var img_row = $('<div/>').addClass('row row-cols-4');
 
     for (var i = 0; i < tab.length; i++) {
         var id = tab[i];
@@ -76,7 +76,10 @@ function move_tabs_tab(tab, to_id) {
 
         var td_html = $('#' + mainid).html();
 
-        var div = $('<div/>').addClass('col-md-3').attr('id', mainid).css('display', 'inline').html(td_html);
+        $('#' + mainid).remove();
+
+        // var div = $('<div/>').addClass('col-md-3').attr('id', mainid).css('display', 'inline').html(td_html);
+        var div = $('<div/>').addClass('col').attr('id', mainid).css('display', 'inline').html(td_html);
         img_row.append(div);
 
         if (number == 4) {
@@ -163,10 +166,10 @@ async function upload_all() {
         move_tabs_tab(notchecked, "img_error");
 
         // $('#toupload_card').show();
-        move_tabs_tab(checked_tab, "to_upload");
+        // move_tabs_tab(checked_tab, "to_upload");
 
-        $('#loadinfo_card').hide();
-        $('#loadinfo_card').empty();
+        // $('#loadinfo_card').hide();
+        // $('#loadinfo_card').empty();
     }
 
     await upload_t(checked_tab);

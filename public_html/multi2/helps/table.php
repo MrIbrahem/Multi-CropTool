@@ -56,9 +56,10 @@ function make_td_new($imgtitle, $numb)
 
     // $td = '<td>';
     $td = <<<HTML
-        <span id="crp_$id_td" idt="$id_td" hidden="hidden">$id_td</span>
-        <span id="s$id_td" hidden="hidden"></span>
-        <div class="col-md-3" id="main$id_td" style="display:inline;">
+        <!-- <div class="col-md-3" id="main$id_td" style="display:inline;"> -->
+        <div class="col" id="main$id_td" style="display:inline;">
+            <span id="crp_$id_td" idt="$id_td" hidden="hidden">$id_td</span>
+            <span id="s$id_td" hidden="hidden"></span>
             <div id="card$id_td" class="card mb-1">
                 <div id="cardheader$id_td" class="card-header">
                     <span id="c_input$id_td">
@@ -88,7 +89,8 @@ function make_table($text)
         <div id="loadinfo_card" class="card">
             <div class="card-header"></div>
             <div id="loadinfo" class="card-body">
-                <div class="row">
+                <!-- <div class="row"> -->
+                <div class="row row-cols-4">
     HTML;
 
     foreach ($text as $line) {
@@ -103,12 +105,12 @@ function make_table($text)
         $tab .= make_td_new($line, $numb);
 
 
-        if ($tabnumb == 4) {
-            $tab .= '
-        </div>
-        <div class="row">';
-            $tabnumb = 0;
-        }
+        // if ($tabnumb == 4) {
+        //     $tab .= '
+        // </div>
+        // <div class="row">';
+        //     $tabnumb = 0;
+        // }
     };
 
     $tab .= '

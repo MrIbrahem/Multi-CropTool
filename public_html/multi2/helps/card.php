@@ -100,16 +100,16 @@ function make_card($text, $x, $y, $width, $height)
 
     echo '<!-- end of loadinfo -->';
 
-    echo <<<HTML
+    $toto = <<<HTML
         <div id="toupload_card" class="card">
             <div class="card-header">Files ready to upload:</div>
             <div id="to_upload" class="card-body">
             </div>
         </div>
-        HTML;
+    HTML;
 
     echo <<<HTML
-        <div id="imgerror_card" class="card" hidden="hidden">
+        <div id="imgerror_card" class="card">
             <div class="card-header">
                 Files error:
             </div>
