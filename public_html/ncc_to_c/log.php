@@ -5,7 +5,7 @@ namespace Log;
 function log_files_to_json($title, $files)
 {
 
-    $file_name = rand();
+    $file_name = uniqid();
 
     // change $files to array
     $files = explode("\r\n", $files);

@@ -5,9 +5,9 @@ async function get_files_api(title) {
 
     var proxy = window.location.origin + '/ncc_to_c/get.php?type=json&url=';
     // if localhost use proxy
-    if (window.location.hostname === 'localhost') {
-        url = proxy + encodeURIComponent(url);
-    }
+    // if (window.location.hostname === 'localhost') {
+    url = proxy + encodeURIComponent(url);
+    // }
 
     const response = await fetch(url);
 
@@ -20,7 +20,7 @@ async function get_files_api(title) {
     if (matches) {
         matches.forEach(match => {
             files.push(match);
-            console.log(match);
+            // console.log(match);
         });
     }
 
