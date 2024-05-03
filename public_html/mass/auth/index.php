@@ -39,7 +39,7 @@ function echo_login() {
 		echo <<<HTML
 			You are authenticated as $safeUsername.<br />
 			Continue to <a href='auth.php?a=edit'>edit</a><br>
-			<a href='auth.php?a=logout'>logout</a>
+			<a href='logout.php'>logout</a>
 		HTML;
 	};
 	//---

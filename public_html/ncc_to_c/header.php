@@ -18,14 +18,6 @@ echo <<<HTML
         <meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#eeeeee" media="(prefers-color-scheme: dark)" />
         <title>NCCommons to Commons</title>
-		<link href='css/styles.css' rel='stylesheet' type='text/css'>
-        <script src="js/ncc.js"></script>
-        <script src="js/auto_comp.js"></script>
-        <style>
-            a {
-                text-decoration: none !important;
-            }
-        </style>
 HTML;
 //---
 $hoste = 'https://tools-static.wmflabs.org/cdnjs';
@@ -45,66 +37,57 @@ echo <<<HTML
     <script src='$hoste/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js'></script>
     <script src='$hoste/ajax/libs/datatables.net-bs5/1.13.1/dataTables.bootstrap5.min.js'></script>
     <script src='$hoste/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js'></script>
-    <script type="module" src="js/color-modes.js"></script>
 
+    <!-- <script src="/helps/auth.js"></script> -->
+    <script src="js/ncc.js"></script>
+    <script src="js/auto_comp.js"></script>
+    <style>
+        a {
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 HTML;
-require("helps/darkmode.php");
-$them_li = darkmodeicon();
 //---
-echo <<<HTML
-
-<body>
-
-<header class="mb-3 border-bottom">
-    <nav id="mainnav" class="navbar navbar-expand-lg shadow">
-        <div class="container-fluid" id="navbardiv">
-            <a class="navbar-brand mb-0 h1" href="index.php" style="color:#0d6efd;">
-                NCCommons to Commons
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
-                aria-controls="collapsibleNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav">
-                    <li class="nav-item col-4 col-lg-auto">
-                        <a class="nav-link py-2 px-0 px-lg-2" href="../" target="_blank">
-                            <span class="navtitles">CropTool</span>
-                        </a>
-                    </li>
-                    <li class="nav-item col-4 col-lg-auto">
-                        <a class="nav-link py-2 px-0 px-lg-2" href="../mass" target="_blank">
-                            <span class="navtitles">Mass Upload</span>
-                        </a>
-                    </li>
-                    <li class="nav-item col-4 col-lg-auto">
-                        <a class="nav-link py-2 px-0 px-lg-2 active" href="../ncc_to_c/index.php" target="_blank">
-                            <span class="navtitles">NC Commons to Commons</span>
-                        </a>
-                    </li>
-                    <li class="nav-item col-4 col-lg-auto">
-                        <a class="nav-link py-2 px-0 px-lg-2" href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank">
-                            <span class="navtitles">Github</span>
-                        </a>
-                    </li>
-                </ul>
-                <hr class="d-lg-none text-black-50">
-                <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav ms-lg-auto">
-                    <li class="nav-item col-4 col-lg-auto dropdown">
-                        $them_li
-                    </li>
-                    <!-- <li class="nav-item col-4 col-lg-auto dropdown">
-                        <div id="user_login" class="navbar-text">
-                            <a href="https://nccroptool.toolforge.org/api/auth/login"><i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> Login</a><span id="username"></span>
-                        </div>
-                    </li> -->
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
+require("../helps/header_nav.php");
+//---
+echo "<body>";
+//---
+$log_lis = <<<HTML
+	<li class="nav-item col-4 col-lg-auto" id="">
+		<a id="username_li" href="" class="nav-link py-2 px-0 px-lg-2" style="display:none">
+			<i class="fas fa-user fa-sm fa-fw mr-2"></i> <span class="navtitles" id="user_name"></span>
+		</a>
+	</li>
+	<li class="nav-item col-4 col-lg-auto" id="loginli">
+		<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login">
+			<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
+		</a>
+	</li>
+	<li class="nav-item col-4 col-lg-auto">
+		<a id="logout_btn" class="nav-link py-2 px-0 px-lg-2" href="logout.php" style="display:none">
+			<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> <span class="d-lg-none navtitles">Logout</span>
+		</a>
+	</li>
 HTML;
+//---
+echo header_nav_tag($title="NCCommons to Commons", $page='ncc_to_c', $log_lis=$log_lis);
+//---
 ?>
+
+<script>
+	var lo = $('#myusername').text();
+	if (lo != '') {
+		$('#loginli').hide();
+		$('#username_li').show();
+		$('#logout_btn').show();
+		$('#user_name').text(lo);
+	} else {
+		$('#loginli').show();
+		$('#username_li').hide();
+		$('#logout_btn').hide();
+	};
+	// });
+</script>
 <main id="body">
     <div id="maindiv" class="container">

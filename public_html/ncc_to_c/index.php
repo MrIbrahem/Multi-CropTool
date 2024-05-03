@@ -1,7 +1,10 @@
 <?php
-
-namespace MultiCrop;
-
+namespace NccToC;
+if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+};
 require('header.php');
 $start = $_REQUEST['start'] ?? '';
 $test  = $_REQUEST['test'] ?? '';
@@ -10,6 +13,11 @@ $files = $_REQUEST['files'] ?? '';
 
 $test_input = ($test != '') ? '<input name="test" id="test" value="1" hidden>' : '';
 // decode title ' and "
+// if localhost then tiitle = Radiopaedia case "Malignant" anomalous interarterial course of the right coronary artery id: 172209 study: 139098
+if ($title == '' && $_SERVER['SERVER_NAME'] == 'localhost') {
+    $title = 'Radiopaedia case "Malignant" anomalous interarterial course of the right coronary artery id: 172209 study: 139098';
+}
+
 $title_d = htmlentities($title);
 
 echo <<<HTML
@@ -18,7 +26,7 @@ echo <<<HTML
             <h3>NCC2Commons</h3>
         </div>
         <div class="card-body">
-            <form action='up.php' method='POST'>
+            <form action='up2.php' method='POST'>
                 $test_input
                 <div class='row'>
                     <div class='col-md-10'>
@@ -57,8 +65,10 @@ $sts = ($title != '') ? 'get_files();' : '';
 
 echo <<<HTML
     <script>
-        $sts
-        initAutocomplete("#title");
+        $(document).ready(function() {
+            $sts
+            initAutocomplete("#title");
+        });
     </script>
 HTML;
 ?>
