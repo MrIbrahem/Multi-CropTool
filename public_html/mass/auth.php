@@ -2,12 +2,12 @@
 // this file is redirected to files in the auth directory
 // example:
 // url auth.php?a=login  -> auth/login.php
-// url auth.php?a=logout -> auth/logout.php
 // url auth.php?a=edit   -> auth/edit.php
+// url auth.php?a=index  ->
 // code:
 
 // After
-$allowedActions = ['login', 'callback', 'logout', 'edit', 'api', 'index'];
+$allowedActions = ['login', 'callback', 'edit', 'api', 'index'];
 
 $action = $_GET['a'] ?? 'index';
 

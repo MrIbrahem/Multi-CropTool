@@ -33,6 +33,7 @@ log_files_to_json($title, $files);
 echo <<<HTML
         </div>
     </div>
+    <script src="js/up.js"></script>
 HTML;
 ?>
 </body>
