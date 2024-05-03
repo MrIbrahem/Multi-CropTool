@@ -33,7 +33,7 @@ function echo_login() {
 	if ($username == '') {
 		echo <<<HTML
 			Go to this URL to authorize this tool:<br />
-			<a href='auth.php?a=login'>Login</a><br />
+			<a href='auth.php?a=login&to=ncc_to_c'>Login</a><br />
 		HTML;
 	} else {
 		echo <<<HTML

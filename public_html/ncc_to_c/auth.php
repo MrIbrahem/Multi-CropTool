@@ -1,4 +1,10 @@
 <?php
+if (isset($_REQUEST['test'])) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+};
+//---
 // this file is redirected to files in the auth directory
 // example:
 // url auth.php?a=login  -> auth/login.php
@@ -17,9 +23,11 @@ if (!in_array($action, $allowedActions)) {
 }
 $actionFile = $action . '.php';
 
+$to = "ncc_to_c";
+
 // Redirect to the corresponding action file
 // header("Location: auth/" . $actionFile);
-require_once __DIR__ . "/auth/" . $actionFile;
+require_once __DIR__ . "/../auth/" . $actionFile;
 
 if ($action == 'index') {
     echo_login();

@@ -18,7 +18,7 @@ if ($title == '' && $_SERVER['SERVER_NAME'] == 'localhost') {
     $title = 'Radiopaedia case "Malignant" anomalous interarterial course of the right coronary artery id: 172209 study: 139098';
 }
 
-$title_d = htmlentities($title);
+$title_d  = htmlentities($title);
 
 echo <<<HTML
     <div class="card">

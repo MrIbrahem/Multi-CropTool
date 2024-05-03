@@ -2,6 +2,11 @@
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
 //---
+include_once('auth/index.php');
+//---
+echo "
+<span id='myusername' style='display:none'>$username</span>";
+//---
 if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -56,11 +61,11 @@ echo "<body>";
 $log_lis = <<<HTML
 	<li class="nav-item col-4 col-lg-auto" id="">
 		<a id="username_li" href="" class="nav-link py-2 px-0 px-lg-2" style="display:none">
-			<i class="fas fa-user fa-sm fa-fw mr-2"></i> <span class="navtitles" id="user_name"></span>
+			<i class="fas fa-user fa-sm fa-fw mr-2"></i> <span class="navtitles" id="user_name">$username</span>
 		</a>
 	</li>
 	<li class="nav-item col-4 col-lg-auto" id="loginli">
-		<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login">
+		<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login&to=ncc_to_c">
 			<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
 		</a>
 	</li>
@@ -81,7 +86,6 @@ echo header_nav_tag($title="NCCommons to Commons", $page='ncc_to_c', $log_lis=$l
 		$('#loginli').hide();
 		$('#username_li').show();
 		$('#logout_btn').show();
-		$('#user_name').text(lo);
 	} else {
 		$('#loginli').show();
 		$('#username_li').hide();

@@ -31,11 +31,13 @@ $conf->setUserAgent($gUserAgent);
 $client = new Client($conf);
 
 function make_callback_url() {
+	global $to;
+    $to = $_REQUEST['to'] ?? '';
     $test = $_REQUEST['test'] ?? '';
 	//---
     $state = ($test != '') ? 'test=1' : '';
     //---
-    $oauth_call = 'https://nccroptool.toolforge.org/ncc_to_c/auth.php?a=callback&' . $state;
+    $oauth_call = "https://nccroptool.toolforge.org/$to/auth.php?a=callback&" . $state;
     //---
     return $oauth_call;
 }

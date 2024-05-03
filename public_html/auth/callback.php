@@ -1,5 +1,11 @@
 <?php
 
+if (isset($_REQUEST['test'])) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+};
+
 // Require the library and set up the classes we're going to use in this second part of the demo.
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -12,7 +18,7 @@ if (!isset($_GET['oauth_verifier'])) {
 	echo "This page should only be access after redirection back from the wiki.";
 	echo <<<HTML
 		Go to this URL to authorize this tool:<br />
-		<a href='auth.php?a=login&to=mass'>Login</a><br />
+		<a href='auth.php?a=login'>Login</a><br />
 	HTML;
 	exit(1);
 }
@@ -50,17 +56,14 @@ require_once __DIR__ . '/userinfo.php';
 echo "Continue to <a href='auth.php?a=edit'>edit</a><br>";
 echo "Continue to <a href='auth.php?a=index'>index</a><br>";
 
+$username = get_user_name();
+$_SESSION['username'] = $ident->username;
 // Example 3: make an edit (getting the edit token first).
 # automatic redirect to edit.php
 
-foreach (['test'] as $key) {
-	$da = $_GET[$key] ?? '';
-	if ($da != '') $state[$key] = $da;
-};
+$test = $_GET['test'] ?? '';
 //---
-$state = http_build_query($state);
-//---
-$newurl = "/mass/index.php?$state";
+$newurl = "index.php";
 //---
 echo "header('Location: $newurl');<br>";
 //---
