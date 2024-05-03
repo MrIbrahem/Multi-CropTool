@@ -1,4 +1,11 @@
-function save_it(file, id) {
+
+function idElement_err(idElement, err) {
+    idElement.text(err);
+    idElement.addClass("text-danger");
+    idElement.css({ "font-weight": "bold" });
+}
+
+async function save_it(file, id) {
     return new Promise((resolve, reject) => {
         // save file to server
         //---
@@ -25,7 +32,7 @@ function save_it(file, id) {
                 })
                 .then(data => {
                     if (data.trim() === 'true') {
-                        $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file.name + '" target="_blank">Saved!</a>');
+                        $("#save_" + id).html('<span class="bi bi-check2"></span> <a href="/mass/files/' + file + '" target="_blank">Saved!</a>');
                         resolve(true); // Resolves the Promise with true if saved successfully
                     } else {
                         if (attempt < 3) {
@@ -56,22 +63,26 @@ function save_it(file, id) {
     });
 }
 
-function upload_api(file, callback) {
+async function upload_api(file, file_url, callback) {
     //---
-    var file_url = 'https://nccroptool.toolforge.org/mass/files/' + file.name;
-    //---
+    // var api_url = 'auth.php';
     var api_url = '../auth/api.php';
     //---
+    // remove "File:" from file name
+    file = file.replace("File:", "");
+    //---
     var formData = {
-        filename: file.name,
-        url: file_url,
-        comment: 'comment',
+        a: "api",
         do: 'upload',
+        filename: file,
+        comment: 'comment',
+        url: file_url,
     }
     //---
-    var urlx = api_url + '?' + $.param(formData);
+    var urlx = window.location.origin + api_url + '?' + $.param(formData);
     //---
     $.ajax({
+        async: true,
         url: api_url,
         data: formData,
         type: "POST",
@@ -84,17 +95,12 @@ function upload_api(file, callback) {
         }
     });
 }
-function idElement_err(idElement, err) {
-    idElement.text(err);
-    idElement.css({ "font-weight": "bold", "color": "#f53333" });
-}
 
-function start_up(file, id) {
+async function start_up(file, img_url, id) {
     var idElement = $("#" + id);
     idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
-    // console.log(file)
     //---
-    upload_api(file, function (err, data, urlx) {
+    await upload_api(file, img_url, function (err, data, urlx) {
         //---
         // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
         var error = err;
@@ -112,9 +118,10 @@ function start_up(file, id) {
         }
         //---
         console.log(urlx);
-        console.log(data);
+        console.log(JSON.stringify(data));
         //---
         if (error) {
+            $("#error_" + id).show();
             idElement_err(idElement, 'false: ' + error);
         } else if (!data) {
             idElement_err(idElement, 'false: no data');
@@ -122,7 +129,7 @@ function start_up(file, id) {
             var results = data.result;
             var warnings = data.warnings;
             if (results == "Success") {
-                $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
+                $('#name_' + id).html('<a href="https://commons.wikimedia.org/wiki/File:' + file + '" target="_blank">' + file + '</a>');
                 idElement.text('true');
                 idElement.css({ "color": "#45f533", "font-weight": "bold" });
             } else if (!results) {
@@ -138,107 +145,24 @@ function start_up(file, id) {
 
 }
 
-function check_image_exist(name, callback) {
-    //---
-    var api_url = 'auth/api.php?do=exists&filename=' + name;
-    //---
-    $.ajax({
-        url: api_url,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            var error = data.error;
-            if (error) {
-                callback(false, false, data);
-                return;
-            }
-            var exists = data.exists;
-            if (exists == 'true') {
-                callback(true, false, data);
-            } else if (exists == 'false') {
-                callback(false, true, data);
-            } else {
-                callback(false, false, data);
-            };
-        },
-        error: function (data) {
-            // console.log(api_url + "&" + jQuery.param(params));
-            callback(false, false, data);
+async function up_files() {
+
+    var to_up = document.getElementsByName('toup');
+
+    if (to_up.length == 0) {
+        return;
+    }
+    // do get crop for to_up elements
+    for (var i = 0; i < to_up.length; i++) {
+        var id = to_up[i].getAttribute("idt");
+        var img_url = to_up[i].getAttribute("url");
+
+        var imagename = $("#name_" + id).text();
+        // var imagename = sessionStorage.getItem(id);
+
+        console.log("up: id:" + id + " imagename:" + imagename);
+        if (imagename != null && imagename != undefined && imagename != '') {
+            await start_up(imagename, img_url, id);
         }
-    });
-    //---
+    };
 }
-
-function upload_f(file, id) {
-    var idElement = $("#" + id);
-    //---
-    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...');
-    //---
-    check_image_exist(file.name, function (exists, notexists, data) {
-        console.log('check_image_exist' + JSON.stringify(data));
-        if (notexists) {
-            // استخدام الوظيفة المعدلة
-            save_it(file, id).then(result => {
-                // تم الحفظ بنجاح
-                if (result === true) {
-                    start_up(file, id);
-                }
-            })
-        } else if (exists) {
-            $('#name_' + id).html('<a href="https://nccommons.org/wiki/File:' + file.name + '" target="_blank">' + file.name + '</a>');
-            idElement.text('File exists in NCC');
-            idElement.css({ "color": "#f53333", "font-weight": "bold" });
-
-        } else {
-            // console.log(JSON.stringify(data));
-            var error = data.error;
-            if (error == "You haven't authorized this application yet!") {
-                idElement.html($('#loginli').html());
-            } else {
-                idElement.text('Exists Error..');
-                idElement.css({ "font-weight": "bold", "color": "#f53333" });
-            }
-        }
-    });
-}
-
-$(document).ready(function () {
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const files = document.getElementById("imageUpload").files;
-
-        if (files.length === 0) {
-            alert("Please select one or more images to upload.");
-            return;
-        }
-        $("#bar").show();
-        var persnt = 100 / files.length;
-
-        $("#uploadForm").hide();
-        $("#result").show();
-
-        for (let i = 0; i < files.length; i++) {
-            var id = 'file' + i;
-
-            // add row to table with id "result"
-            var row = $("<tr></tr>");
-
-            row.append("<td>" + (i + 1) + "</td>");
-            row.append("<td><span id='name_" + id + "'>" + files[i].name + "</span></td>");
-            row.append("<td><span id='save_" + id + "'>" + "</span></td>");
-            row.append("<td><span id='" + id + "'></span></td>");
-
-            $("#result tbody").append(row);
-
-            // sleep(1000);
-
-        }
-        for (let i = 0; i < files.length; i++) {
-            var id = 'file' + i;
-            $("#progress-bar").css("width", (i + 1) * persnt + "%");
-            $("#progress-bar").text((i + 1) + '/' + files.length);
-            upload_f(files[i], id);
-        }
-    });
-})

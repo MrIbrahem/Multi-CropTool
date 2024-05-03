@@ -33,13 +33,13 @@ function echo_login() {
 	if ($username == '') {
 		echo <<<HTML
 			Go to this URL to authorize this tool:<br />
-			<a href='auth.php?a=login&to=mass'>Login</a><br />
+			<a href='auth.php?a=login'>Login</a><br />
 		HTML;
 	} else {
 		echo <<<HTML
 			You are authenticated as $safeUsername.<br />
 			Continue to <a href='auth.php?a=edit'>edit</a><br>
-			<a href='logout.php'>logout</a>
+			<a href='auth.php?a=logout'>logout</a>
 		HTML;
 	};
 	//---

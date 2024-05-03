@@ -1,7 +1,13 @@
 <?php
+if (isset($_REQUEST['test'])) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+};
+//---
 // this file is redirected to files in the auth directory
 // example:
-// url auth.php?a=login&to=mass  -> auth/login.php
+// url auth.php?a=login  -> auth/login.php
 // url auth.php?a=edit   -> auth/edit.php
 // url auth.php?a=index  ->
 // code:
@@ -10,13 +16,14 @@
 $allowedActions = ['login', 'callback', 'edit', 'api', 'index'];
 
 $action = $_GET['a'] ?? 'index';
-$to = $_GET['a'] ?? '';
 
 if (!in_array($action, $allowedActions)) {
     // Handle error or redirect to a default action
     $action = 'index';
 }
 $actionFile = $action . '.php';
+
+$to = "ncc_to_c";
 
 // Redirect to the corresponding action file
 // header("Location: auth/" . $actionFile);
