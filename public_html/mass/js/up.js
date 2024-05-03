@@ -60,7 +60,7 @@ function upload_api(file, callback) {
     //---
     var file_url = 'https://nccroptool.toolforge.org/mass/files/' + file.name;
     //---
-    var api_url = 'auth/api.php';
+    var api_url = '../auth/api.php';
     //---
     var formData = {
         filename: file.name,
@@ -181,7 +181,7 @@ function upload_f(file, id) {
             save_it(file, id).then(result => {
                 // تم الحفظ بنجاح
                 if (result === true) {
-                    start_up(file, id);        
+                    start_up(file, id);
                 }
             })
         } else if (exists) {

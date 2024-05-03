@@ -65,17 +65,21 @@ async function save_it(file, id) {
 
 async function upload_api(file, file_url, callback) {
     //---
-    var api_url = 'auth.php';
+    // var api_url = 'auth.php';
+    var api_url = '../auth/api.php';
+    //---
+    // remove "File:" from file name
+    file = file.replace("File:", "");
     //---
     var formData = {
-        action: "api",
+        a: "api",
         do: 'upload',
         filename: file,
         comment: 'comment',
         url: file_url,
     }
     //---
-    var urlx = window.location.origin + '/ncc_to_c/' + api_url + '?' + $.param(formData);
+    var urlx = window.location.origin + api_url + '?' + $.param(formData);
     //---
     $.ajax({
         async: true,
