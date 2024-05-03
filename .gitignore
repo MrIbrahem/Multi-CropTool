@@ -28,5 +28,5 @@ vendor/**
 /public_html/multi1
 /public_html/ncc_to_c/jobs
 /public_html/mass2/files
-/public_html/mass2/**
-/public_html/ncc_to_c/**
+/public_html/mass2
+/public_html/ncc_to_cx
