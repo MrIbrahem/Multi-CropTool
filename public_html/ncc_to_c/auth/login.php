@@ -1,9 +1,9 @@
 <?php
 //---
 if (isset($_REQUEST['test'])) {
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 };
 //---
 // Require the library and set up the classes we're going to use in this first part.
@@ -17,8 +17,8 @@ use MediaWiki\OAuthClient\Consumer;
 // it in the browser without reading the documentation.
 $configFile = __DIR__ . '/config.php';
 if (!file_exists($configFile)) {
-	echo "Configuration could not be read. Please create $configFile by copying config.dist.php";
-	exit(1);
+    echo "Configuration could not be read. Please create $configFile by copying config.dist.php";
+    exit(1);
 }
 
 // Get the wiki URL and OAuth consumer details from the config file.
@@ -30,14 +30,14 @@ $conf->setConsumer(new Consumer($consumerKey, $consumerSecret));
 $conf->setUserAgent($gUserAgent);
 $client = new Client($conf);
 
-function make_callback_url() {
-	global $to;
-    $to = $_REQUEST['to'] ?? '';
+function make_callback_url()
+{
+    $site = 'ncc_to_c';
     $test = $_REQUEST['test'] ?? '';
-	//---
+    //---
     $state = ($test != '') ? '&test=1' : '';
     //---
-    $oauth_call = "https://nccroptool.toolforge.org/$to/auth.php?a=callback" . $state;
+    $oauth_call = "https://nccroptool.toolforge.org/$site/auth.php?a=callback" . $state;
     //---
     return $oauth_call;
 }

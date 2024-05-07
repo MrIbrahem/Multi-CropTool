@@ -65,40 +65,39 @@ async function save_it(file, id) {
 
 async function upload_api(file, file_url, callback) {
     //---
-    // var api_url = 'auth.php';
-    var api_url = '../auth/api.php';
+    var api_url = 'auth.php';
     //---
     // remove "File:" from file name
     file = file.replace("File:", "");
     //---
     var formData = {
-        a: "api",
-        do: 'upload',
+        a: 'upload',
+        by: 'file',
         filename: file,
         comment: 'comment',
         url: file_url,
     }
     //---
-    var urlx = window.location.origin + api_url + '?' + $.param(formData);
+    api_url = api_url + '?' + jQuery.param(formData);
     //---
     $.ajax({
         async: true,
         url: api_url,
-        data: formData,
-        type: "POST",
+        // data: formData,
+        type: "GET",
         dataType: "json",
         success: function (data) {
-            callback(null, data, urlx);
+            callback(null, data, api_url);
         },
         error: function (data) {
-            callback('Error occurred', data, urlx);
+            callback('Error occurred', data, api_url);
         }
     });
 }
 
 async function start_up(file, img_url, id) {
     var idElement = $("#" + id);
-    idElement.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading..');
+    idElement.html('<i class="fa fa-upload"></i> Uploading..');
     //---
     await upload_api(file, img_url, function (err, data, urlx) {
         //---
@@ -117,6 +116,8 @@ async function start_up(file, img_url, id) {
             data = data.upload;
         }
         //---
+        urlx = window.location.origin + '/ncc_to_c/' + urlx;
+        //---
         console.log(urlx);
         console.log(JSON.stringify(data));
         //---
@@ -126,27 +127,61 @@ async function start_up(file, img_url, id) {
         } else if (!data) {
             idElement_err(idElement, 'false: no data');
         } else {
-            var results = data.result;
-            var warnings = data.warnings;
-            if (results == "Success") {
-                $('#name_' + id).html('<a href="https://commons.wikimedia.org/wiki/File:' + file + '" target="_blank">' + file + '</a>');
-                idElement.text('true');
-                idElement.css({ "color": "#45f533", "font-weight": "bold" });
-            } else if (!results) {
-                console.log(data);
-                idElement_err(idElement, 'false, no results');
-            } else if (warnings) {
-                idElement_err(idElement, 'false, warnings: ' + JSON.stringify(data));
-            } else {
-                idElement_err(idElement, 'false, results: ' + results);
-            }
+            upload_Success(data, id, file, idElement);
         }
     });
 
 }
 
-async function up_files() {
+function upload_Success(data, id, file, idElement) {
+    var results = data.result;
+    var warnings = data.warnings;
 
+    if (results == "Success") {
+        $("#success_" + id).show();
+        $("#new_" + id).show();
+        $('#name_' + id).addClass("text-success");
+        $('#name_' + id).html('<a class="text-success" href="https://nccommons.org/wiki/' + file + '" target="_blank">' + file + '</a>');
+
+        idElement.text('true');
+        idElement.addClass("text-success");
+        idElement.css({ "font-weight": "bold" });
+        return true;
+
+    };
+    // ---
+    var ero = 'false, results: ' + results;
+    // ---
+    if (!results) {
+        console.log(data);
+        ero = 'false, no results';
+    } else if (warnings) {
+        ero = 'false, warnings: ' + JSON.stringify(data)
+    }
+    //---
+    idElement_err(idElement, ero);
+
+}
+
+async function up_files() {
+    $.ajax({
+        async: true,
+        url: 'auth.php',
+        data: { a: 'userinfo' },
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            // { "batchcomplete": "", "query": { "userinfo": { "id": 1644737, "name": "Mr. Ibrahem", "rights": [ "read", "writeapi", "abusefilter-view", "abusefilter-log", "upload", "upload_by_url", "reupload-own", "reupload", "autoconfirmed", "editsemiprotected", "skipcaptcha", "abusefilter-log-detail", "transcode-reset" ] } } }
+            var name = data.query.userinfo.name;
+            if (!name) {
+                name = JSON.stringify(data);
+            }
+            $('#login_sp').text(name);
+        },
+        error: function (data) {
+            $('#login_sp').text(JSON.stringify(data));
+        }
+    });
     var to_up = document.getElementsByName('toup');
 
     if (to_up.length == 0) {

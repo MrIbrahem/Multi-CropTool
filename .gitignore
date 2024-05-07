@@ -30,3 +30,7 @@ vendor/**
 /public_html/mass2/files
 /public_html/mass2
 /public_html/ncc_to_cx
+.lighttpd.conf
+confs/OAuthConfig_commons.ini
+/public_html/c2ncc
+/public_html/flickr2commons

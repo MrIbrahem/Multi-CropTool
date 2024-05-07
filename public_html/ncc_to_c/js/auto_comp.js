@@ -1,11 +1,12 @@
 
 function initAutocomplete(selector) {
     // @ts-ignore
+    var site = "nccommons";
     $(selector).autocomplete({
         source: function (request, response) {
             // make AJAX request to Wikipedia API
             $.ajax({
-                url: "https://nccommons.org/w/api.php",
+                url: "https://" + site + ".org/w/api.php",
                 dataType: "jsonp",
                 data: {
                     action: "query",
