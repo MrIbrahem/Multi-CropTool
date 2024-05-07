@@ -17,7 +17,6 @@ async function check_image_exist(name, site, callback) {
             "formatversion": "2"
         }
         // {"action": "query", "format": "json", "prop": "imageinfo", "titles": title, "iiprop": "url", "formatversion": "2"}
-        // var url = 'https://commons.wikimedia.org/wiki/' + name + '?action=raw';
         var url = 'https://' + site + '.org/w/api.php?' + jQuery.param(params);
         //---
         var proxy = window.location.origin + '/ncc_to_c/get.php?type=json&url=';
@@ -61,8 +60,13 @@ async function find_info(id) {
     //---
     console.log('get File info..' + id);
     //---
-    // await check_image_exist(file, 'nccommons', function (exists, notexists) {
-    await check_image_exist(file, 'commons.wikimedia', function (exists, img_url) {
+    var site = 'nccommons';
+    //---
+    if ($("#SITE").text() == 'ncc_to_c2') {
+        site = "commons.wikimedia";
+    }
+    //---
+    await check_image_exist(file, site, function (exists, img_url) {
         if (exists) {
             $('#name_' + id).addClass("text-success");
             console.log('File exists..');
@@ -71,7 +75,7 @@ async function find_info(id) {
         } else {
             $('#name_' + id).addClass("text-danger");
             console.log('File not exists..');
-            idElement_err(idElement, 'File not exists in commons.wikimedia');
+            idElement_err(idElement, 'File not exists in  ' + site);
         }
     });
 }

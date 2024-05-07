@@ -10,7 +10,7 @@
 $allowedActions = ['login', 'callback', 'edit', 'api', 'index'];
 
 $action = $_GET['a'] ?? 'index';
-$to = $_GET['a'] ?? '';
+$to = $_GET['to'] ?? '';
 
 if (!in_array($action, $allowedActions)) {
     // Handle error or redirect to a default action

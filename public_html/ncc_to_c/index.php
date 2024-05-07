@@ -1,5 +1,7 @@
 <?php
+
 namespace NccToC;
+
 if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -19,11 +21,22 @@ if ($title == '' && $_SERVER['SERVER_NAME'] == 'localhost') {
 }
 
 $title_d  = htmlentities($title);
+//---
+$login_sp = '';
+$start_disabled = '';
+//---
+if ($username == '') {
+    $start_disabled = ($_SERVER['SERVER_NAME'] == 'localhost') ? '' : 'disabled';
+    $login_sp = <<<HTML
+        You are not authenticated, Go to this URL to authorize this tool: <a href='auth.php?a=login'>Login</a>
+    HTML;
+}
 
 echo <<<HTML
     <div class="card">
         <div class="card-header aligncenter" style="font-weight:bold;">
             <h3>NCC2Commons</h3>
+            $login_sp
         </div>
         <div class="card-body">
             <form action='up2.php' method='POST'>
@@ -34,7 +47,7 @@ echo <<<HTML
                             <div class='input-group-prepend'>
                                 <span class='input-group-text'>Title</span>
                             </div>
-                            <input class='form-control' type='text' id='title' name='title' value='$title_d' required />
+                            <input class='form-control' type='text' id='title' name='title' value='$title_d'/>
                         </div>
                     </div>
                     <div class='col-md-2'>
@@ -54,7 +67,7 @@ echo <<<HTML
                     </div>
                 </div>
                 <div class='input-group'>
-                    <input class='btn btn-outline-primary' type='submit' name='start' value='start' />
+                    <input class='btn btn-outline-primary' type='submit' name='start' value='start' $start_disabled/>
                 </div>
             </form>
         </div>

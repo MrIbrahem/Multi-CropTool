@@ -2,10 +2,19 @@
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
 //---
+$site = (strpos($_SERVER['SCRIPT_NAME'], 'ncc_to_c2') === 1) ? 'ncc_to_c2' : 'ncc_to_c';
+//---
+echo <<<HTML
+    <span id='SITE' style='display:none'>$site</span>
+    \n
+HTML;
+//---
 include_once('auth/index.php');
 //---
-echo "
-<span id='myusername' style='display:none'>$username</span>";
+echo <<<HTML
+    <span id='myusername' style='display:none'>$username</span>
+    \n
+HTML;
 //---
 if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
     ini_set('display_errors', 1);
@@ -65,7 +74,7 @@ $log_lis = <<<HTML
 		</a>
 	</li>
 	<li class="nav-item col-4 col-lg-auto" id="loginli">
-		<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login&to=ncc_to_c">
+		<a role="button" class="nav-link py-2 px-0 px-lg-2" href="auth.php?a=login&to=$site">
 			<i class="fas fa-sign-in-alt fa-sm fa-fw mr-2"></i> <span class="navtitles">Login</span>
 		</a>
 	</li>
@@ -76,22 +85,22 @@ $log_lis = <<<HTML
 	</li>
 HTML;
 //---
-echo header_nav_tag($title="NCCommons to Commons", $page='ncc_to_c', $log_lis=$log_lis);
+echo header_nav_tag($title = "NCCommons to Commons", $page = 'ncc_to_c', $log_lis = $log_lis);
 //---
 ?>
 
 <script>
-	var lo = $('#myusername').text();
-	if (lo != '') {
-		$('#loginli').hide();
-		$('#username_li').show();
-		$('#logout_btn').show();
-	} else {
-		$('#loginli').show();
-		$('#username_li').hide();
-		$('#logout_btn').hide();
-	};
-	// });
+    var lo = $('#myusername').text();
+    if (lo != '') {
+        $('#loginli').hide();
+        $('#username_li').show();
+        $('#logout_btn').show();
+    } else {
+        $('#loginli').show();
+        $('#username_li').hide();
+        $('#logout_btn').hide();
+    };
+    // });
 </script>
 <main id="body">
     <div id="maindiv" class="container">

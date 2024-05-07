@@ -1,6 +1,7 @@
 <?php
 
 namespace Up;
+
 if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -13,6 +14,16 @@ use function Log\log_files_to_json;
 
 $title = $_REQUEST['title'] ?? '';
 $files = $_REQUEST['files'] ?? '';
+
+$username = $_SESSION['username'] ?? '';
+//---
+$login_sp = '';
+//---
+if ($username == '') {
+    $login_sp = <<<HTML
+        You are not authenticated, Go to this URL to authorize this tool: <a href='auth.php?a=login'>Login</a>
+    HTML;
+}
 
 $files_rows = '';
 $i = 0;
@@ -45,15 +56,18 @@ foreach (explode("\n", $files) as $file) {
                 <div id="success_$i" style="display: none;">
                     <i class="fa fa-check"></i> Success
                 </div>
+                <div id="new_$i" style="display: none;">
+                    <a href="https://commons.wikimedia.org/wiki/$file_to_html" target="_blank"><i class="fa fa-thumbs-up"></i> New file</a>
+                </div>
             </td>
         </tr>
 HTML;
 }
-
 echo <<<HTML
     <div class="card">
         <div class="card-header aligncenter" style="font-weight:bold;">
             <h3>NCC2Commons</h3>
+            <span id='login_sp'>$login_sp</span>
         </div>
         <div class="card-body">
             <div class="card-title">
@@ -65,7 +79,7 @@ echo <<<HTML
                     <tr>
                         <th>#</th>
                         <th>File</th>
-                        <th></th>
+                        <th>Status</th>
                         <th>Result</th>
                     </tr>
                 </thead>
@@ -88,18 +102,23 @@ echo <<<HTML
     </div>
     <script src="js/up.js"></script>
     <script src="js/info.js"></script>
-    <script>
-        $(document).ready(function() {
-            async function start() {
-                // upload files
-                await do_files();
-                await up_files();
-            }
-
-            start();
-        });
-    </script>
 HTML;
+
+if ($username != '' || $_SERVER['SERVER_NAME'] == 'localhost') {
+    echo <<<HTML
+        <script>
+            $(document).ready(function() {
+                async function start() {
+                    // upload files
+                    await do_files();
+                    await up_files();
+                }
+
+                start();
+            });
+        </script>
+    HTML;
+}
 ?>
 </body>
 
