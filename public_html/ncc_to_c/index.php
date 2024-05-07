@@ -47,7 +47,7 @@ echo <<<HTML
                             <div class='input-group-prepend'>
                                 <span class='input-group-text'>Title</span>
                             </div>
-                            <input class='form-control' type='text' id='title' name='title' value='$title_d'/>
+                            <input class='form-control' type='text' id='title' name='title' value="$title_d" />
                         </div>
                     </div>
                     <div class='col-md-2'>
