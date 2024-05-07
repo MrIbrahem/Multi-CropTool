@@ -62,10 +62,6 @@ async function find_info(id) {
     //---
     var site = 'nccommons';
     //---
-    if ($("#SITE").text() == 'ncc_to_c2') {
-        site = "commons.wikimedia";
-    }
-    //---
     await check_image_exist(file, site, function (exists, img_url) {
         if (exists) {
             $('#name_' + id).addClass("text-success");

@@ -2,7 +2,7 @@
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
 //---
-$site = (strpos($_SERVER['SCRIPT_NAME'], 'ncc_to_c2') === 1) ? 'ncc_to_c2' : 'ncc_to_c';
+$site = 'ncc_to_c';
 //---
 echo <<<HTML
     <span id='SITE' style='display:none'>$site</span>

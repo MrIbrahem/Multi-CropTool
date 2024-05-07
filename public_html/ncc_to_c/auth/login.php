@@ -32,7 +32,7 @@ $client = new Client($conf);
 
 function make_callback_url()
 {
-    $site = (strpos($_SERVER['SCRIPT_NAME'], 'ncc_to_c2') === 1) ? 'ncc_to_c2' : 'ncc_to_c';
+    $site = 'ncc_to_c';
     $test = $_REQUEST['test'] ?? '';
     //---
     $state = ($test != '') ? '&test=1' : '';
