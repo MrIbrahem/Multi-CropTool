@@ -10,13 +10,10 @@ if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
 require('header.php');
 $start = $_REQUEST['start'] ?? '';
 $test  = $_REQUEST['test'] ?? '';
-$title = $_REQUEST['title'] ?? '';
 $files = $_REQUEST['files'] ?? '';
 
 $test_input = ($test != '') ? '<input name="test" id="test" value="1" hidden>' : '';
 
-$title_d  = htmlentities($title);
-//---
 $login_sp = '';
 $start_disabled = '';
 //---
@@ -40,16 +37,6 @@ echo <<<HTML
                     <div class='col-md-12'>
                         <div class='input-group mb-3'>
                             <div class='input-group-prepend'>
-                                <span class='input-group-text'>File</span>
-                            </div>
-                            <input class='form-control' type='text' id='title' name='title' value='$title_d'/>
-                        </div>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class='col-md-12'>
-                        <div class='input-group mb-3'>
-                            <div class='input-group-prepend'>
                                 <span class='input-group-text' id="filescount">Files</span>
                             </div>
                             <textarea class='form-control' type='text' id='files' name='files' rows='10' required>$files</textarea>
@@ -65,13 +52,6 @@ echo <<<HTML
 
 HTML;
 
-echo <<<HTML
-    <script>
-        $(document).ready(function() {
-            initAutocomplete("#title");
-        });
-    </script>
-HTML;
 ?>
 </body>
 
