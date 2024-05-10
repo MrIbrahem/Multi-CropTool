@@ -7,6 +7,7 @@ if (isset($_REQUEST['test'])) {
 };
 //---
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../text.php';
 
 use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\ClientConfig;
@@ -70,10 +71,12 @@ $url = $_REQUEST['url'] ?? '';
 $filename = filter_var($_REQUEST['filename'] ?? '', FILTER_SANITIZE_STRING);
 $comment = filter_var($_REQUEST['comment'] ?? '', FILTER_SANITIZE_STRING);
 
+$file_text = make_file_text($filename);
+
 $data = [
     'action' => 'upload',
     'format' => 'json',
-    'text' => "",
+    'text' => $file_text,
     'filename' => $filename,
     'comment' => $comment,
 ];
@@ -89,7 +92,7 @@ $by = $_REQUEST['by'] ?? 'file';
 
 $tmp_file = downloadFile($url);
 $tmp_name = basename($tmp_file);
-$newurl = "https://nccroptool.toolforge.org/c2ncc/files/$tmp_name";
+$newurl = $main_site . "/c2ncc/files/$tmp_name";
 
 if ($by == 'url') {
     // $data['url'] = $url;

@@ -12,7 +12,7 @@ if (isset($_REQUEST['test'])) {
 // url auth.php?a=index  ->
 // code:
 
-header('Content-type: application/json; charset=utf-8');
+// header('Content-type: application/json; charset=utf-8');
 
 // After
 $allowedActions = ['login', 'callback', 'edit', 'api', 'index', 'userinfo', 'upload'];
@@ -24,8 +24,6 @@ if (!in_array($action, $allowedActions)) {
     $action = 'index';
 }
 $actionFile = $action . '.php';
-
-$to = "c2ncc";
 
 // Redirect to the corresponding action file
 // header("Location: auth/" . $actionFile);

@@ -6,16 +6,16 @@ $pathParts = explode('public_html', __FILE__);
 // the root path is the first part of the split file path
 $ROOT_PATH = $pathParts[0];
 //---
-// $inifile = $ROOT_PATH . '/confs/OAuthConfig_commons.ini';
-// $oauthUrl = 'https://commons.wikimedia.org/w/index.php?title=Special:OAuth';
-// $gUserAgent = 'commons MediaWikiOAuthClient/1.0';
+$main_site = "https://nccroptool.toolforge.org";
 //---
-// if url has ncc_to_c2 in it use nccommons.org
-// if (strpos($_SERVER['SCRIPT_NAME'], 'ncc_to_c2') === 1) {
-$oauthUrl = 'https://nccommons.org/w/index.php?title=Special:OAuth';
+$source_site = "commons.wikimedia.org";
+$target_domain= "nccommons.org";
+//---
+$oauthUrl = 'https://' . $target_domain . '/w/index.php?title=Special:OAuth';
+//---
 $inifile = $ROOT_PATH . '/confs/OAuthConfig.ini';
 $gUserAgent = 'xcommons_c2ncc MediaWikiOAuthClient/1.0';
-// }
+//---
 //---
 $ini = parse_ini_file($inifile);
 //---

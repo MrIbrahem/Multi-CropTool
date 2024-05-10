@@ -32,13 +32,12 @@ $client = new Client($conf);
 
 function make_callback_url()
 {
-    // $site = (strpos($_SERVER['SCRIPT_NAME'], 'ncc_to_c2') === 1) ? 'ncc_to_c2' : 'ncc_to_c';
-    $site = "c2ncc";
+    global $main_site;
     $test = $_REQUEST['test'] ?? '';
     //---
     $state = ($test != '') ? '&test=1' : '';
     //---
-    $oauth_call = "https://nccroptool.toolforge.org/$site/auth.php?a=callback" . $state;
+    $oauth_call = $main_site . "/c2ncc/auth.php?a=callback" . $state;
     //---
     return $oauth_call;
 }

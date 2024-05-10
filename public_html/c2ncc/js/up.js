@@ -136,6 +136,7 @@ async function start_up(file, img_url, id) {
 function upload_Success(data, id, file, idElement) {
     var results = data.result;
     var warnings = data.warnings;
+    var exists = data.warnings.exists;
 
     if (results == "Success") {
         $("#success_" + id).show();
@@ -155,8 +156,10 @@ function upload_Success(data, id, file, idElement) {
     if (!results) {
         console.log(data);
         ero = 'false, no results';
+    } else if (exists) {
+        ero = 'File exists. ';
     } else if (warnings) {
-        ero = 'false, warnings: ' + JSON.stringify(data)
+        ero = 'false, warnings: ' + JSON.stringify(data);
     }
     //---
     idElement_err(idElement, ero);
