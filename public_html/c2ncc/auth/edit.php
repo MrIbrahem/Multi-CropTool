@@ -19,6 +19,11 @@ $conf->setConsumer(new Consumer($consumerKey, $consumerSecret));
 $conf->setUserAgent($gUserAgent);
 $client = new Client($conf);
 
+// if (!isset($_SESSION['access_key']) || !isset($_SESSION['access_secret'])) {
+//     echo "Access token not found in session.";
+//     exit;
+// }
+
 // Load the Access Token from the session.
 session_start();
 $accessToken = new Token($_SESSION['access_key'], $_SESSION['access_secret']);
@@ -29,14 +34,15 @@ echo "You are authenticated as " . htmlspecialchars($ident->username, ENT_QUOTES
 
 function get_edit_token()
 {
-	global $client, $accessToken, $apiUrl;
-	// Example 3: make an edit (getting the edit token first).
-	$editToken = json_decode($client->makeOAuthCall(
-		$accessToken,
-		"$apiUrl?action=query&meta=tokens&format=json"
-	))->query->tokens->csrftoken;
-	//---
-	return $editToken;
+    global $client, $accessToken, $apiUrl;
+    // Example 3: make an edit (getting the edit token first).
+    $response = $client->makeOAuthCall(
+        $accessToken,
+        "$apiUrl?action=query&meta=tokens&format=json"
+    );
+    $editToken = json_decode($response)->query->tokens->csrftoken;
+    //---
+    return $editToken;
 }
 
 $apiParams = [

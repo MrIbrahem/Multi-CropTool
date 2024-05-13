@@ -26,6 +26,11 @@ $conf->setConsumer(new Consumer($consumerKey, $consumerSecret));
 $conf->setUserAgent($gUserAgent);
 $client = new Client($conf);
 
+// if (!isset($_SESSION['access_key']) || !isset($_SESSION['access_secret'])) {
+//     echo "Access token not found in session.";
+//     exit;
+// }
+
 // Load the Access Token from the session.
 session_start();
 $accessToken = new Token($_SESSION['access_key'], $_SESSION['access_secret']);
@@ -113,12 +118,19 @@ $result = $client->makeOAuthCall(
 );
 //---
 if (!$result) {
-    $err = ["error" => "result error"];
+    $err = ["error" => "Failed to upload the file"];
     echo json_encode($err);
     exit;
 }
 //---
 $response = json_decode($result, true);
+//---
+if (isset($response['error'])) {
+    $err = ["error" => $response['error']];
+    echo json_encode($err);
+    exit;
+}
+//---
 // Delete the temporary file after processing
 unlink($tmp_file);
 
