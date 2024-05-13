@@ -6,12 +6,12 @@ $them_li = dark_mode_icon();
 function is_active($page, $id) {
     return $page == $id ? 'active' : '';
 }
-function header_nav_tag($title="NCCommons to Commons", $page='', $log_lis='') {
+function header_nav_tag($title="title", $page='', $log_lis='') {
     global $them_li;
 
     $multi2_active = is_active($page, 'multi2');
     $mass_active = is_active($page, 'mass');
-    $ncc_to_c_active = is_active($page, 'ncc_to_c');
+    $c2ncc_active = is_active($page, 'c2ncc');
     // ---
     $login_logout_lis = <<<HTML
         <li class="nav-item col col-lg-auto dropdown">
@@ -66,9 +66,9 @@ function header_nav_tag($title="NCCommons to Commons", $page='', $log_lis='') {
                                     <span class="navtitles">Mass Upload</span>
                                 </a>
                             </li>
-                            <li class="nav-item col-4 col-lg-auto $ncc_to_c_active" id="ncc_to_c">
-                                <a class="nav-link py-2 px-0 px-lg-2 $ncc_to_c_active" href="../ncc_to_c/index.php">
-                                    <span class="navtitles">NC Commons to Commons</span>
+                            <li class="nav-item col-4 col-lg-auto $c2ncc_active" id="c2ncc">
+                                <a class="nav-link py-2 px-0 px-lg-2 $c2ncc_active" href="../c2ncc/index.php">
+                                    <span class="navtitles">Commons to NCCommons</span>
                                 </a>
                             </li>
                             <li class="nav-item col-4 col-lg-auto">
