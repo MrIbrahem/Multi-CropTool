@@ -6,6 +6,7 @@ if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
 	error_reporting(E_ALL);
 };
 //---
+header('Content-type: application/json; charset=utf-8');
 // Require the library and set up the classes we're going to use in this second part of the demo.
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -44,8 +45,11 @@ $userInfo = json_decode($client->makeOAuthCall(
 	"$apiUrl?action=query&meta=userinfo&uiprop=rights&format=json"
 ));
 // echo "== User info ==<br><br>";
-// print_r($userInfo);
-function get_user_name(){
+
+echo json_encode($userInfo, JSON_PRETTY_PRINT);
+
+function get_user_name()
+{
 	global $ident;
 	return $ident->username;
 }

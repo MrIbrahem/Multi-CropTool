@@ -13,8 +13,8 @@ use MediaWiki\OAuthClient\ClientConfig;
 use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Token;
 
-// Output the demo as plain text, for easier formatting.
-header('Content-type: text/plain');
+// Output the demo as json
+header('Content-type: application/json; charset=utf-8');
 
 // Get the wiki URL and OAuth consumer details from the config file.
 require_once __DIR__ . '/config.php';
@@ -54,7 +54,9 @@ function doApiQuery($Params, $addtoken = null)
 {
     global $client, $accessToken, $apiUrl;
     //---
-    if ($addtoken !== null) $Params['token'] = get_edit_token();
+    if ($addtoken) {
+        $Params['token'] = get_edit_token();
+    }
     //---
     $Result = $client->makeOAuthCall(
         $accessToken,
@@ -66,56 +68,77 @@ function doApiQuery($Params, $addtoken = null)
     return json_decode($Result, true);
 }
 
-function doEdit($data) {
+function doEdit($data)
+{
     return doApiQuery($data, $addtoken = true);
 }
 
+function downloadFile($url)
+{
+    // Initialize cURL session
+    $ch = curl_init($url);
 
-function upload($post) {
+    // Create a temporary file to save the downloaded content
+    $tmp_file = tempnam(sys_get_temp_dir(), 'downloaded_file_');
+
+    // Set options for cURL
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For HTTPS
+
+    // Execute cURL request and save the downloaded content to the temporary file
+    $file_data = curl_exec($ch);
+    file_put_contents($tmp_file, $file_data);
+
+    // Close cURL session
+    curl_close($ch);
+
+    return $tmp_file;
+}
+
+function upload($post)
+{
     $url = $post['url'] ?? '';
-    $file = $_FILES['file'];
 
     // Validate and sanitize other inputs if needed
     $filename = filter_var($post['filename'] ?? '', FILTER_SANITIZE_STRING);
     $comment = filter_var($post['comment'] ?? '', FILTER_SANITIZE_STRING);
 
-    //---
-
     $data = [
         'action' => 'upload',
         'format' => 'json',
+        'text' => "",
         'filename' => $filename,
         'comment' => $comment,
     ];
 
-    //---
-
-    if ($url == '' && $file == '') {
+    if ($url == '') {
         $err = ["error" => "Invalid", "filename" => $filename, "url" => $url];
         echo json_encode($err);
         return;
     }
 
-    //---
+    // Download the file using the separate function
+    $by = $post['by'] ?? 'file';
 
-    if ($url != '') {
+    if ($by == 'url') {
         $data['url'] = $url;
     } else {
-        // CURLFile
-        $data['file'] = new \CURLFile($file['name'], $file['type'], $file['tmp_name'], $file['size']);
+        $tmp_file = downloadFile($url);
+        $data['file'] = new \CURLFile($tmp_file);
     }
+    // Perform whatever processing or API call you need with the uploaded file
+    $response = doEdit($data);
 
-    //---
+    // Delete the temporary file after processing
+    unlink($tmp_file);
 
-    $uu = doEdit($data);
-
-    //---
-
-    echo json_encode($uu);
+    // Output the response
+    echo json_encode($response);
 }
 
-
-function find_exists() {
+function find_exists()
+{
     // Sanitize the filename to prevent malicious code injection
     $sanitizedFilename = filter_var($_GET['filename'], FILTER_SANITIZE_STRING);
     $filename = $sanitizedFilename ?? '';
@@ -150,13 +173,16 @@ function find_exists() {
 }
 
 
-//---
 switch ($_REQUEST['do'] ?? '') {
     case 'upload':
         upload($_REQUEST);
         break;
+
     case 'exists':
         find_exists();
         break;
+
+    default:
+        echo json_encode(['error' => 'Unknown action']);
+        break;
 }
-//---

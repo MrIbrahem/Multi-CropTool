@@ -57,11 +57,11 @@ echo "Continue to <a href='auth.php?a=edit'>edit</a><br>";
 echo "Continue to <a href='auth.php?a=index'>index</a><br>";
 
 $username = get_user_name();
-$_SESSION['username'] = $ident->username;
+$_SESSION['username'] = $username;
 // Example 3: make an edit (getting the edit token first).
 # automatic redirect to edit.php
 
-$test = $_GET['test'] ?? '';
+$test = $_REQUEST['test'] ?? '';
 //---
 $newurl = "index.php";
 //---
