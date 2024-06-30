@@ -5,6 +5,24 @@ function count_up_plus_one(na_id) {
     $('#' + na_id).html(u.toString());
 }
 
+function change_color(id) {
+    $("#" + id + "_logo").hide();
+    $("#" + id + "_logo_done").show();
+
+    var done = $('#' + id + '_done').text();
+    var all = $('#' + id + '_all').text();
+    if (done == all) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    };
+    if (done == "0") {
+        $("#" + id + "_logo_done").hide();
+        $("#" + id + "_logo_err").show();
+        // change font to red
+        $('#' + id + '_row').css('color', 'red');
+    }
+}
 function upload(id, imagename) {
     return new Promise((resolve, reject) => {
         var summary = $('#s' + id).text();
@@ -27,12 +45,13 @@ function upload(id, imagename) {
             url: api_url1,
             data: params,
             type: 'POST',
+            dataType: 'json',
             success: function (data) {
                 var result = data.result;
                 var error = data.error;
                 if (result == "Success") {
 
-                    console.log(id, imagename, 'upload', 'success');
+                    // console.log(id, imagename, 'upload', 'success');
 
                     $('#card' + id).removeClass("border-info");
                     $('#card' + id).addClass("border-success");
@@ -46,7 +65,7 @@ function upload(id, imagename) {
 
                 } else {
                     console.log(id, imagename, 'upload', 'failed');
-                    $('#test' + id).html("Upload failed! " + error);
+                    $('#test' + id).html("Upload failed! error:" + error + " result: " + result);
                     count_up_plus_one("up_errors");
                 };
                 resolve();
@@ -92,8 +111,8 @@ function move_tabs_tab(tab, to_id) {
     $('#' + to_id).append(img_row);
 }
 
-function upload_t(tab) {
-    console.log("upload_t:" + tab.length);
+async function upload_t(tab) {
+    // console.log("upload_t:", tab.length);
     for (var i = 0; i < tab.length; i++) {
         var id = tab[i];
 
@@ -102,32 +121,13 @@ function upload_t(tab) {
 
         if (imagename == null || imagename == undefined || imagename == '') {
             $('#test' + id).html('imagename is null');
-            console.log(id, 'imagename is null');
+            console.log("id:", id, 'imagename is null');
         } else {
-
-            upload(id, imagename);
+            await upload(id, imagename);
         }
     }
 }
 
-function change_color(id) {
-    $("#" + id + "_logo").hide();
-    $("#" + id + "_logo_done").show();
-
-    var done = $('#' + id + '_done').text();
-    var all = $('#' + id + '_all').text();
-    if (done == all) {
-        // change font to green
-        $('#' + id + '_done').css('color', 'green');
-        $('#' + id + '_all').css('color', 'green');
-    };
-    if (done == "0") {
-        $("#" + id + "_logo_done").hide();
-        $("#" + id + "_logo_err").show();
-        // change font to red
-        $('#' + id + '_row').css('color', 'red');
-    }
-}
 
 async function upload_all() {
     var ele = document.getElementsByName('chk');
@@ -175,6 +175,4 @@ async function upload_all() {
     await upload_t(checked_tab);
 
     change_color('up');
-
-
 };

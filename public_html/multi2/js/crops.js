@@ -1,7 +1,27 @@
+
 function count_crop_plus_one(na_id) {
     var uu = $('#' + na_id).html();
     var u = parseInt(uu) + 1;
     $('#' + na_id).html(u.toString());
+}
+
+function change_color(id) {
+    $("#" + id + "_logo").hide();
+    $("#" + id + "_logo_done").show();
+
+    var done = $('#' + id + '_done').text();
+    var all = $('#' + id + '_all').text();
+    if (done == all) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    };
+    if (done == "0") {
+        $("#" + id + "_logo_done").hide();
+        $("#" + id + "_logo_err").show();
+        // change font to red
+        $('#' + id + '_row').css('color', 'red');
+    }
 }
 
 function error_file(id, filename, Type) {
@@ -34,7 +54,6 @@ function make_width_and_high(width, height) {
 };
 
 function crop_error(id, imagename, data) {
-    console.log(imagename, 'crop', 'error');
     error_file(id, imagename, 'when crop');
     count_crop_plus_one("crop_errors");
     // reject(err);
@@ -42,7 +61,6 @@ function crop_error(id, imagename, data) {
 function crop_done(id, imagename, data) {
     var api_url = 'https://nccroptool.toolforge.org/';
 
-    console.log(imagename, 'crop', 'success');
     var cropimgname = data.crop.name;
     var cropwidth = data.crop.width;
     var cropheight = data.crop.height;
@@ -86,7 +104,7 @@ function get_crop(id, imagename, callback_true, callback_err) {
             rotate: '0'
         };
         var api_url2 = api_url + "api/file/crop?" + jQuery.param(params2);
-        console.log(api_url2);
+        // console.log(api_url2);
         // count_crop_plus_one("crop_all");
 
         jQuery.ajax({
@@ -94,10 +112,12 @@ function get_crop(id, imagename, callback_true, callback_err) {
             url: api_url2,
             dataType: 'json',
             success: function (data) {
+                // console.log(imagename, 'crop', 'success');
                 callback_true(id, imagename, data);
                 resolve();
             },
             error: function (data) {
+                console.log(imagename, 'crop', 'error');
                 callback_err(id, imagename, data);
                 resolve();
             }
@@ -105,25 +125,6 @@ function get_crop(id, imagename, callback_true, callback_err) {
     });
 };
 
-
-function change_color(id) {
-    $("#" + id + "_logo").hide();
-    $("#" + id + "_logo_done").show();
-
-    var done = $('#' + id + '_done').text();
-    var all = $('#' + id + '_all').text();
-    if (done == all) {
-        // change font to green
-        $('#' + id + '_done').css('color', 'green');
-        $('#' + id + '_all').css('color', 'green');
-    };
-    if (done == "0") {
-        $("#" + id + "_logo_done").hide();
-        $("#" + id + "_logo_err").show();
-        // change font to red
-        $('#' + id + '_row').css('color', 'red');
-    }
-}
 
 async function make_crops() {
 
@@ -150,7 +151,7 @@ async function make_crops() {
         var imagename = $("#name" + id).text();
         // var imagename = sessionStorage.getItem(id);
 
-        console.log("make_crops: id:" + id + " imagename:" + imagename);
+        // console.log("make_crops: id:", id, " imagename:", imagename);
         if (imagename != null && imagename != undefined && imagename != '') {
             await get_crop(id, imagename, crop_done, crop_error);
         }

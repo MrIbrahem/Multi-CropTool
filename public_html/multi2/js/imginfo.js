@@ -1,4 +1,28 @@
 
+function count_info_plus_one(na_id) {
+    var uu = $('#' + na_id).html();
+    var u = parseInt(uu) + 1;
+    $('#' + na_id).html(u.toString());
+}
+
+function change_color(id) {
+    $("#" + id + "_logo").hide();
+    $("#" + id + "_logo_done").show();
+
+    var done = $('#' + id + '_done').text();
+    var all = $('#' + id + '_all').text();
+    if (done == all) {
+        // change font to green
+        $('#' + id + '_done').css('color', 'green');
+        $('#' + id + '_all').css('color', 'green');
+    };
+    if (done == "0") {
+        $("#" + id + "_logo_done").hide();
+        $("#" + id + "_logo_err").show();
+        // change font to red
+        $('#' + id + '_row').css('color', 'red');
+    }
+}
 function error_file_p(id, filename, Type) {
     $('#test' + id).html(Type);
 
@@ -18,12 +42,6 @@ function error_file_p(id, filename, Type) {
     $('#card' + id).addClass("border-danger text-danger");
     $('#input' + id).attr("disabled", "1");
     $(".new_textarea").append('\n' + filename);
-}
-
-function count_info_plus_one(na_id) {
-    var uu = $('#' + na_id).html();
-    var u = parseInt(uu) + 1;
-    $('#' + na_id).html(u.toString());
 }
 
 function make_width_and_high_x(width, height) {
@@ -47,7 +65,7 @@ function gp(imagename, data, id) {
 
     count_info_plus_one("info_done");
 
-    // console.log('data.title:' + data.title);
+    // console.log('data.title:', data.title);
 
     var aa = data.thumb;
     if (aa == null) {
@@ -67,7 +85,7 @@ function gp(imagename, data, id) {
     $('#img_' + id).empty();
     $('#img_' + id).append(img_tag);
 
-    console.log('#img_' + id);
+    // console.log('#img_' + id);
 
     // $('#crp_' + id).attr("idt", id);
     $('#crp_' + id).attr("name", "tocrop");
@@ -81,7 +99,6 @@ function get_info_error(id, imagename, data) {
         err = 'when getting image info';
     }
 
-    console.log(imagename, 'exist', 'error');
     error_file_p(id, imagename, err);
     count_info_plus_one("info_errors");
 }
@@ -102,11 +119,12 @@ function get_one_file_info(id, imagename) {
             url: api_url1,
             dataType: 'json',
             success: function (data) {
-                console.log(imagename, 'exist', 'error');
+                // console.log(imagename, 'exist', 'success');
                 gp(imagename, data, id);
                 resolve();
             },
             error: function (data) {
+                console.log(imagename, 'exist', 'error');
                 get_info_error(id, imagename, data);
                 // reject(err);
                 resolve();
@@ -115,24 +133,6 @@ function get_one_file_info(id, imagename) {
     });
 };
 
-function change_color(id) {
-    $("#" + id + "_logo").hide();
-    $("#" + id + "_logo_done").show();
-
-    var done = $('#' + id + '_done').text();
-    var all = $('#' + id + '_all').text();
-    if (done == all) {
-        // change font to green
-        $('#' + id + '_done').css('color', 'green');
-        $('#' + id + '_all').css('color', 'green');
-    };
-    if (done == "0") {
-        $("#" + id + "_logo_done").hide();
-        $("#" + id + "_logo_err").show();
-        // change font to red
-        $('#' + id + '_row').css('color', 'red');
-    }
-}
 async function get_infos() {
     var ele = document.getElementsByName('images');
 
