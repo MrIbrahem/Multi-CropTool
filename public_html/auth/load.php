@@ -22,7 +22,7 @@ function get_action($action)
     return $action;
 }
 
-$action = $_GET['a'] ?? 'index';
+$action = $_REQUEST['a'] ?? 'index';
 
 $actionFile = get_action($action);
 

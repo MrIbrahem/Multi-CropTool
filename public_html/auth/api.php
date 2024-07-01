@@ -129,7 +129,7 @@ function upload($post)
 function find_exists()
 {
     // Sanitize the filename to prevent malicious code injection
-    $sanitizedFilename = filter_var($_GET['filename'], FILTER_SANITIZE_STRING);
+    $sanitizedFilename = filter_var($_REQUEST['filename'], FILTER_SANITIZE_STRING);
     $filename = $sanitizedFilename ?? '';
 
     $params = [
