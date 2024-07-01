@@ -82,7 +82,7 @@ function downloadFile($url)
 function upload($post)
 {
     $url = $post['url'] ?? '';
-    $file = $_FILES['file'] ?? '';
+    $file = $_FILES['file'];
 
     // Validate and sanitize other inputs if needed
     $filename = filter_var($post['filename'] ?? '', FILTER_SANITIZE_STRING);
@@ -96,7 +96,7 @@ function upload($post)
         'comment' => $comment,
     ];
 
-    if ($url == '' && $file == '') {
+    if ($url == '' && (!isset($file))) {
         $err = ["error" => "Invalid", "filename" => $filename, "url" => $url];
         echo json_encode($err);
         return;
@@ -109,11 +109,11 @@ function upload($post)
         $data['url'] = $url;
     } else {
         // CURLFile
-        if ($file == '') {
+        if (isset($file)) {
+            $data['file'] = new \CURLFile($file['name'], $file['type'], $file['tmp_name'], $file['size']);
+        } else {
             $tmp_file = downloadFile($url);
             $data['file'] = new \CURLFile($tmp_file);
-        } else {
-            $data['file'] = new \CURLFile($file['name'], $file['type'], $file['tmp_name'], $file['size']);
         }
     }
     // Perform whatever processing or API call you need with the uploaded file
