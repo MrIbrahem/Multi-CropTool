@@ -3,11 +3,11 @@
 namespace MultiCrop;
 
 require('header.php');
-require('helps/table.php');
-require('helps/html.php');
-require('helps/info_tab.php');
-require('helps/form.php');
-require('helps/card.php');
+require('phps/table.php');
+require('phps/html.php');
+require('phps/info_tab.php');
+require('phps/form.php');
+require('phps/card.php');
 
 use function Form\make_form;
 use function Card\make_card;

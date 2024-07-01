@@ -63,43 +63,47 @@ async function save_it(file, id) {
     });
 }
 
-async function upload_api(file, file_url, callback) {
-    //---
-    var api_url = 'auth.php';
-    //---
-    // remove "File:" from file name
-    file = file.replace("File:", "");
-    //---
-    var formData = {
-        a: 'upload',
-        by: 'file',
-        filename: file,
-        comment: 'comment',
-        url: file_url,
-    }
-    //---
-    api_url = api_url + '?' + jQuery.param(formData);
-    //---
-    $.ajax({
-        async: true,
-        url: api_url,
-        // data: formData,
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            callback(null, data, api_url);
-        },
-        error: function (data) {
-            callback('Error occurred', data, api_url);
+async function upload_api(file, file_url, id, callback) {
+    return new Promise((resolve, reject) => {
+        var idElement = $("#" + id);
+        idElement.html('<i class="fa fa-upload"></i> Uploading..');
+        //---
+        var api_url = 'auth.php';
+        //---
+        // remove "File:" from file name
+        file = file.replace("File:", "");
+        //---
+        var formData = {
+            a: 'upload',
+            by: 'file',
+            filename: file,
+            comment: 'comment',
+            url: file_url,
         }
+        //---
+        api_url = api_url + '?' + jQuery.param(formData);
+        //---
+        $.ajax({
+            async: true,
+            url: api_url,
+            // data: formData,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                callback(null, data, api_url);
+                resolve();
+            },
+            error: function (data) {
+                callback('Error occurred', data, api_url);
+                resolve();
+            }
+        });
     });
 }
 
 async function start_up(file, img_url, id) {
-    var idElement = $("#" + id);
-    idElement.html('<i class="fa fa-upload"></i> Uploading..');
     //---
-    await upload_api(file, img_url, function (err, data, urlx) {
+    await upload_api(file, img_url, id, function (err, data, urlx) {
         //---
         // { "error": { "code": "mwoauth-invalid-authorization", "info": "The authorization headers in your request are not valid: Invalid signature", "*": "" } }
         var error = err;
@@ -121,6 +125,8 @@ async function start_up(file, img_url, id) {
         console.log(urlx);
         console.log(JSON.stringify(data));
         //---
+        var idElement = $("#" + id);
+        //---
         if (error) {
             $("#error_" + id).show();
             idElement_err(idElement, 'false: ' + error);
@@ -130,13 +136,15 @@ async function start_up(file, img_url, id) {
             upload_Success(data, id, file, idElement);
         }
     });
-
 }
 
 function upload_Success(data, id, file, idElement) {
     var results = data.result;
     var warnings = data.warnings;
-    var exists = data.warnings.exists;
+    var exists = null;
+    if (data.warnings) {
+        exists = data.warnings.exists;
+    }
 
     if (results == "Success") {
         $("#success_" + id).show();
@@ -166,7 +174,7 @@ function upload_Success(data, id, file, idElement) {
 
 }
 
-async function up_files() {
+async function get_user_infos() {
     $.ajax({
         async: true,
         url: 'auth.php',
@@ -185,6 +193,11 @@ async function up_files() {
             $('#login_sp').text(JSON.stringify(data));
         }
     });
+}
+
+async function up_files() {
+    await get_user_infos();
+
     var to_up = document.getElementsByName('toup');
 
     if (to_up.length == 0) {
@@ -204,3 +217,4 @@ async function up_files() {
         }
     };
 }
+

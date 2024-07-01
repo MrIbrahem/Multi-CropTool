@@ -10,7 +10,8 @@ if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
 require('header.php');
 
 $files = $_REQUEST['files'] ?? '';
-
+// remove | from files
+$files = str_replace('|', "", $files);
 $username = $_SESSION['username'] ?? '';
 //---
 $login_sp = '';

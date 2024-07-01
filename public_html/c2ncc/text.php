@@ -1,6 +1,7 @@
 <?php
 
-function get_from_commons($filename) {
+function get_from_commons($filename)
+{
     $url = "https://commons.wikimedia.org/wiki/File:$filename?action=raw";
     $file_text = file_get_contents($url);
     // echo $url;
@@ -17,7 +18,8 @@ function get_from_commons($filename) {
     return $file_text;
 }
 
-function make_file_text($filename) {
+function make_file_text($filename)
+{
     // trim
     $filename = trim($filename);
     // replace " " with "_"

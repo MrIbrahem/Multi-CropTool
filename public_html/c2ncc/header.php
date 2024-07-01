@@ -2,7 +2,7 @@
 <HTML lang=en dir=ltr data-bs-theme="light" xmlns="http://www.w3.org/1999/xhtml">
 <?php
 //---
-include_once('auth/index.php');
+include_once 'auth.php';
 //---
 echo <<<HTML
     <span id='myusername' style='display:none'>$username</span>
@@ -45,7 +45,6 @@ echo <<<HTML
     <script src='$hoste/ajax/libs/datatables.net-bs5/1.13.1/dataTables.bootstrap5.min.js'></script>
     <script src='$hoste/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js'></script>
 
-    <!-- <script src="/helps/auth.js"></script> -->
     <!-- <script src="js/ncc.js"></script> -->
     <script src="js/auto_comp.js"></script>
     <style>
@@ -78,18 +77,23 @@ $log_lis = <<<HTML
 	</li>
 HTML;
 //---
-echo header_nav_tag($title = "Commons to NCCommons", $page = 'c2ncc', $log_lis = $log_lis);
+echo header_nav_tag($title = "Commons to NCCommons", $page = $tool_folder, $log_lis = $log_lis);
 //---
 ?>
-
 <script>
     var lo = $('#myusername').text();
     if (lo != '') {
+
         $('#loginli').hide();
+
         $('#username_li').show();
         $('#logout_btn').show();
+        $('#user_name').text(lo);
+
     } else {
+
         $('#loginli').show();
+
         $('#username_li').hide();
         $('#logout_btn').hide();
     };
@@ -97,3 +101,4 @@ echo header_nav_tag($title = "Commons to NCCommons", $page = 'c2ncc', $log_lis =
 </script>
 <main id="body">
     <div id="maindiv" class="container">
+        <br>
