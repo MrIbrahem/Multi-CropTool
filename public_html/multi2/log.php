@@ -20,5 +20,3 @@ $json = json_decode($a, true);
 $json = json_encode($json, true);
 
 $put = file_put_contents($file_name, $json);
-
-?>
