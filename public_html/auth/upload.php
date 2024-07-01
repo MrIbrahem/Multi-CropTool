@@ -1,35 +1,15 @@
 <?php
-//---
-if (isset($_REQUEST['test'])) {
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-};
-//---
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../text.php';
 
 use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\ClientConfig;
 use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Token;
 
-// Output the demo as json
-header('Content-type: application/json; charset=utf-8');
-
-// Get the wiki URL and OAuth consumer details from the config file.
-require_once __DIR__ . '/config.php';
-
 // Configure the OAuth client with the URL and consumer details.
 $conf = new ClientConfig($oauthUrl);
 $conf->setConsumer(new Consumer($consumerKey, $consumerSecret));
 $conf->setUserAgent($gUserAgent);
 $client = new Client($conf);
-
-// if (!isset($_SESSION['access_key']) || !isset($_SESSION['access_secret'])) {
-//     echo "Access token not found in session.";
-//     exit;
-// }
 
 // Load the Access Token from the session.
 session_start();
@@ -76,7 +56,11 @@ $url = $_REQUEST['url'] ?? '';
 $filename = filter_var($_REQUEST['filename'] ?? '', FILTER_SANITIZE_STRING);
 $comment = filter_var($_REQUEST['comment'] ?? '', FILTER_SANITIZE_STRING);
 
-$file_text = make_file_text($filename);
+$file_text = "";
+
+if (function_exists('make_file_text')) {
+    $file_text = make_file_text($filename);
+};
 
 $data = [
     'action' => 'upload',
@@ -97,7 +81,7 @@ $by = $_REQUEST['by'] ?? 'file';
 
 $tmp_file = downloadFile($url);
 $tmp_name = basename($tmp_file);
-$newurl = $main_site . "/c2ncc/files/$tmp_name";
+$newurl = $main_site . "/$tool_folder/files/$tmp_name";
 
 if ($by == 'url') {
     // $data['url'] = $url;
