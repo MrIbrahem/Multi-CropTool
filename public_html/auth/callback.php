@@ -1,5 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/config.php';
+
 use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\ClientConfig;
 use MediaWiki\OAuthClient\Consumer;
@@ -49,20 +53,12 @@ $_SESSION['username'] = $username;
 // Example 3: make an edit (getting the edit token first).
 # automatic redirect to edit.php
 
-foreach (['test'] as $key) {
-	$da = $_GET[$key] ?? '';
-	if ($da != '') $state[$key] = $da;
-};
+$test = $_REQUEST['test'] ?? '';
+$state = ($test != '') ? "?test=$test" : "";
 //---
-$state = http_build_query($state);
-//---
-$newurl = "/$tool_folder/index.php?$state";
+$newurl = "/$tool_folder/index.php$state";
 //---
 echo "header('Location: $newurl');<br>";
 //---
-$test = $_GET['test'] ?? '';
-//---
-if ($test == '') {
-	header("Location: $newurl");
-}
+header("Location: $newurl");
 //---

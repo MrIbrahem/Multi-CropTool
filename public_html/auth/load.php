@@ -1,5 +1,4 @@
 <?php
-header('Content-type: application/json; charset=utf-8');
 
 if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
     ini_set('display_errors', 1);
@@ -31,4 +30,4 @@ $actionFile = get_action($action);
 // header("Location: auth/" . $actionFile);
 require_once __DIR__ . "/" . $actionFile . '.php';
 
-exit;
+// exit;
