@@ -1,13 +1,8 @@
 <?php
 
-if (isset($_REQUEST['test']) || $_SERVER['SERVER_NAME'] == 'localhost') {
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
-};
-
-// Require the library and set up the classes we're going to use in this second part of the demo.
 require_once __DIR__ . '/../vendor/autoload.php';
+
+require_once __DIR__ . '/config.php';
 
 use MediaWiki\OAuthClient\Client;
 use MediaWiki\OAuthClient\ClientConfig;
@@ -22,9 +17,6 @@ if (!isset($_GET['oauth_verifier'])) {
 	HTML;
 	exit(1);
 }
-
-// Get the wiki URL and OAuth consumer details from the config file.
-require_once __DIR__ . '/config.php';
 
 // Configure the OAuth client with the URL and consumer details.
 $conf = new ClientConfig($oauthUrl);
@@ -57,17 +49,16 @@ echo "Continue to <a href='auth.php?a=edit'>edit</a><br>";
 echo "Continue to <a href='auth.php?a=index'>index</a><br>";
 
 $username = get_user_name();
-$_SESSION['username'] = $ident->username;
+$_SESSION['username'] = $username;
 // Example 3: make an edit (getting the edit token first).
 # automatic redirect to edit.php
 
-$test = $_GET['test'] ?? '';
+$test = $_REQUEST['test'] ?? '';
+$state = ($test != '') ? "?test=$test" : "";
 //---
-$newurl = "index.php";
+$newurl = "/$tool_folder/index.php$state";
 //---
 echo "header('Location: $newurl');<br>";
 //---
-if ($test == '') {
-	header("Location: $newurl");
-}
+header("Location: $newurl");
 //---

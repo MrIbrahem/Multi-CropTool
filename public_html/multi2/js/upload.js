@@ -175,4 +175,6 @@ async function upload_all() {
     await upload_t(checked_tab);
 
     change_color('up');
+
+
 };

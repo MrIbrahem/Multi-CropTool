@@ -72,7 +72,7 @@ function header_nav_tag($title="title", $page='', $log_lis='') {
                                 </a>
                             </li>
                             <li class="nav-item col-4 col-lg-auto">
-                                <a class="nav-link py-2 px-0 px-lg-2" href="https://github.com/MrIbrahem/nccroptool" target="_blank">
+                                <a class="nav-link py-2 px-0 px-lg-2" href="https://github.com/MrIbrahem/Multi-CropTool" target="_blank">
                                     <span class="navtitles">Github</span>
                                 </a>
                             </li>
