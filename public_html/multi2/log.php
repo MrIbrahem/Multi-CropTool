@@ -9,7 +9,7 @@ $file_name = '';
 
 if ($file_name2 != '') { $file_name = $file_name2; }
 
-if ($file_name == '') { 
+if ($file_name == '') {
     $file_name = rand();
 };
 

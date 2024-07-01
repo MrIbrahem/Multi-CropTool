@@ -18,9 +18,9 @@ echo <<<HTML
         <meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#eeeeee" media="(prefers-color-scheme: dark)" />
         <title>Multi CropTool</title>
-		<link href='css/styles.css' rel='stylesheet' type='text/css'>
+		<!-- <link href='css/styles.css' rel='stylesheet' type='text/css'> -->
         <!-- <script src="js/newta.js"></script> -->
-		<script src="/helps/auth.js"></script>
+		<script src="js/auth.js"></script>
         <script src="js/imginfo.js"></script>
         <script src="js/crops.js"></script>
         <script src="js/upload.js"></script>
@@ -55,11 +55,11 @@ echo <<<HTML
 HTML;
 
 //---
- require("../helps/header_nav.php");
+require("../helps/header_nav.php");
 //---
 echo "<body>";
 
-echo header_nav_tag($title='<i class="fa fa-crop"></i> Multi CropTool', 'multi2');
+echo header_nav_tag($title = '<i class="fa fa-crop"></i> Multi CropTool', 'multi2');
 
 ?>
 <main id="body">
