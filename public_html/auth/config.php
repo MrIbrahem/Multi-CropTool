@@ -1,5 +1,7 @@
 <?php
 //---
+include_once __DIR__ . '/../vendor/autoload.php';
+//---
 // $tool_folder = '';
 // $main_site = '';
 // $source_site = '';
